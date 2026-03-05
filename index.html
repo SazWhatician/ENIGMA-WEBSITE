@@ -132,7 +132,6 @@
             position: relative;
             width: 100vw;
             height: 100vh;
-            /* Added smooth gradient linking the black sections via dark green */
             background: linear-gradient(to bottom, #000000 0%, #0F3918 50%, #000000 100%);
             z-index: 10;
             cursor: grab;
@@ -150,7 +149,7 @@
             font-size: 0.9rem;
             font-weight: 700;
             letter-spacing: 0.4em;
-            color: #2BA648; /* Orbit Green */
+            color: #2BA648; 
             text-transform: uppercase;
             z-index: 5;
             pointer-events: none;
@@ -480,7 +479,7 @@
         const config = {
             brushSize: 25.0, brushStrength: 0.5, distortionAmount: 2.5,
             fluidDecay: 0.98, trailLength: 0.8, stopDecay: 0.85,
-            color1: "#2BA648", color2: "#0F3918", color3: "#185D28", color4: "#742539",
+            color1: "#000000", color2: "#034409", color3: "#011803", color4: "#000000",
             colorIntensity: 1.0, softness: 1.0,
         };
 
@@ -606,7 +605,7 @@
 
 
         // ==========================================
-        // D. FOOTER REACTOR 3D SCENE
+        // D. FOOTER CRYSTAL 3D SCENE
         // ==========================================
         const footerContainerEl = document.getElementById("footer-canvas");
         const footerScene = new THREE.Scene();
@@ -630,37 +629,44 @@
         rimLight.position.set(5, 5, 5);
         footerScene.add(rimLight);
 
-        const reactorGroup = new THREE.Group();
-        footerScene.add(reactorGroup);
+        const crystalGroup = new THREE.Group();
+        footerScene.add(crystalGroup);
 
-        const core = new THREE.Mesh(
-            new THREE.IcosahedronGeometry(1, 1),
-            new THREE.MeshStandardMaterial({ color: 0x000000, wireframe: true, emissive: 0x2BA648, emissiveIntensity: 2 })
+        // Solid inner crystal core
+        const innerCrystal = new THREE.Mesh(
+            new THREE.OctahedronGeometry(1.2, 0),
+            new THREE.MeshStandardMaterial({ 
+                color: 0x2BA648, 
+                emissive: 0x0F3918, 
+                emissiveIntensity: 1, 
+                roughness: 0.1, 
+                metalness: 0.8 
+            })
         );
-        reactorGroup.add(core);
+        crystalGroup.add(innerCrystal);
 
-        const ring1 = new THREE.Mesh(
-            new THREE.TorusGeometry(1.6, 0.02, 16, 100),
-            new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0.1, emissive: 0x0F3918, emissiveIntensity: 0.4 })
+        // Delicate outer wireframe cage
+        const outerCage = new THREE.Mesh(
+            new THREE.IcosahedronGeometry(1.6, 0),
+            new THREE.MeshStandardMaterial({ 
+                color: 0xffffff, 
+                wireframe: true, 
+                transparent: true, 
+                opacity: 0.25 
+            })
         );
-        reactorGroup.add(ring1);
+        crystalGroup.add(outerCage);
 
-        const ring2 = new THREE.Mesh(
-            new THREE.TorusGeometry(2.2, 0.05, 16, 100),
-            new THREE.MeshStandardMaterial({ color: 0x000000, metalness: 0.9, roughness: 0.2, emissive: 0x185D28, emissiveIntensity: 0.7 })
-        );
-        ring2.rotation.x = Math.PI / 2;
-        reactorGroup.add(ring2);
-
+        // Ambient Particles
         const particlesGeo = new THREE.BufferGeometry();
         const posArray = new Float32Array(800 * 3);
         for(let i=0; i<800 * 3; i++) posArray[i] = (Math.random()-0.5)*12;
         particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
         const particles = new THREE.Points(
             particlesGeo, 
-            new THREE.PointsMaterial({ size: 0.015, color: 0x2BA648, transparent: true, opacity: 0.8 })
+            new THREE.PointsMaterial({ size: 0.015, color: 0x2BA648, transparent: true, opacity: 0.6 })
         );
-        reactorGroup.add(particles);
+        crystalGroup.add(particles);
 
         const footerMouse = { x: 0, y: 0 };
         document.querySelector('footer').addEventListener("mousemove", (e) => {
@@ -739,17 +745,24 @@
                 images[i].style.transform = `translateX(${-parallaxAmount}px) scale(1.05)`;
             });
 
-            core.rotation.y += 0.002; core.rotation.x -= 0.002;
-            ring1.rotation.x += 0.01; ring1.rotation.y += 0.005;
-            ring2.rotation.y -= 0.005; particles.rotation.y += 0.001;
+            // --- NEW CRYSTAL ANIMATION LOGIC ---
+            innerCrystal.rotation.y += 0.01;
+            innerCrystal.rotation.x += 0.005;
             
-            const scale = 1 + Math.sin(time * 1.5) * 0.05;
-            core.scale.set(scale, scale, scale);
+            outerCage.rotation.y -= 0.005;
+            outerCage.rotation.z += 0.002;
             
+            particles.rotation.y += 0.001;
+            
+            // Pulsing scale effect on the inner core
+            const scale = 1 + Math.sin(time * 2) * 0.05;
+            innerCrystal.scale.set(scale, scale, scale);
+            
+            // Movement and tracking logic
             const targetZ = -5 + (scrollProgress * 5);
-            reactorGroup.position.z += (targetZ - reactorGroup.position.z) * 0.05;
-            reactorGroup.rotation.x += (footerMouse.y * 0.2 - reactorGroup.rotation.x) * 0.05;
-            reactorGroup.rotation.y += (footerMouse.x * 0.2 - reactorGroup.rotation.y) * 0.05;
+            crystalGroup.position.z += (targetZ - crystalGroup.position.z) * 0.05;
+            crystalGroup.rotation.x += (footerMouse.y * 0.2 - crystalGroup.rotation.x) * 0.05;
+            crystalGroup.rotation.y += (footerMouse.x * 0.2 - crystalGroup.rotation.y) * 0.05;
             
             footerRenderer.render(footerScene, footerCamera);
         }
