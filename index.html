@@ -88,8 +88,8 @@
         .hero-section {
             position: relative;
             width: 100vw;
-            height: 100vh; /* Fallback for older browsers */
-            height: 100dvh; /* Dynamic viewport fixes mobile address bar jumps */
+            height: 100vh; /* Fallback */
+            height: 100svh; /* Static viewport height prevents jumping on mobile */
             overflow: hidden;
         }
 
@@ -100,10 +100,9 @@
             z-index: 1;
         }
 
-        /* Fades the bottom of the fluid canvas into black so there's no hard line */
         .hero-fade-bottom {
             position: absolute;
-            bottom: -1px; /* -1px prevents sub-pixel rendering gaps on mobile */
+            bottom: -1px; 
             left: 0;
             width: 100vw; height: 15vh;
             background: linear-gradient(to bottom, transparent, #000000);
@@ -139,7 +138,7 @@
             position: relative;
             width: 100vw;
             height: 100vh;
-            height: 100dvh;
+            height: 100svh;
             background: linear-gradient(to bottom, #000000 0%, #0F3918 50%, #000000 100%);
             z-index: 10;
             cursor: grab;
@@ -289,7 +288,7 @@
 
         footer {
             position: relative; width: 100%; 
-            height: 100vh; height: 100dvh;
+            height: 100vh; height: 100svh;
             background-color: var(--base-orbit); overflow: hidden; z-index: 1; 
         }
         .footer-container {
@@ -697,7 +696,13 @@
         // ==========================================
         // E. UNIFIED RENDER LOOP & RESIZE HANDLER
         // ==========================================
+        let currentWindowWidth = window.innerWidth;
+
         window.addEventListener("resize", () => {
+            // CRITICAL FIX: Ignore resize events on mobile caused strictly by scrolling (address bar hide/show)
+            if (window.innerWidth === currentWindowWidth) return;
+            currentWindowWidth = window.innerWidth;
+
             const width = window.innerWidth;
             const height = window.innerHeight;
 
