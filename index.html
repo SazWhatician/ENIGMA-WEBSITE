@@ -45,7 +45,6 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* Prevents text highlighting globally */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -61,6 +60,45 @@
 
         ::-webkit-scrollbar { display: none; }
         html { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- LOADER SECTION --- */
+        #loader-wrapper {
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader-window {
+            position: absolute;
+            top: 50%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px; 
+            height: 150px;
+            box-shadow: 0 0 0 150vmax #000000;
+            border: 1px solid rgba(255, 255, 255, 0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+
+        .loader-black-cover {
+            position: absolute;
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            height: 100%;
+            background-color: #000000;
+            z-index: 1;
+        }
 
         /* --- NAVIGATION --- */
         nav {
@@ -88,8 +126,8 @@
         .hero-section {
             position: relative;
             width: 100vw;
-            height: 100vh; /* Fallback */
-            height: 100svh; /* Static viewport height prevents jumping on mobile */
+            height: 100vh;
+            height: 100svh;
             overflow: hidden;
         }
 
@@ -117,6 +155,8 @@
             width: 25%;
             z-index: 2;
             pointer-events: none;
+            /* Added transform-origin to ensure it scales perfectly from the center */
+            transform-origin: center center;
         }
 
         .hero-footer {
@@ -314,12 +354,18 @@
 </head>
 <body class="antialiased selection:bg-orbitGreen selection:text-void">
 
+    <div id="loader-wrapper">
+        <div class="loader-window">
+            <div class="loader-black-cover"></div>
+        </div>
+    </div>
+
     <nav>
         <div class="logo"><p>ENIGMA.</p></div>
         <div class="nav-items">
             <p>Events</p>
-            <p>Projects</p>
-            <p>Team</p>
+            <p><a href="project.html">Projects</a></p>
+            <p><a href="team.html">Team</a></p>
             <p>Contact</p>
         </div>
     </nav>
@@ -328,11 +374,11 @@
         <div class="gradient-canvas"></div>
         <div class="hero-fade-bottom"></div>
         <div class="hero-logo">
-            <img src="/image-assets/white-no bg.png" alt="Orbit Logo"/>
+            <div><img src="/image-assets/white-no bg.png" alt="Logo"/></div>
         </div>
         <div class="hero-footer">
-            <p>enigma</p>
-            <p>saswat</p>
+            <p>Coding Club</p>
+            <p>VSSUT Burla</p>
         </div>
     </section>
 
@@ -477,6 +523,62 @@
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => lenis.raf(time * 1000));
         gsap.ticker.lagSmoothing(0);
+
+        // --- FAST SEAMLESS TRANSFORM LOADER ANIMATION ---
+        // 1. Temporarily stop scrolling
+        lenis.stop(); 
+        
+        // 2. Hide nav and footer initially
+        gsap.set(["nav", ".hero-footer"], { opacity: 0, y: 15 });
+
+        // 3. Set the MAIN Hero Logo to act as the loader logo initially
+        gsap.set(".hero-logo", { 
+            opacity: 0, 
+            scale: 0.25, 
+            zIndex: 10000 
+        });
+
+        // 4. Create the loader timeline with much faster timings
+        const loaderTl = gsap.timeline({
+            onComplete: () => {
+                document.getElementById('loader-wrapper').remove(); 
+                gsap.set(".hero-logo", { clearProps: "zIndex" }); 
+                lenis.start(); 
+            }
+        });
+
+        loaderTl
+            // Phase 1: Fade in the small hero logo FAST
+            .to(".hero-logo", { opacity: 1, duration: 0.6, ease: "power2.out" }, "+=0.1")
+            
+            // Phase 2: Fade in the cinematic border synced up
+            .to(".loader-window", { borderColor: "rgba(255, 255, 255, 0.2)", duration: 0.4 }, "-=0.4")
+            
+            // Phase 3: Black cover fades out quickly
+            .to(".loader-black-cover", { opacity: 0, duration: 0.3, ease: "power2.inOut" }, "+=0.2")
+            
+            // Phase 4: THE TRANSFORM! Rapid snap open.
+            .to(".loader-window", {
+                width: "250vmax", 
+                height: "250vmax",
+                borderColor: "rgba(255, 255, 255, 0)",
+                duration: 0.8,
+                ease: "expo.inOut"
+            }, "+=0.1")
+            .to(".hero-logo", {
+                scale: 1,
+                duration: 0.8,
+                ease: "expo.inOut"
+            }, "<")
+            
+            // Phase 5: Fade in the Hero content quickly
+            .to(["nav", ".hero-footer"], {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                stagger: 0.1,
+                ease: "power3.out"
+            }, "-=0.4");
 
 
         // ==========================================
@@ -699,7 +801,6 @@
         let currentWindowWidth = window.innerWidth;
 
         window.addEventListener("resize", () => {
-            // CRITICAL FIX: Ignore resize events on mobile caused strictly by scrolling (address bar hide/show)
             if (window.innerWidth === currentWindowWidth) return;
             currentWindowWidth = window.innerWidth;
 
@@ -757,7 +858,7 @@
                 images[i].style.transform = `translateX(${-parallaxAmount}px) scale(1.05)`;
             });
 
-            // --- NEW CRYSTAL ANIMATION LOGIC ---
+            // --- CRYSTAL ANIMATION LOGIC ---
             innerCrystal.rotation.y += 0.01;
             innerCrystal.rotation.x += 0.005;
             
@@ -766,11 +867,9 @@
             
             particles.rotation.y += 0.001;
             
-            // Pulsing scale effect on the inner core
             const scale = 1 + Math.sin(time * 2) * 0.05;
             innerCrystal.scale.set(scale, scale, scale);
             
-            // Movement and tracking logic
             const targetZ = -5 + (scrollProgress * 5);
             crystalGroup.position.z += (targetZ - crystalGroup.position.z) * 0.05;
             crystalGroup.rotation.x += (footerMouse.y * 0.2 - crystalGroup.rotation.x) * 0.05;
