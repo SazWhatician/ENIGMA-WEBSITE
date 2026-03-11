@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ENIGMA | Projects</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://unpkg.com/@barba/core"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#000000',
+                        orbitGreen: '#2BA648',
+                        orbitDark: '#0F3918',
+                    },
+                    fontFamily: {
+                        sans: ['"Host Grotesk"', 'sans-serif'],
+                        syncopate: ['"Syncopate"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { background-color: #000; color: #fff; overflow: hidden; touch-action: none; }
+
+        /* --- BACKGROUND BLUEPRINTS --- */
+        .blueprint-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; display: flex; justify-content: center; align-items: center; }
+        .bp-circle { position: absolute; width: 90vmin; height: 90vmin; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 50%; }
+        .bp-line-h { position: absolute; width: 100vw; height: 1px; background: rgba(255, 255, 255, 0.05); }
+        .bp-line-v { position: absolute; width: 1px; height: 100vh; background: rgba(255, 255, 255, 0.05); }
+        .bp-line-d1 { position: absolute; width: 150vw; height: 1px; background: rgba(255, 255, 255, 0.03); transform: rotate(30deg); }
+        .bp-line-d2 { position: absolute; width: 150vw; height: 1px; background: rgba(255, 255, 255, 0.03); transform: rotate(-30deg); }
+
+        /* --- NAVIGATION --- */
+        nav { position: fixed; top: 0; left: 0; width: 100vw; padding: 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; mix-blend-mode: difference; }
+        nav, .logo p { font-weight: 700; font-size: 0.9rem; font-family: "Host Grotesk", sans-serif;}
+        .logo a { text-decoration: none; color: white; }
+        .nav-items { display: flex; gap: 2rem; }
+        .nav-items a { text-decoration: none; color: white; transition: color 0.3s; }
+        .nav-items a:hover { color: #2BA648; }
+        @media(max-width: 768px){ nav { padding: 1.5rem; } .nav-items { gap: 1rem; font-size: 0.8rem; } }
+
+        /* --- PROJECT REEL --- */
+        .reel-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; }
+        .project-item { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; will-change: transform; }
+        .project-content { width: 100%; max-width: 1600px; padding: 0 4rem; display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 2rem; align-items: center; }
+        
+        .project-counter { font-family: 'Syncopate', sans-serif; font-size: clamp(4rem, 10vw, 12rem); line-height: 0.8; letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2); transition: all 0.5s ease; }
+        .project-counter span { font-size: 2rem; -webkit-text-stroke: 0; color: rgba(255, 255, 255, 0.3); }
+        .is-active .project-counter { color: #2BA648; -webkit-text-stroke: 0; }
+
+        .project-image-wrap { position: relative; width: 100%; height: 60vh; overflow: hidden; border-radius: 4px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .project-image-wrap::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(15, 57, 24, 0.2)); pointer-events: none; mix-blend-mode: multiply; }
+        .project-image { position: absolute; top: -20%; left: 0; width: 100%; height: 140%; object-fit: cover; will-change: transform; filter: grayscale(80%) contrast(1.2); transition: filter 0.8s ease; }
+        .is-active .project-image { filter: grayscale(0%) contrast(1); }
+
+        .project-info { text-align: right; }
+        .project-title { font-family: 'Syncopate', sans-serif; font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 700; margin-bottom: 1rem; line-height: 1.1; }
+        .project-desc { font-family: 'Host Grotesk', sans-serif; font-size: 0.9rem; color: #94a3b8; max-width: 300px; margin-left: auto; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 1024px) {
+            .project-content { display: flex; flex-direction: column; padding: 0 1.5rem; justify-content: center; height: 100%; }
+            .project-counter { position: relative; top: auto; left: auto; font-size: clamp(3.5rem, 12vw, 5rem); text-align: left; width: 100%; max-width: 500px; margin: 0 auto 0.5rem auto; order: 1; z-index: 2; opacity: 1; line-height: 1; }
+            .project-counter span { font-size: 1.5rem; }
+            .project-image-wrap { height: 40vh; width: 100%; max-width: 500px; margin: 0 auto; order: 2; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+            .project-info { text-align: left; width: 100%; max-width: 500px; margin: 1.5rem auto 0 auto; order: 3; }
+            .project-desc { margin: 0; max-width: 100%; }
+            .project-title { font-size: clamp(1.5rem, 6vw, 2rem); margin-bottom: 0.5rem; }
+        }
+
+        /* --- BARBA TRANSITION LAYER (FAST 3-PANEL WIPE) --- */
+        .page-transition {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 9999; pointer-events: none;
+            display: flex; 
+        }
+        .transition-panel {
+            flex: 1; height: 100%;
+            background-color: #2BA648; /* Green Wipe */
+            transform: translateY(100%);
+            will-change: transform;
+        }
+    </style>
+</head>
+<body data-barba="wrapper">
+
+    <div class="page-transition">
+        <div class="transition-panel"></div>
+        <div class="transition-panel"></div>
+        <div class="transition-panel"></div>
+    </div>
+
+    <div class="blueprint-bg">
+        <div class="bp-circle"></div><div class="bp-line-h"></div><div class="bp-line-v"></div><div class="bp-line-d1"></div><div class="bp-line-d2"></div>
+    </div>
+
+    <main data-barba="container" data-barba-namespace="projects">
+        
+        <nav>
+            <div class="logo"><a href="index.html" data-barba-prevent>ENIGMA.</a></div>
+            <div class="nav-items">
+                <a href="#">Events</a>
+                <a href="project.html" class="text-orbitGreen">Projects</a>
+                <a href="team.html">Team</a>
+                <a href="#">Contact</a>
+            </div>
+        </nav>
+
+        <div class="reel-container">
+            </div>
+
+    </main>
+
+    <script>
+        // --- 1. PROJECT DATA (OPTIMIZED FOR SPEED) ---
+        const projectsData = [
+            { id: "01", title: "eNIGGmA", desc: "2 things you maybe wanna ride", img: "./project-assets/03ebb93dc76d5da51b66fa1826d3c548.jpg" },
+            { id: "02", title: "Kanye West", desc: "aesthetic cd picture from pinterest", img: "./project-assets/1937c631f87b36cdab243f6fe4d0bc07.jpg" },
+            { id: "03", title: "TAWSAS", desc: "Saswat means someone who's Eternal- never ending", img: "./project-assets/abcba71e1e62c9efb1e98b462058ce4c.jpg" },
+            { id: "04", title: "AmGGINe", desc: "for the girls: 2 things you maybe wanna ride", img: "./project-assets/bc06fb92df284696e7191a5b781b97f4.jpg" },
+            { id: "05", title: "Tyler- the creator", desc: "Tyler is really cool", img: "./project-assets/d7d287744fcbefbba4c0db2ac389cf2b.jpg" }
+        ];
+
+        let reelTicker, boundResize, boundWheel, boundTouchStart, boundTouchMove; 
+
+        function cleanupProjectReel() {
+            window.removeEventListener('resize', boundResize);
+            window.removeEventListener('wheel', boundWheel);
+            window.removeEventListener('touchstart', boundTouchStart);
+            window.removeEventListener('touchmove', boundTouchMove);
+            if(reelTicker) gsap.ticker.remove(reelTicker);
+        }
+
+        // --- 2. VIRTUAL INFINITE SCROLL LOGIC ---
+        function initProjectReel() {
+            cleanupProjectReel();
+            const container = document.querySelector('.reel-container');
+            if(!container) return; 
+            
+            container.innerHTML = ''; 
+            projectsData.forEach((proj, i) => {
+                const item = document.createElement('div');
+                item.className = 'project-item';
+                item.innerHTML = `
+                    <div class="project-content">
+                        <div class="project-counter">${proj.id}<span>/05</span></div>
+                        <div class="project-image-wrap"><img src="${proj.img}" class="project-image" alt="${proj.title}"></div>
+                        <div class="project-info"><h2 class="project-title">${proj.title}</h2><p class="project-desc">${proj.desc}</p></div>
+                    </div>`;
+                container.appendChild(item);
+            });
+
+            const items = document.querySelectorAll('.project-item');
+            const totalItems = items.length;
+            let windowHeight = window.innerHeight;
+            let totalHeight = totalItems * windowHeight;
+            let y = 0, targetY = 0, touchStartY = 0;
+
+            boundResize = () => { windowHeight = window.innerHeight; totalHeight = totalItems * windowHeight; };
+            boundWheel = (e) => { targetY -= e.deltaY * 1.5; };
+            boundTouchStart = (e) => { touchStartY = e.touches[0].clientY; };
+            boundTouchMove = (e) => { const touchY = e.touches[0].clientY; targetY -= (touchStartY - touchY) * 2.5; touchStartY = touchY; };
+
+            window.addEventListener('resize', boundResize);
+            window.addEventListener('wheel', boundWheel);
+            window.addEventListener('touchstart', boundTouchStart, { passive: true });
+            window.addEventListener('touchmove', boundTouchMove, { passive: true });
+
+            reelTicker = () => {
+                y += (targetY - y) * 0.08;
+                items.forEach((item, i) => {
+                    let offset = (i * windowHeight) + y;
+                    let wrapped = gsap.utils.wrap(-windowHeight, totalHeight - windowHeight, offset);
+                    gsap.set(item, { y: wrapped });
+
+                    let normalized = wrapped / windowHeight; 
+                    gsap.set(item.querySelector('.project-image'), { y: normalized * 20 + "%" });
+                    
+                    const distFromCenter = Math.abs(normalized);
+                    if(distFromCenter < 0.3) { item.classList.add('is-active'); } else { item.classList.remove('is-active'); }
+                    gsap.set(item.querySelector('.project-content'), { opacity: 1 - (distFromCenter * 0.6), scale: 1 - (distFromCenter * 0.1) });
+                });
+            };
+            gsap.ticker.add(reelTicker);
+
+            // Intro Animations - Separated for instant number load
+            gsap.fromTo('.project-counter', 
+                { opacity: 0, x: -50 }, 
+                { opacity: 1, x: 0, duration: 0.4, ease: 'power4.out' }
+            );
+            
+            gsap.fromTo('.project-image-wrap', 
+                { scale: 0.8, filter: 'blur(10px)' }, 
+                { scale: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out', delay: 0.1 }
+            );
+
+            gsap.fromTo(['.project-title', '.project-desc'], 
+                { opacity: 0, y: 30 }, 
+                { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.1, delay: 0.2 }
+            );
+        }
+
+        // --- 3. BARBA.JS TRANSITIONS ---
+        function initBarba() {
+            barba.init({
+                prevent: ({ el }) => el.hasAttribute('data-barba-prevent'),
+                transitions: [{
+                    name: 'fast-panel-wipe',
+                    leave(data) {
+                        const done = this.async();
+                        if (typeof lenis !== 'undefined' && lenis.destroy) { lenis.destroy(); }
+                        
+                        // Extremely fast stagger sweep in (0.35s)
+                        gsap.to('.transition-panel', {
+                            y: '0%', duration: 0.35, stagger: 0.05, ease: 'power2.inOut', onComplete: done 
+                        });
+                    },
+                    enter(data) {
+                        const done = this.async();
+                        
+                        // Fast sweep out
+                        gsap.to('.transition-panel', {
+                            y: '-100%', duration: 0.35, stagger: 0.05, ease: 'power2.inOut',
+                            onComplete: () => { gsap.set('.transition-panel', { y: '100%' }); done(); }
+                        });
+                    }
+                }],
+                views: [{
+                    namespace: 'projects',
+                    beforeEnter() { initProjectReel(); }, 
+                    beforeLeave() { cleanupProjectReel(); } 
+                }]
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            try { initBarba(); } catch (e) { console.warn("Barba failed, running fallback."); initProjectReel(); }
+        });
+
+    </script>
+</body>
+</html>
