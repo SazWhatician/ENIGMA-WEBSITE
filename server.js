@@ -11,7 +11,7 @@ app.use(express.static(__dirname));
 
 // Connect to your database
 const pool = new Pool({
-    connectionString: 'postgresql://postgres:password@localhost:5432/enigma_db'
+    connectionString: 'postgresql://postgres:root123@localhost:5432/enigma_db'
 });
 
 // Your API Endpoint

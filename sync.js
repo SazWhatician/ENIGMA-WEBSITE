@@ -1,7 +1,7 @@
 const { Client } = require('pg');
 
 // Replace this with your actual PostgreSQL connection link later
-const DB_URL = 'postgresql://postgres:password@localhost:5432/enigma_db';
+const DB_URL = 'postgresql://postgres:root123@localhost:5432/enigma_db';
 
 // ---------------------------------------------------------
 // 🛠 EDIT THIS ARRAY WHENEVER YOU WANT TO UPDATE PROJECTS
