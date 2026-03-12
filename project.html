@@ -116,6 +116,10 @@
 
     <main data-barba="container" data-barba-namespace="projects">
         
+        <div id="loading-screen" style="position: fixed; inset: 0; z-index: 50; display: flex; justify-content: center; align-items: center; background-color: #000; font-family: 'Syncopate', sans-serif; font-size: 2rem; color: #2BA648; flex-direction: column; gap: 1rem;">
+            <img src="image-assets/white-no bg.png" class="w-24 h-auto md:w-32 animate-pulse">
+        </div>
+
         <nav>
             <div class="logo"><a href="index.html" data-barba-prevent>ENIGMA.</a></div>
             <div class="nav-items">
@@ -181,13 +185,13 @@
                 const item = document.createElement('div');
                 item.className = 'project-item';
                 
-                // CHANGED: Image wrapper and Title are now explicit <a> links
+                // CHANGED: Image wrapper and Title are now explicit <a> links. Added lazy loading to img.
                 item.innerHTML = `
                     <div class="project-content">
                         <div class="project-counter">${currentId}<span>/${totalProjects}</span></div>
                         
                         <a href="${projectLink}" target="_blank" class="project-image-wrap">
-                            <img src="${proj.img}" class="project-image" alt="${proj.title}">
+                            <img src="${proj.img}" class="project-image" alt="${proj.title}" loading="lazy" decoding="async">
                         </a>
                         
                         <div class="project-info">
@@ -270,6 +274,13 @@
             await fetchProjects(); 
             initProjectReel();     
             isInitialLoad = false; 
+
+            // NEW: Hide the loading screen once data is fetched and reel is initialized
+            const loader = document.getElementById('loading-screen');
+            if(loader) {
+                gsap.to(loader, { opacity: 0, duration: 0.5, onComplete: () => loader.style.display = 'none' });
+            }
+
             try { initBarba(); } catch (e) { console.warn("Barba not running."); }
         });
 
