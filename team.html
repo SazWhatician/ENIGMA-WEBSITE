@@ -127,9 +127,9 @@
         @media (max-width: 640px) {
             .team-container { padding: 6rem 1rem 3rem 1rem; }
             .team-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-            .team-card-wrapper { height: 260px; /* Slightly taller for mobile to fit avatar */ }
+            .team-card-wrapper { height: 260px; }
             .card-front, .card-back { padding: 0.75rem; }
-            .card-avatar { width: 60px; height: 60px; margin-bottom: 0.8rem; } /* Scaled down avatar for mobile */
+            .card-avatar { width: 60px; height: 60px; margin-bottom: 0.8rem; }
             .card-front h2 { font-size: 0.9rem; }
             .card-front p { font-size: 0.65rem; letter-spacing: 1px; }
             .social-links { gap: 0.5rem; }
@@ -204,9 +204,9 @@
             const filteredData = filterValue === 'all' ? teamData : teamData.filter(member => member.year === filterValue);
 
             filteredData.forEach(member => {
-                // Determine if there's an image string, otherwise render the empty div placeholder
+                // FIXED: encodeURI handles the spaces in the WhatsApp file name!
                 const avatarHtml = member.img 
-                    ? `<img src="${member.img}" alt="${member.name}" class="card-avatar" loading="lazy">` 
+                    ? `<img src="${encodeURI(member.img)}" alt="${member.name}" class="card-avatar" loading="lazy">` 
                     : `<div class="card-avatar"></div>`;
 
                 const card = document.createElement('div');
