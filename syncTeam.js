@@ -1,16 +1,16 @@
 require('dotenv').config(); 
 const { Client } = require('pg'); 
 
-// Add Team Members here (Added 'img' property, left empty for now)
+// Added the simplified image path for Saswat
 const teamMembers = [
-    { name: "Saswat Mohanty", role: "Apex", year: "2028", insta: "#", linkedin: "#", github: "#", img: "./team-assets/WhatsApp Image 2026-03-14 at 11.55.34 AM.jpeg" },
-    { name: "Kanye West", role: "UI/UX", year: "2028", insta: "#", linkedin: "#", github: "#", img: "" },
-    { name: "Keanu Reeves", role: "Backend", year: "2027", insta: "#", linkedin: "#", github: "#", img: "" },
-    { name: "Bill Gates", role: "Frontend", year: "2027", insta: "#", linkedin: "#", github: "#", img: "" },
+    { name: "Saswat Mohanty", role: "Apex", year: "2028", insta: "#", linkedin: "#", github: "#", img: "./team-assets/saswat.jpeg" },
+    { name: "Samira Khan", role: "UI/UX", year: "2026", insta: "#", linkedin: "#", github: "#", img: "" },
+    { name: "Jordan Lee", role: "Backend", year: "2027", insta: "#", linkedin: "#", github: "#", img: "" },
+    { name: "Casey Smith", role: "Frontend", year: "2027", insta: "#", linkedin: "#", github: "#", img: "" },
     { name: "Taylor Swift", role: "Security", year: "2028", insta: "#", linkedin: "#", github: "#", img: "" },
-    { name: "Charlie Puth", role: "Cloud", year: "2028", insta: "#", linkedin: "#", github: "#", img: "" },
-    { name: "Ada Wong", role: "Founder", year: "alumni", insta: "#", linkedin: "#", github: "#", img: "" },
-    { name: "PotatoKiller69", role: "Core", year: "alumni", insta: "#", linkedin: "#", github: "#", img: "" }
+    { name: "Morgan Page", role: "Cloud", year: "2028", insta: "#", linkedin: "#", github: "#", img: "" },
+    { name: "Ada Lovelace", role: "Founder", year: "alumni", insta: "#", linkedin: "#", github: "#", img: "" },
+    { name: "Alan Turing", role: "Core", year: "alumni", insta: "#", linkedin: "#", github: "#", img: "" }
 ];
 
 async function syncTeamDatabase() {
