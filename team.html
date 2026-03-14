@@ -117,6 +117,42 @@
         /* --- BARBA TRANSITIONS --- */
         .page-transition { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; pointer-events: none; display: flex; }
         .transition-panel { flex: 1; height: 100%; background-color: #2BA648; transform: translateY(100%); will-change: transform; }
+
+        /* --- MOBILE RESPONSIVENESS FOR TEAM GRID --- */
+        @media (max-width: 640px) {
+            .team-container {
+                padding: 6rem 1rem 3rem 1rem; /* Reduce container padding to maximize screen space */
+            }
+            .team-grid { 
+                grid-template-columns: repeat(2, 1fr); /* Force exactly 2 columns */
+                gap: 0.75rem; /* Smaller gap between cards */
+            }
+            .team-card-wrapper { 
+                height: 240px; /* Reduce height so they aren't oddly tall and narrow */
+            }
+            .card-front, .card-back { 
+                padding: 0.75rem; /* Reduce inner padding to fit the smaller width */
+            }
+            .card-front h2 { 
+                font-size: 0.9rem; /* Scale down name */
+            }
+            .card-front p { 
+                font-size: 0.65rem; /* Scale down role/year */
+                letter-spacing: 1px;
+            }
+            .social-links {
+                gap: 0.5rem; /* Tighter spacing for buttons */
+            }
+            .social-links a {
+                padding: 0.5rem;
+                font-size: 0.65rem; /* Smaller button text */
+                gap: 0.3rem;
+            }
+            .social-links a svg {
+                width: 14px; /* Slightly smaller icons */
+                height: 14px;
+            }
+        }
     </style>
 </head>
 <body data-barba="wrapper">
@@ -164,7 +200,7 @@
         let reelTicker, boundResize, boundWheel, boundTouchStart, boundTouchMove; 
         
         const teamData = [
-            { name: "Alex Mercer", role: "Lead Dev", year: "2026", insta: "#", linkedin: "#", github: "#" },
+            { name: "Saswat Mohanty", role: "Apex", year: "2028", insta: "#", linkedin: "#", github: "#" },
             { name: "Samira Khan", role: "UI/UX", year: "2026", insta: "#", linkedin: "#", github: "#" },
             { name: "Jordan Lee", role: "Backend", year: "2027", insta: "#", linkedin: "#", github: "#" },
             { name: "Casey Smith", role: "Frontend", year: "2027", insta: "#", linkedin: "#", github: "#" },
