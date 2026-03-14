@@ -4,13 +4,13 @@ const { Client } = require('pg');
 // Add Team Members here:
 const teamMembers = [
     { name: "Saswat Mohanty", role: "Apex", year: "2028", insta: "#", linkedin: "#", github: "#" },
-    { name: "AnkPriNay", role: "UI/UX", year: "2026", insta: "#", linkedin: "#", github: "#" },
-    { name: "Jordan Lee", role: "Backend", year: "2027", insta: "#", linkedin: "#", github: "#" },
-    { name: "Casey Smith", role: "Frontend", year: "2027", insta: "#", linkedin: "#", github: "#" },
+    { name: "Kanye West", role: "UI/UX", year: "2028", insta: "#", linkedin: "#", github: "#" },
+    { name: "Keanu Reeves", role: "Backend", year: "2027", insta: "#", linkedin: "#", github: "#" },
+    { name: "Bill Gates", role: "Frontend", year: "2027", insta: "#", linkedin: "#", github: "#" },
     { name: "Taylor Swift", role: "Security", year: "2028", insta: "#", linkedin: "#", github: "#" },
-    { name: "Morgan Page", role: "Cloud", year: "2028", insta: "#", linkedin: "#", github: "#" },
-    { name: "Ada Lovelace", role: "Founder", year: "alumni", insta: "#", linkedin: "#", github: "#" },
-    { name: "Alan Turing", role: "Core", year: "alumni", insta: "#", linkedin: "#", github: "#" }
+    { name: "Charlie Puth", role: "Cloud", year: "2028", insta: "#", linkedin: "#", github: "#" },
+    { name: "Ada Wong", role: "Founder", year: "alumni", insta: "#", linkedin: "#", github: "#" },
+    { name: "PotatoKiller69", role: "Core", year: "alumni", insta: "#", linkedin: "#", github: "#" }
 ];
 
 async function syncTeamDatabase() {

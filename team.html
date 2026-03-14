@@ -197,20 +197,25 @@
     <script>
         // --- SHARED GLOBALS & DATA ---
         let projectsData = [];
+        let teamData = []; // NEW: Now it starts empty!
         let reelTicker, boundResize, boundWheel, boundTouchStart, boundTouchMove; 
-        
-        const teamData = [
-            { name: "Saswat Mohanty", role: "Apex", year: "2028", insta: "#", linkedin: "#", github: "#" },
-            { name: "Samira Khan", role: "UI/UX", year: "2026", insta: "#", linkedin: "#", github: "#" },
-            { name: "Jordan Lee", role: "Backend", year: "2027", insta: "#", linkedin: "#", github: "#" },
-            { name: "Casey Smith", role: "Frontend", year: "2027", insta: "#", linkedin: "#", github: "#" },
-            { name: "Taylor Swift", role: "Security", year: "2028", insta: "#", linkedin: "#", github: "#" },
-            { name: "Morgan Page", role: "Cloud", year: "2028", insta: "#", linkedin: "#", github: "#" },
-            { name: "Ada Lovelace", role: "Founder", year: "alumni", insta: "#", linkedin: "#", github: "#" },
-            { name: "Alan Turing", role: "Core", year: "alumni", insta: "#", linkedin: "#", github: "#" }
-        ];
 
         // --- TEAM LOGIC ---
+        // NEW: Fetch Team Data from API
+        async function fetchTeam() {
+            try {
+                const response = await fetch('/api/team?t=' + new Date().getTime());
+                if(!response.ok) throw new Error("Team API not found.");
+                teamData = await response.json();
+            } catch(e) {
+                console.error("Failed to load team data:", e);
+                // Fallback just in case
+                teamData = [
+                    { name: "Saswat Mohanty", role: "Apex", year: "2028", insta: "#", linkedin: "#", github: "#" }
+                ];
+            }
+        }
+
         function renderTeam(filterValue, delay = 0) {
             const grid = document.getElementById('team-grid');
             if(!grid) return;
@@ -271,11 +276,7 @@
                 projectsData = await response.json();
             } catch(e) {
                 projectsData = [
-                    { title: "eNIGGmA", desc: "2 things you maybe wanna ride", img: "./project-assets/03ebb93dc76d5da51b66fa1826d3c548.jpg", link: "https://www.instagram.com/iamsazwat/?hl=en" },
-                    { title: "Kanye West", desc: "aesthetic cd picture from pinterest", img: "./project-assets/1937c631f87b36cdab243f6fe4d0bc07.jpg", link: "#" },
-                    { title: "TAWSAS", desc: "Saswat means someone who's Eternal- never ending", img: "./project-assets/abcba71e1e62c9efb1e98b462058ce4c.jpg", link: "https://www.google.com/?zx=1773264614308&no_sw_cr=1" },
-                    { title: "AmGGINe", desc: "for the girls: 2 things you maybe wanna ride", img: "./project-assets/bc06fb92df284696e7191a5b781b97f4.jpg", link: "#" },
-                    { title: "Tyler- the creator", desc: "Tyler is really cool", img: "./project-assets/d7d287744fcbefbba4c0db2ac389cf2b.jpg", link: "#" }
+                    { title: "eNIGGmA", desc: "2 things you maybe wanna ride", img: "./project-assets/03ebb93dc76d5da51b66fa1826d3c548.jpg", link: "https://www.instagram.com/iamsazwat/?hl=en" }
                 ];
             }
         }
@@ -399,10 +400,13 @@
                         beforeEnter(data) {
                             document.body.style.overflowY = 'auto';
                             document.body.style.touchAction = 'auto';
-                            // IF THIS IS A TRANSITION, WAIT 0.35s FOR WIPE TO FINISH BEFORE ANIMATING
                             const delay = (data.current && data.current.namespace) ? 0.35 : 0;
-                            renderTeam('all', delay);
-                            initFilters();
+                            
+                            // NEW: Wait for fetchTeam before rendering
+                            fetchTeam().then(() => {
+                                renderTeam('all', delay);
+                                initFilters();
+                            });
                         }
                     }
                 ]
