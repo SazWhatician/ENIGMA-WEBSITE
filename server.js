@@ -19,35 +19,63 @@ const pool = new Pool({
 // --- CACHING LOGIC ---
 let cachedProjects = null;
 let lastFetchTime = 0;
+
+let cachedTeam = null;
+let lastTeamFetchTime = 0;
+
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-// Your API Endpoint
+// --- API ENDPOINTS ---
+
+// 1. Projects Endpoint
 app.get('/api/projects', async (req, res) => {
     const currentTime = Date.now();
 
-    // 1. Check if we have fresh data saved in RAM
     if (cachedProjects && (currentTime - lastFetchTime < CACHE_DURATION)) {
         console.log("⚡ SPEED BOOST: Serving projects instantly from cache!");
         return res.json(cachedProjects);
     }
 
-    // 2. If the cache is empty or older than 5 minutes, wake up Supabase
     try {
-        console.log("🐢 Fetching fresh data from Supabase...");
+        console.log("🐢 Fetching fresh project data from database...");
         const result = await pool.query('SELECT title, "desc", img, link FROM projects ORDER BY id ASC');
         
-        // 3. Save the new data into the cache for the next user
         cachedProjects = result.rows;
         lastFetchTime = currentTime;
         
         res.json(cachedProjects);
     } catch (err) {
         console.error("Database Error:", err);
-        
-        // 4. Fallback: If Supabase crashes but we have old cached data, send that!
         if (cachedProjects) {
             console.log("⚠️ Database offline. Serving slightly old cache as a fallback.");
             return res.json(cachedProjects);
+        }
+        res.status(500).json({ error: "Failed to fetch from database." });
+    }
+});
+
+// 2. Team Endpoint (NEW!)
+app.get('/api/team', async (req, res) => {
+    const currentTime = Date.now();
+
+    if (cachedTeam && (currentTime - lastTeamFetchTime < CACHE_DURATION)) {
+        console.log("⚡ SPEED BOOST: Serving team instantly from cache!");
+        return res.json(cachedTeam);
+    }
+
+    try {
+        console.log("🐢 Fetching fresh team data from database...");
+        const result = await pool.query('SELECT name, role, year, insta, linkedin, github FROM team_members ORDER BY id ASC');
+        
+        cachedTeam = result.rows;
+        lastTeamFetchTime = currentTime;
+        
+        res.json(cachedTeam);
+    } catch (err) {
+        console.error("Database Error:", err);
+        if (cachedTeam) {
+            console.log("⚠️ Database offline. Serving slightly old cache as a fallback.");
+            return res.json(cachedTeam);
         }
         res.status(500).json({ error: "Failed to fetch from database." });
     }
