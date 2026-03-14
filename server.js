@@ -65,7 +65,8 @@ app.get('/api/team', async (req, res) => {
 
     try {
         console.log("🐢 Fetching fresh team data from database...");
-        const result = await pool.query('SELECT name, role, year, insta, linkedin, github FROM team_members ORDER BY id ASC');
+        // ADDED 'img' to the SELECT statement right here:
+        const result = await pool.query('SELECT name, role, year, insta, linkedin, github, img FROM team_members ORDER BY id ASC');
         
         cachedTeam = result.rows;
         lastTeamFetchTime = currentTime;

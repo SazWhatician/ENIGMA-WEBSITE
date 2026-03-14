@@ -85,6 +85,11 @@
         .team-card-wrapper.flipped .card-inner { transform: rotateY(180deg); }
         .card-front, .card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; border: 1px solid rgba(255, 255, 255, 0.1); background: linear-gradient(145deg, #0a0a0a, #050505); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .team-card-wrapper:hover .card-front { border-color: rgba(43, 166, 72, 0.3); box-shadow: 0 10px 40px rgba(43, 166, 72, 0.1); }
+        
+        /* NEW: Team Avatar Styling */
+        .card-avatar { width: 90px; height: 90px; border-radius: 50%; margin-bottom: 1.2rem; object-fit: cover; background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); transition: border-color 0.3s ease; }
+        .team-card-wrapper:hover .card-avatar { border-color: #2BA648; }
+        
         .card-front h2 { font-family: 'Syncopate', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.2; }
         .card-front p { font-family: 'Host Grotesk', sans-serif; color: #2BA648; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; }
         .card-back { transform: rotateY(180deg); background: linear-gradient(145deg, #0f1c12, #050505); border-color: rgba(43, 166, 72, 0.2); }
@@ -120,38 +125,16 @@
 
         /* --- MOBILE RESPONSIVENESS FOR TEAM GRID --- */
         @media (max-width: 640px) {
-            .team-container {
-                padding: 6rem 1rem 3rem 1rem; /* Reduce container padding to maximize screen space */
-            }
-            .team-grid { 
-                grid-template-columns: repeat(2, 1fr); /* Force exactly 2 columns */
-                gap: 0.75rem; /* Smaller gap between cards */
-            }
-            .team-card-wrapper { 
-                height: 240px; /* Reduce height so they aren't oddly tall and narrow */
-            }
-            .card-front, .card-back { 
-                padding: 0.75rem; /* Reduce inner padding to fit the smaller width */
-            }
-            .card-front h2 { 
-                font-size: 0.9rem; /* Scale down name */
-            }
-            .card-front p { 
-                font-size: 0.65rem; /* Scale down role/year */
-                letter-spacing: 1px;
-            }
-            .social-links {
-                gap: 0.5rem; /* Tighter spacing for buttons */
-            }
-            .social-links a {
-                padding: 0.5rem;
-                font-size: 0.65rem; /* Smaller button text */
-                gap: 0.3rem;
-            }
-            .social-links a svg {
-                width: 14px; /* Slightly smaller icons */
-                height: 14px;
-            }
+            .team-container { padding: 6rem 1rem 3rem 1rem; }
+            .team-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+            .team-card-wrapper { height: 260px; /* Slightly taller for mobile to fit avatar */ }
+            .card-front, .card-back { padding: 0.75rem; }
+            .card-avatar { width: 60px; height: 60px; margin-bottom: 0.8rem; } /* Scaled down avatar for mobile */
+            .card-front h2 { font-size: 0.9rem; }
+            .card-front p { font-size: 0.65rem; letter-spacing: 1px; }
+            .social-links { gap: 0.5rem; }
+            .social-links a { padding: 0.5rem; font-size: 0.65rem; gap: 0.3rem; }
+            .social-links a svg { width: 14px; height: 14px; }
         }
     </style>
 </head>
@@ -197,11 +180,10 @@
     <script>
         // --- SHARED GLOBALS & DATA ---
         let projectsData = [];
-        let teamData = []; // NEW: Now it starts empty!
+        let teamData = []; 
         let reelTicker, boundResize, boundWheel, boundTouchStart, boundTouchMove; 
 
         // --- TEAM LOGIC ---
-        // NEW: Fetch Team Data from API
         async function fetchTeam() {
             try {
                 const response = await fetch('/api/team?t=' + new Date().getTime());
@@ -209,9 +191,8 @@
                 teamData = await response.json();
             } catch(e) {
                 console.error("Failed to load team data:", e);
-                // Fallback just in case
                 teamData = [
-                    { name: "Saswat Mohanty", role: "Apex", year: "2028", insta: "#", linkedin: "#", github: "#" }
+                    { name: "Saswat Mohanty", role: "Apex", year: "2028", insta: "#", linkedin: "#", github: "#", img: "" }
                 ];
             }
         }
@@ -223,11 +204,17 @@
             const filteredData = filterValue === 'all' ? teamData : teamData.filter(member => member.year === filterValue);
 
             filteredData.forEach(member => {
+                // Determine if there's an image string, otherwise render the empty div placeholder
+                const avatarHtml = member.img 
+                    ? `<img src="${member.img}" alt="${member.name}" class="card-avatar" loading="lazy">` 
+                    : `<div class="card-avatar"></div>`;
+
                 const card = document.createElement('div');
                 card.className = `team-card-wrapper`;
                 card.innerHTML = `
                     <div class="card-inner" onclick="this.parentElement.classList.toggle('flipped')">
                         <div class="card-front">
+                            ${avatarHtml}
                             <h2>${member.name}</h2>
                             <p>${member.year === 'alumni' ? 'Alumni' : 'Class of ' + member.year}</p>
                         </div>
@@ -250,7 +237,6 @@
                     </div>`;
                 grid.appendChild(card);
             });
-            // Auto-visible set by fromTo
             gsap.fromTo(".team-card-wrapper", { autoAlpha: 0, y: 40, scale: 0.95 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out", stagger: 0.05, delay: delay });
         }
 
@@ -370,7 +356,6 @@
                         const done = this.async();
                         window.scrollTo(0, 0);
                         
-                        // INSTANTLY HIDE THE OLD PAGE TO PREVENT OVERLAP
                         if(data.current.container) {
                             data.current.container.style.display = 'none';
                         }
@@ -389,7 +374,6 @@
                         beforeEnter(data) {
                             document.body.style.overflow = 'hidden';
                             document.body.style.touchAction = 'none';
-                            // IF THIS IS A TRANSITION, WAIT 0.35s FOR WIPE TO FINISH BEFORE ANIMATING
                             const delay = (data.current && data.current.namespace) ? 0.35 : 0;
                             fetchProjects().then(() => initProjectReel(delay));
                         },
@@ -402,7 +386,6 @@
                             document.body.style.touchAction = 'auto';
                             const delay = (data.current && data.current.namespace) ? 0.35 : 0;
                             
-                            // NEW: Wait for fetchTeam before rendering
                             fetchTeam().then(() => {
                                 renderTeam('all', delay);
                                 initFilters();
