@@ -1,20 +1,35 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { Pool } = require('pg'); 
 const path = require('path');
+const admin = require('firebase-admin');
 
+// --- BULLETPROOF FIREBASE INITIALIZATION ---
+let serviceAccount;
+try {
+    // 1. Local Dev: Try to use the raw JSON file (Bypasses all .env errors!)
+    serviceAccount = require('./firebase-key.json');
+    console.log("🔐 Using local firebase-key.json for authentication.");
+} catch (err) {
+    // 2. Production (Railway): Fallback to the .env string if the file isn't there
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    // Fix the escaped newlines from the .env string
+    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n').replace(/\\r/g, '');
+    console.log("☁️ Using Railway environment variables for authentication.");
+}
+
+if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+}
+
+const db = admin.firestore();
 const app = express();
 const PORT = 3000;
 
 app.use(cors()); 
 app.use(express.static(__dirname)); 
-
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL, 
-    ssl: { rejectUnauthorized: false },
-    family: 4  // force IPv4
-});
 
 // --- CACHING LOGIC ---
 let cachedProjects = null;
@@ -37,15 +52,15 @@ app.get('/api/projects', async (req, res) => {
     }
 
     try {
-        console.log("🐢 Fetching fresh project data from database...");
-        const result = await pool.query('SELECT title, "desc", img, link FROM projects ORDER BY id ASC');
+        console.log("🐢 Fetching fresh project data from Firestore...");
+        const snapshot = await db.collection('projects').orderBy('id', 'asc').get();
         
-        cachedProjects = result.rows;
+        cachedProjects = snapshot.docs.map(doc => doc.data());
         lastFetchTime = currentTime;
         
         res.json(cachedProjects);
     } catch (err) {
-        console.error("Database Error:", err);
+        console.error("Firestore Error:", err);
         if (cachedProjects) {
             console.log("⚠️ Database offline. Serving slightly old cache as a fallback.");
             return res.json(cachedProjects);
@@ -64,15 +79,15 @@ app.get('/api/team', async (req, res) => {
     }
 
     try {
-        console.log("🐢 Fetching fresh team data from database...");
-        const result = await pool.query('SELECT name, role, year, insta, linkedin, github, img FROM team_members ORDER BY id ASC');
+        console.log("🐢 Fetching fresh team data from Firestore...");
+        const snapshot = await db.collection('team_members').orderBy('id', 'asc').get();
         
-        cachedTeam = result.rows;
+        cachedTeam = snapshot.docs.map(doc => doc.data());
         lastTeamFetchTime = currentTime;
         
         res.json(cachedTeam);
     } catch (err) {
-        console.error("Database Error:", err);
+        console.error("Firestore Error:", err);
         if (cachedTeam) {
             console.log("⚠️ Database offline. Serving slightly old cache as a fallback.");
             return res.json(cachedTeam);

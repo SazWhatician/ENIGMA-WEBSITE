@@ -1,75 +1,68 @@
-require('dotenv').config(); 
-const { Client } = require('pg'); 
+require('dotenv').config();
+const express = require('express');
+const admin = require('firebase-admin');
 
+const app = express();
+const PORT = process.env.PORT || 3000;
 
+let serviceAccount;
 
-
-
-
-
-//Add Projects here:
-const projects = [
-    { title: "eNIGGmA", desc: "2 things you maybe wanna ride", img: "./project-assets/03ebb93dc76d5da51b66fa1826d3c548.jpg", link: "https://www.instagram.com/iamsazwat/?hl=en" },
-    { title: "Kanye West", desc: "aesthetic cd picture from pinterest", img: "./project-assets/1937c631f87b36cdab243f6fe4d0bc07.jpg", link: "#" },
-    { title: "TAWSAS", desc: "Saswat means someone who's Eternal- never ending", img: "./project-assets/abcba71e1e62c9efb1e98b462058ce4c.jpg", link: "https://www.google.com/?zx=1773264614308&no_sw_cr=1" },
-    { title: "AmGGINe", desc: "for the girls: 2 things you maybe wanna ride", img: "./project-assets/bc06fb92df284696e7191a5b781b97f4.jpg", link: "#" },
-    { title: "Tyler- the creator", desc: "Tyler is really cool", img: "./project-assets/d7d287744fcbefbba4c0db2ac389cf2b.jpg", link: "#" },
-    { title: "Tyler- the creator", desc: "Tyler is really cool", img: "./project-assets/d7d287744fcbefbba4c0db2ac389cf2b.jpg", link: "#" }
-];
-
-
-
-
-
-
-
-
-
-
-
-
-
-async function syncDatabase() {
-    
-    const DB_URL = process.env.DATABASE_URL; 
-    
-    if (!DB_URL) {
-        console.error("❌ ERROR: DATABASE_URL is missing. Check your .env file.");
-        return;
-    }
-
-    const client = new Client({ 
-        connectionString: DB_URL,
-        ssl: DB_URL.includes('localhost') ? false : { rejectUnauthorized: false }
-    });
-    
-    await client.connect();
-
-    try {
-        console.log("🔄 Syncing with PostgreSQL cloud...");
-        await client.query(`
-            CREATE TABLE IF NOT EXISTS projects (
-                id SERIAL PRIMARY KEY,
-                title VARCHAR(255),
-                "desc" TEXT,
-                img VARCHAR(500),
-                link VARCHAR(500)
-            );
-        `);
-        await client.query('TRUNCATE TABLE projects RESTART IDENTITY;');
-
-        for (const proj of projects) {
-            await client.query(
-                'INSERT INTO projects (title, "desc", img, link) VALUES ($1, $2, $3, $4)',
-                [proj.title, proj.desc, proj.img, proj.link]
-            );
-        }
-        console.log(`✅ SUCCESS: Permanently saved ${projects.length} projects to the cloud database!`);
-    } catch (err) {
-        console.error("❌ ERROR:", err);
-    } finally {
-        await client.end();
-    }
+try {
+    serviceAccount = require('./firebase-key.json');
+    console.log("Using local firebase-key.json");
+} catch (err) {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    serviceAccount.private_key = serviceAccount.private_key
+        .replace(/\\n/g, '\n')
+        .replace(/\\r/g, '');
 }
 
-syncDatabase();
+if (!admin.apps.length) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+    });
+}
+
+const db = admin.firestore();
+
+app.use(express.static(__dirname));
+
+/* ---------------- PROJECT API ---------------- */
+
+app.get('/api/projects', async (req, res) => {
+    try {
+        const snapshot = await db.collection('projects')
+            .orderBy('id')
+            .get();
+
+        const projects = snapshot.docs.map(doc => doc.data());
+
+        res.json(projects);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to load projects" });
+    }
+});
+
+/* ---------------- TEAM API ---------------- */
+
+app.get('/api/team', async (req, res) => {
+    try {
+        const snapshot = await db.collection('team_members')
+            .orderBy('id')
+            .get();
+
+        const team = snapshot.docs.map(doc => doc.data());
+
+        res.json(team);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to load team" });
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
