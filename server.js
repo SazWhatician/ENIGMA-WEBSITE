@@ -11,21 +11,9 @@ try {
     serviceAccount = require('./firebase-key.json');
     console.log("🔐 Using local firebase-key.json for authentication.");
 } catch (err) {
-    // 2. Production (Railway): Fallback to the .env string if the file isn't there
-    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    // Fix all possible newline mangling from Railway's env var UI
-    if (serviceAccount.private_key) {
-        serviceAccount.private_key = serviceAccount.private_key
-            .replace(/\\r/g, '')
-            .replace(/\\n/g, '\n');
-        // If newlines are still missing (all on one line), re-insert them
-        if (!serviceAccount.private_key.includes('\n')) {
-            serviceAccount.private_key = serviceAccount.private_key
-                .replace(/-----BEGIN (.*?)-----/, '-----BEGIN $1-----\n')
-                .replace(/-----END (.*?)-----/, '\n-----END $1-----\n')
-                .replace(/(.{64})/g, '$1\n');
-        }
-    }
+    // 2. Production (Railway): Decode from Base64 env var (avoids all newline/escaping issues)
+    const base64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64 || process.env.FIREBASE_SERVICE_ACCOUNT;
+    serviceAccount = JSON.parse(Buffer.from(base64, 'base64').toString('utf8'));
     console.log("☁️ Using Railway environment variables for authentication.");
 }
 
