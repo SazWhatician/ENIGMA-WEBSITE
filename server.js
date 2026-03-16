@@ -13,8 +13,19 @@ try {
 } catch (err) {
     // 2. Production (Railway): Fallback to the .env string if the file isn't there
     serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    // Fix the escaped newlines from the .env string
-    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n').replace(/\\r/g, '');
+    // Fix all possible newline mangling from Railway's env var UI
+    if (serviceAccount.private_key) {
+        serviceAccount.private_key = serviceAccount.private_key
+            .replace(/\\r/g, '')
+            .replace(/\\n/g, '\n');
+        // If newlines are still missing (all on one line), re-insert them
+        if (!serviceAccount.private_key.includes('\n')) {
+            serviceAccount.private_key = serviceAccount.private_key
+                .replace(/-----BEGIN (.*?)-----/, '-----BEGIN $1-----\n')
+                .replace(/-----END (.*?)-----/, '\n-----END $1-----\n')
+                .replace(/(.{64})/g, '$1\n');
+        }
+    }
     console.log("☁️ Using Railway environment variables for authentication.");
 }
 
