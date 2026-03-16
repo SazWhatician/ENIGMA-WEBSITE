@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ENIGMA | Projects</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Syncopate:wght@400;700&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://unpkg.com/@barba/core"></script>
@@ -26,80 +29,329 @@
     </script>
 
     <style>
-        /* --- UNIFIED CSS FOR BOTH PAGES --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #000; color: #fff; min-height: 100vh; overflow-x: hidden; }
+        /* --- UNIFIED CSS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        .blueprint-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; display: flex; justify-content: center; align-items: center; }
-        .bp-circle { position: absolute; width: 90vmin; height: 90vmin; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 50%; }
-        .bp-line-h { position: absolute; width: 100vw; height: 1px; background: rgba(255, 255, 255, 0.05); }
-        .bp-line-v { position: absolute; width: 1px; height: 100vh; background: rgba(255, 255, 255, 0.05); }
-        .bp-line-d1 { position: absolute; width: 150vw; height: 1px; background: rgba(255, 255, 255, 0.03); transform: rotate(30deg); }
-        .bp-line-d2 { position: absolute; width: 150vw; height: 1px; background: rgba(255, 255, 255, 0.03); transform: rotate(-30deg); }
+        body {
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-        nav { position: fixed; top: 0; left: 0; width: 100vw; padding: 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; mix-blend-mode: difference; }
-        nav, .logo p { font-weight: 700; font-size: 0.9rem; font-family: "Host Grotesk", sans-serif;}
-        .logo a { text-decoration: none; color: white; }
-        .nav-items { display: flex; gap: 2rem; }
-        .nav-items a { text-decoration: none; color: white; transition: color 0.3s; }
-        .nav-items a:hover { color: #2BA648; }
-        @media(max-width: 768px){ nav { padding: 1.5rem; } .nav-items { gap: 1rem; font-size: 0.8rem; } }
+        .blueprint-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .bp-circle {
+            position: absolute;
+            width: 90vmin;
+            height: 90vmin;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .bp-line-h {
+            position: absolute;
+            width: 100vw;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .bp-line-v {
+            position: absolute;
+            width: 1px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .bp-line-d1 {
+            position: absolute;
+            width: 150vw;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.03);
+            transform: rotate(30deg);
+        }
+
+        .bp-line-d2 {
+            position: absolute;
+            width: 150vw;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.03);
+            transform: rotate(-30deg);
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            mix-blend-mode: difference;
+        }
+
+        nav,
+        .logo p {
+            font-weight: 700;
+            font-size: 0.9rem;
+            font-family: "Host Grotesk", sans-serif;
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-items a {
+            text-decoration: none;
+            color: white;
+            transition: color 0.3s;
+        }
+
+        .nav-items a:hover {
+            color: #2BA648;
+        }
+
+        @media(max-width: 768px) {
+            nav {
+                padding: 1.5rem;
+            }
+
+            .nav-items {
+                gap: 1rem;
+                font-size: 0.8rem;
+            }
+        }
 
         /* --- PROJECT CSS --- */
-        .reel-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; }
-        .project-item { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; will-change: transform; }
-        .project-content { width: 100%; max-width: 1600px; padding: 0 4rem; display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 2rem; align-items: center; }
-        .project-counter { font-family: 'Syncopate', sans-serif; font-size: clamp(4rem, 10vw, 12rem); line-height: 0.8; letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2); transition: all 0.5s ease; }
-        .project-counter span { font-size: 2rem; -webkit-text-stroke: 0; color: rgba(255, 255, 255, 0.3); }
-        .is-active .project-counter { color: #2BA648; -webkit-text-stroke: 0; }
-        .project-image-wrap { display: block; position: relative; width: 100%; height: 60vh; overflow: hidden; border-radius: 4px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); cursor: pointer; transition: transform 0.5s ease, box-shadow 0.5s ease; }
-        .project-image-wrap:hover { transform: scale(1.02); box-shadow: 0 30px 60px rgba(43, 166, 72, 0.15); }
-        .project-image-wrap::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(15, 57, 24, 0.2)); pointer-events: none; mix-blend-mode: multiply; }
-        .project-image { position: absolute; top: -20%; left: 0; width: 100%; height: 140%; object-fit: cover; will-change: transform; filter: grayscale(80%) contrast(1.2); transition: filter 0.8s ease; }
-        .is-active .project-image { filter: grayscale(0%) contrast(1); }
-        .project-info { text-align: right; }
-        .project-title { font-family: 'Syncopate', sans-serif; font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 700; margin-bottom: 1rem; line-height: 1.1; }
-        .project-title a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
-        .project-title a:hover { color: #2BA648; }
-        .project-desc { font-family: 'Host Grotesk', sans-serif; font-size: 0.9rem; color: #94a3b8; max-width: 300px; margin-left: auto; }
+        .reel-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+        }
 
-        @media (max-width: 1024px) {
-            .project-content { display: flex; flex-direction: column; padding: 0 1.5rem; justify-content: center; height: 100%; }
-            .project-counter { position: relative; top: auto; left: auto; font-size: clamp(3.5rem, 12vw, 5rem); text-align: left; width: 100%; max-width: 500px; margin: 0 auto 0.5rem auto; order: 1; z-index: 2; opacity: 1; line-height: 1; }
-            .project-counter span { font-size: 1.5rem; }
-            .project-image-wrap { height: 40vh; width: 100%; max-width: 500px; margin: 0 auto; order: 2; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-            .project-info { text-align: left; width: 100%; max-width: 500px; margin: 1.5rem auto 0 auto; order: 3; }
-            .project-desc { margin: 0; max-width: 100%; }
-            .project-title { font-size: clamp(1.5rem, 6vw, 2rem); margin-bottom: 0.5rem; }
+        .project-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            will-change: transform;
+        }
+
+        .project-content {
+            width: 100%;
+            max-width: 1600px;
+            padding: 0 4rem;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .project-counter {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(4rem, 10vw, 12rem);
+            line-height: 0.8;
+            letter-spacing: -0.05em;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+            transition: all 0.5s ease;
+        }
+
+        .project-counter span {
+            font-size: 2rem;
+            -webkit-text-stroke: 0;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .is-active .project-counter {
+            color: #2BA648;
+            -webkit-text-stroke: 0;
+        }
+
+        .project-image-wrap {
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 60vh;
+            overflow: hidden;
+            border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: transform 0.5s ease;
+        }
+
+        .project-image {
+            position: absolute;
+            top: -20%;
+            left: 0;
+            width: 100%;
+            height: 140%;
+            object-fit: cover;
+            filter: grayscale(80%);
+        }
+
+        .is-active .project-image {
+            filter: grayscale(0%);
+        }
+
+        .project-info {
+            text-align: right;
+        }
+
+        .project-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
         }
 
         /* --- TEAM CSS --- */
-        .team-container { position: relative; z-index: 10; width: 100%; max-width: 1400px; margin: 0 auto; padding: 8rem 2rem 4rem 2rem; display: flex; flex-direction: column; gap: 3rem; }
-        .filters-wrapper { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; font-family: 'Syncopate', sans-serif; }
-        .filter-btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); padding: 0.5rem 1.5rem; font-size: 0.8rem; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; }
-        .filter-btn:hover { border-color: #2BA648; color: #fff; }
-        .filter-btn.active { background: #2BA648; color: #000; border-color: #2BA648; font-weight: 700; }
-        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 2rem; perspective: 1000px; }
-        .team-card-wrapper { background-color: transparent; width: 100%; height: 350px; perspective: 1000px; cursor: pointer; }
-        .card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1); transform-style: preserve-3d; }
-        .team-card-wrapper.flipped .card-inner { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; border: 1px solid rgba(255, 255, 255, 0.1); background: linear-gradient(145deg, #0a0a0a, #050505); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .team-card-wrapper:hover .card-front { border-color: rgba(43, 166, 72, 0.3); box-shadow: 0 10px 40px rgba(43, 166, 72, 0.1); }
-        .card-front h2 { font-family: 'Syncopate', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.2; }
-        .card-front p { font-family: 'Host Grotesk', sans-serif; color: #2BA648; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; }
-        .card-back { transform: rotateY(180deg); background: linear-gradient(145deg, #0f1c12, #050505); border-color: rgba(43, 166, 72, 0.2); }
-        .social-links { display: flex; flex-direction: column; gap: 1rem; width: 100%; }
-        .social-links a { font-family: 'Host Grotesk', sans-serif; color: white; text-decoration: none; padding: 0.8rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; transition: all 0.3s ease; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
-        .social-links a:hover { background: rgba(43, 166, 72, 0.1); border-color: #2BA648; color: #2BA648; }
+        .team-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
 
-        /* --- ANTI-FLASH CSS (Hides elements until GSAP animates them) --- */
-        .project-counter, .project-image-wrap, .project-title, .project-desc, .team-card-wrapper { opacity: 0; visibility: hidden; }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 2rem;
+            perspective: 1000px;
+        }
 
-        /* --- BARBA TRANSITIONS --- */
-        .page-transition { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; pointer-events: none; display: flex; }
-        .transition-panel { flex: 1; height: 100%; background-color: #2BA648; transform: translateY(100%); will-change: transform; }
+        .team-card-wrapper {
+            background-color: transparent;
+            width: 100%;
+            height: 350px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .team-card-wrapper.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #0a0a0a;
+        }
+
+        .card-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin-bottom: 1.2rem;
+            object-fit: cover;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: #0f1c12;
+        }
+
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .social-links a {
+            font-family: 'Host Grotesk', sans-serif;
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        /* --- ANTI-FLASH --- */
+        .project-counter,
+        .project-image-wrap,
+        .project-title,
+        .project-desc,
+        .team-card-wrapper {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            pointer-events: none;
+            display: flex;
+        }
+
+        .transition-panel {
+            flex: 1;
+            height: 100%;
+            background-color: #2BA648;
+            transform: translateY(100%);
+            will-change: transform;
+        }
     </style>
 </head>
+
 <body data-barba="wrapper">
 
     <div class="page-transition">
@@ -109,11 +361,16 @@
     </div>
 
     <div class="blueprint-bg">
-        <div class="bp-circle"></div><div class="bp-line-h"></div><div class="bp-line-v"></div><div class="bp-line-d1"></div><div class="bp-line-d2"></div>
+        <div class="bp-circle"></div>
+        <div class="bp-line-h"></div>
+        <div class="bp-line-v"></div>
+        <div class="bp-line-d1"></div>
+        <div class="bp-line-d2"></div>
     </div>
 
-    <div id="loading-screen" style="position: fixed; inset: 0; z-index: 50; display: flex; justify-content: center; align-items: center; background-color: #000; font-family: 'Syncopate', sans-serif; font-size: 2rem; color: #2BA648; flex-direction: column; gap: 1rem;">
-        <img src="./image-assets/white-no bg.png" class ="w-8 h-8 animate-[spin_4s_linear_infinite]">
+    <div id="loading-screen"
+        style="position: fixed; inset: 0; z-index: 50; display: flex; justify-content: center; align-items: center; background-color: #000; font-family: 'Syncopate', sans-serif; font-size: 2rem; color: #2BA648; flex-direction: column; gap: 1rem;">
+        <img src="./image-assets/white-no bg.png" class="w-8 h-8 animate-[spin_4s_linear_infinite]">
     </div>
 
     <main data-barba="container" data-barba-namespace="projects">
@@ -132,46 +389,51 @@
     <script>
         // --- SHARED GLOBALS & DATA ---
         let projectsData = [];
-        let reelTicker, boundResize, boundWheel, boundTouchStart, boundTouchMove; 
-        
-        const teamData = [
-            { name: "Alex Mercer", role: "Lead Dev", year: "2026", insta: "#", linkedin: "#", github: "#" },
-            { name: "Samira Khan", role: "UI/UX", year: "2026", insta: "#", linkedin: "#", github: "#" },
-            { name: "Jordan Lee", role: "Backend", year: "2027", insta: "#", linkedin: "#", github: "#" },
-            { name: "Casey Smith", role: "Frontend", year: "2027", insta: "#", linkedin: "#", github: "#" },
-            { name: "Taylor Swift", role: "Security", year: "2028", insta: "#", linkedin: "#", github: "#" },
-            { name: "Morgan Page", role: "Cloud", year: "2028", insta: "#", linkedin: "#", github: "#" },
-            { name: "Ada Lovelace", role: "Founder", year: "alumni", insta: "#", linkedin: "#", github: "#" },
-            { name: "Alan Turing", role: "Core", year: "alumni", insta: "#", linkedin: "#", github: "#" }
-        ];
+        let teamData = [];
+        let reelTicker, boundResize, boundWheel, boundTouchStart, boundTouchMove;
 
-        // --- TEAM LOGIC ---
+        // --- TEAM LOGIC (Updated to fetch dynamically) ---
+        async function fetchTeam() {
+            try {
+                const response = await fetch('/api/team?t=' + new Date().getTime());
+                if (!response.ok) throw new Error("Team API failed.");
+                teamData = await response.json();
+            } catch (e) {
+                console.error("Using fallback team data");
+                teamData = [{ name: "Saswat Mohanty", role: "Apex", year: "2028", img: "" }];
+            }
+        }
+
         function renderTeam(filterValue, delay = 0) {
             const grid = document.getElementById('team-grid');
-            if(!grid) return;
-            grid.innerHTML = ''; 
-            const filteredData = filterValue === 'all' ? teamData : teamData.filter(member => member.year === filterValue);
+            if (!grid) return;
+            grid.innerHTML = '';
+            const filteredData = filterValue === 'all' ? teamData : teamData.filter(m => m.year === filterValue);
 
             filteredData.forEach(member => {
+                const avatarHtml = member.img
+                    ? `<img src="${encodeURI(member.img)}" class="card-avatar" alt="${member.name}" loading="lazy">`
+                    : `<div class="card-avatar"></div>`;
+
                 const card = document.createElement('div');
                 card.className = `team-card-wrapper`;
                 card.innerHTML = `
                     <div class="card-inner" onclick="this.parentElement.classList.toggle('flipped')">
                         <div class="card-front">
+                            ${avatarHtml}
                             <h2>${member.name}</h2>
                             <p>${member.year === 'alumni' ? 'Alumni' : 'Class of ' + member.year}</p>
                         </div>
                         <div class="card-back">
                             <div class="social-links">
-                                <a href="${member.insta}" target="_blank" onclick="event.stopPropagation()">Instagram</a>
-                                <a href="${member.linkedin}" target="_blank" onclick="event.stopPropagation()">LinkedIn</a>
-                                <a href="${member.github}" target="_blank" onclick="event.stopPropagation()">GitHub</a>
+                                <a href="${member.insta || '#'}" target="_blank" onclick="event.stopPropagation()">Instagram</a>
+                                <a href="${member.linkedin || '#'}" target="_blank" onclick="event.stopPropagation()">LinkedIn</a>
+                                <a href="${member.github || '#'}" target="_blank" onclick="event.stopPropagation()">GitHub</a>
                             </div>
                         </div>
                     </div>`;
                 grid.appendChild(card);
             });
-            // Auto-visible set by fromTo
             gsap.fromTo(".team-card-wrapper", { autoAlpha: 0, y: 40, scale: 0.95 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out", stagger: 0.05, delay: delay });
         }
 
@@ -193,48 +455,40 @@
         async function fetchProjects() {
             try {
                 const response = await fetch('/api/projects?t=' + new Date().getTime());
-                if(!response.ok) throw new Error("API not found.");
+                if (!response.ok) throw new Error("API not found.");
                 projectsData = await response.json();
-            } catch(e) {
-                projectsData = [
-                    { title: "eNIGGmA", desc: "2 things you maybe wanna ride", img: "./project-assets/03ebb93dc76d5da51b66fa1826d3c548.jpg", link: "https://www.instagram.com/iamsazwat/?hl=en" },
-                    { title: "Kanye West", desc: "aesthetic cd picture from pinterest", img: "./project-assets/1937c631f87b36cdab243f6fe4d0bc07.jpg", link: "#" },
-                    { title: "TAWSAS", desc: "Saswat means someone who's Eternal- never ending", img: "./project-assets/abcba71e1e62c9efb1e98b462058ce4c.jpg", link: "https://www.google.com/?zx=1773264614308&no_sw_cr=1" },
-                    { title: "AmGGINe", desc: "for the girls: 2 things you maybe wanna ride", img: "./project-assets/bc06fb92df284696e7191a5b781b97f4.jpg", link: "#" },
-                    { title: "Tyler- the creator", desc: "Tyler is really cool", img: "./project-assets/d7d287744fcbefbba4c0db2ac389cf2b.jpg", link: "#" }
-                ];
+            } catch (e) {
+                projectsData = [{ title: "eNIGGmA", desc: "No data found", img: "", link: "#" }];
             }
         }
 
         function cleanupProjectReel() {
-            window.removeEventListener('resize', boundResize); 
-            window.removeEventListener('wheel', boundWheel); 
-            window.removeEventListener('touchstart', boundTouchStart); 
+            window.removeEventListener('resize', boundResize);
+            window.removeEventListener('wheel', boundWheel);
+            window.removeEventListener('touchstart', boundTouchStart);
             window.removeEventListener('touchmove', boundTouchMove);
-            if(reelTicker) gsap.ticker.remove(reelTicker);
+            if (reelTicker) gsap.ticker.remove(reelTicker);
         }
 
         function initProjectReel(delay = 0) {
             cleanupProjectReel();
             const container = document.querySelector('.reel-container');
-            if(!container) return; 
-            container.innerHTML = ''; 
-            
+            if (!container) return;
+            container.innerHTML = '';
+
             const totalProjects = String(projectsData.length).padStart(2, '0');
 
             projectsData.forEach((proj, i) => {
-                const currentId = String(i + 1).padStart(2, '0');
-                const projectLink = proj.link || '#'; 
                 const item = document.createElement('div');
                 item.className = 'project-item';
                 item.innerHTML = `
                     <div class="project-content">
-                        <div class="project-counter">${currentId}<span>/${totalProjects}</span></div>
-                        <a href="${projectLink}" target="_blank" class="project-image-wrap">
-                            <img src="${proj.img}" class="project-image" alt="${proj.title}" loading="lazy" decoding="async">
+                        <div class="project-counter">${String(i + 1).padStart(2, '0')}<span>/${totalProjects}</span></div>
+                        <a href="${proj.link || '#'}" target="_blank" class="project-image-wrap">
+                            <img src="${proj.img}" class="project-image" alt="${proj.title}" loading="lazy">
                         </a>
                         <div class="project-info">
-                            <h2 class="project-title"><a href="${projectLink}" target="_blank">${proj.title}</a></h2>
+                            <h2 class="project-title"><a href="${proj.link || '#'}" target="_blank">${proj.title}</a></h2>
                             <p class="project-desc">${proj.desc}</p>
                         </div>
                     </div>`;
@@ -242,7 +496,7 @@
             });
 
             const items = document.querySelectorAll('.project-item');
-            let windowHeight = window.innerHeight; 
+            let windowHeight = window.innerHeight;
             let totalHeight = items.length * windowHeight;
             let y = 0, targetY = 0, touchStartY = 0;
 
@@ -251,9 +505,9 @@
             boundTouchStart = (e) => { touchStartY = e.touches[0].clientY; };
             boundTouchMove = (e) => { const touchY = e.touches[0].clientY; targetY -= (touchStartY - touchY) * 2.5; touchStartY = touchY; };
 
-            window.addEventListener('resize', boundResize); 
+            window.addEventListener('resize', boundResize);
             window.addEventListener('wheel', boundWheel);
-            window.addEventListener('touchstart', boundTouchStart, { passive: true }); 
+            window.addEventListener('touchstart', boundTouchStart, { passive: true });
             window.addEventListener('touchmove', boundTouchMove, { passive: true });
 
             reelTicker = () => {
@@ -262,11 +516,10 @@
                     let offset = (i * windowHeight) + y;
                     let wrapped = gsap.utils.wrap(-windowHeight, totalHeight - windowHeight, offset);
                     gsap.set(item, { y: wrapped });
-                    let normalized = wrapped / windowHeight; 
+                    let normalized = wrapped / windowHeight;
                     gsap.set(item.querySelector('.project-image'), { y: normalized * 20 + "%" });
-                    
                     const distFromCenter = Math.abs(normalized);
-                    if(distFromCenter < 0.3) { item.classList.add('is-active'); } else { item.classList.remove('is-active'); }
+                    if (distFromCenter < 0.3) { item.classList.add('is-active'); } else { item.classList.remove('is-active'); }
                     gsap.set(item.querySelector('.project-content'), { opacity: 1 - (distFromCenter * 0.6), scale: 1 - (distFromCenter * 0.1) });
                 });
             };
@@ -279,42 +532,24 @@
 
         // --- BARBA CORE ---
         function initBarba() {
-            if(window.barbaInitialized) return;
+            if (window.barbaInitialized) return;
             window.barbaInitialized = true;
 
             barba.init({
                 timeout: 5000,
-                prevent: ({ el }) => el.hasAttribute('data-barba-prevent') || el.getAttribute('href') === '#',
                 transitions: [{
                     name: 'fast-panel-wipe',
-                    leave(data) {
-                        const done = this.async();
-                        gsap.to('.transition-panel', { y: '0%', duration: 0.3, stagger: 0.04, ease: 'power2.inOut', onComplete: done });
-                    },
-                    enter(data) {
-                        const done = this.async();
+                    leave: (data) => gsap.to('.transition-panel', { y: '0%', duration: 0.3, stagger: 0.04, ease: 'power2.inOut' }),
+                    enter: (data) => {
                         window.scrollTo(0, 0);
-                        
-                        // INSTANTLY HIDE THE OLD PAGE TO PREVENT OVERLAP
-                        if(data.current.container) {
-                            data.current.container.style.display = 'none';
-                        }
-
-                        const loader = document.getElementById('loading-screen');
-                        if(loader) loader.style.display = 'none';
-                        
-                        gsap.to('.transition-panel', { y: '-100%', duration: 0.3, stagger: 0.04, ease: 'power2.inOut', onComplete: () => { 
-                            gsap.set('.transition-panel', { y: '100%' }); done(); 
-                        }});
+                        if (data.current.container) data.current.container.style.display = 'none';
+                        return gsap.to('.transition-panel', { y: '-100%', duration: 0.3, stagger: 0.04, ease: 'power2.inOut' });
                     }
                 }],
                 views: [
                     {
                         namespace: 'projects',
                         beforeEnter(data) {
-                            document.body.style.overflow = 'hidden';
-                            document.body.style.touchAction = 'none';
-                            // IF THIS IS A TRANSITION, WAIT 0.35s FOR WIPE TO FINISH BEFORE ANIMATING
                             const delay = (data.current && data.current.namespace) ? 0.35 : 0;
                             fetchProjects().then(() => initProjectReel(delay));
                         },
@@ -323,12 +558,11 @@
                     {
                         namespace: 'team',
                         beforeEnter(data) {
-                            document.body.style.overflowY = 'auto';
-                            document.body.style.touchAction = 'auto';
-                            // IF THIS IS A TRANSITION, WAIT 0.35s FOR WIPE TO FINISH BEFORE ANIMATING
                             const delay = (data.current && data.current.namespace) ? 0.35 : 0;
-                            renderTeam('all', delay);
-                            initFilters();
+                            fetchTeam().then(() => {
+                                renderTeam('all', delay);
+                                initFilters();
+                            });
                         }
                     }
                 ]
@@ -337,9 +571,10 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const loader = document.getElementById('loading-screen');
-            if(loader) { gsap.to(loader, { opacity: 0, duration: 0.5, delay: 0.2, onComplete: () => loader.style.display = 'none' }); }
+            if (loader) { gsap.to(loader, { opacity: 0, duration: 0.5, delay: 0.2, onComplete: () => loader.style.display = 'none' }); }
             initBarba();
         });
     </script>
 </body>
+
 </html>
