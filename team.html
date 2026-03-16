@@ -28,7 +28,39 @@
             }
         }
     </script>
+</head>
 
+<body data-barba="wrapper">
+
+    <!-- BARBA TRANSITION PANELS -->
+    <div class="page-transition">
+        <div class="transition-panel"></div>
+        <div class="transition-panel"></div>
+        <div class="transition-panel"></div>
+    </div>
+
+    <!-- BLUEPRINT BACKGROUND -->
+    <div class="blueprint-bg">
+        <div class="bp-circle"></div>
+        <div class="bp-line-h"></div>
+        <div class="bp-line-v"></div>
+        <div class="bp-line-d1"></div>
+        <div class="bp-line-d2"></div>
+    </div>
+
+    <!-- BREATHING GRADIENT -->
+    <div class="breathing-gradient"></div>
+
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen"
+        style="position: fixed; inset: 0; z-index: 50; display: flex; justify-content: center; align-items: center; background-color: #000; font-family: 'Syncopate', sans-serif; font-size: 2rem; color: #2BA648; flex-direction: column; gap: 1rem;">
+        <img src="./image-assets/white-no bg.png" class="w-8 h-8 animate-[spin_4s_linear_infinite]">
+    </div>
+
+    <!-- ====== MAIN BARBA CONTAINER ====== -->
+    <main data-barba="container" data-barba-namespace="team">
+
+    <!-- ALL STYLES INSIDE BARBA CONTAINER so they load during Barba transitions -->
     <style>
         /* ============================================
            GLOBAL RESET & BASE
@@ -43,8 +75,6 @@
         }
         ::-webkit-scrollbar { display: none; }
         html { -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; }
-
-
 
         /* ============================================
            BLUEPRINT BACKGROUND
@@ -63,9 +93,6 @@
         .bp-line-v { position: absolute; width: 1px; height: 100vh; background: rgba(255, 255, 255, 0.04); }
         .bp-line-d1 { position: absolute; width: 150vw; height: 1px; background: rgba(255, 255, 255, 0.025); transform: rotate(30deg); }
         .bp-line-d2 { position: absolute; width: 150vw; height: 1px; background: rgba(255, 255, 255, 0.025); transform: rotate(-30deg); }
-        @keyframes bp-rotate { to { transform: rotate(360deg); } }
-
-
 
         /* ============================================
            BREATHING RADIAL GRADIENT
@@ -486,7 +513,7 @@
         }
 
         /* ============================================
-           ANTI-FLASH (hides until GSAP reveals)
+           ANTI-FLASH
            ============================================ */
         .project-counter, .project-image-wrap, .project-title, .project-desc,
         .team-card-wrapper {
@@ -509,64 +536,71 @@
         }
 
         /* ============================================
-           MOBILE RESPONSIVE
+           MOBILE RESPONSIVE + PERFORMANCE
            ============================================ */
-        @media (max-width: 640px) {
-            .team-hero { min-height: 35vh; padding-top: 5rem; }
-            .hero-title { letter-spacing: 0.08em; }
-            .team-container { padding: 1rem 0.75rem 3rem 0.75rem; }
-            .team-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-            .team-card-wrapper { height: 280px; }
-            .card-front, .card-back { padding: 1rem; border-radius: 12px; }
-            .card-avatar { width: 65px; height: 65px; margin-bottom: 0.8rem; }
-            .card-front h2 { font-size: 0.75rem; }
-            .card-role { font-size: 0.6rem; padding: 0.2rem 0.6rem; letter-spacing: 1px; }
-            .social-links { gap: 0.5rem; }
-            .social-links a { padding: 0.5rem; font-size: 0.65rem; gap: 0.3rem; border-radius: 8px; }
-            .social-links a svg { width: 14px; height: 14px; }
-            .filters-wrapper { gap: 0.5rem; }
-            .filter-btn { padding: 0.4rem 1rem; font-size: 0.65rem; }
+
+        /* Tablets */
+        @media (max-width: 900px) {
+            .team-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+            .team-card-wrapper { height: 340px; }
+            .team-container { padding: 1.5rem 1.25rem 4rem 1.25rem; }
         }
 
-        @media (min-width: 641px) and (max-width: 900px) {
-            .team-grid { grid-template-columns: repeat(2, 1fr); }
-            .team-card-wrapper { height: 340px; }
+        /* Mobile */
+        @media (max-width: 640px) {
+            /* Performance: disable expensive effects on mobile */
+            .card-front, .card-back {
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                background: linear-gradient(145deg, rgba(18, 18, 18, 0.98), rgba(8, 8, 8, 0.99));
+            }
+            .breathing-gradient { display: none; }
+            .blueprint-bg { opacity: 0.3; }
+
+            /* Layout */
+            .team-hero { min-height: 30vh; padding-top: 5rem; }
+            .hero-title { letter-spacing: 0.08em; }
+            .hero-subtitle { font-size: 0.7rem; letter-spacing: 0.2em; margin-top: 1rem; }
+            .hero-line { margin-top: 1rem; }
+
+            .team-container { padding: 1rem 0.75rem 3rem 0.75rem; }
+            .team-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+            .team-card-wrapper { height: 260px; }
+
+            .card-front, .card-back { padding: 0.8rem; border-radius: 12px; }
+            .card-avatar { width: 55px; height: 55px; margin-bottom: 0.6rem; }
+            .card-front h2 { font-size: 0.7rem; margin-bottom: 0.4rem; }
+            .card-role { font-size: 0.55rem; padding: 0.2rem 0.5rem; letter-spacing: 1px; gap: 0.3rem; }
+            .role-dot { width: 4px; height: 4px; }
+
+            .card-back-name { font-size: 0.7rem; margin-bottom: 0.3rem; }
+            .social-links { gap: 0.4rem; }
+            .social-links a { padding: 0.45rem 0.5rem; font-size: 0.6rem; gap: 0.3rem; border-radius: 8px; letter-spacing: 1px; }
+            .social-links a svg { width: 13px; height: 13px; }
+
+            .filters-wrapper { gap: 0.4rem; margin-bottom: 1.5rem; }
+            .filter-btn { padding: 0.35rem 0.8rem; font-size: 0.6rem; }
+
+            /* Disable hover effects on touch (they stay stuck) */
+            .card-front::before { display: none; }
+            .team-card-wrapper:hover .card-front { border-color: rgba(255, 255, 255, 0.06); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6); }
+            .team-card-wrapper:hover .card-avatar { transform: none; border-color: rgba(255, 255, 255, 0.08); box-shadow: none; }
+
+            nav { padding: 1.2rem; }
+            .nav-items { gap: 0.8rem; font-size: 0.75rem; }
+        }
+
+        /* Very small phones */
+        @media (max-width: 360px) {
+            .team-card-wrapper { height: 230px; }
+            .card-avatar { width: 45px; height: 45px; margin-bottom: 0.4rem; }
+            .card-front h2 { font-size: 0.6rem; }
+            .card-role { font-size: 0.5rem; }
+            .social-links a { padding: 0.35rem; font-size: 0.55rem; }
+            .hero-title { font-size: 2.2rem; }
         }
     </style>
-</head>
 
-<body data-barba="wrapper">
-
-
-    <!-- BARBA TRANSITION PANELS -->
-    <div class="page-transition">
-        <div class="transition-panel"></div>
-        <div class="transition-panel"></div>
-        <div class="transition-panel"></div>
-    </div>
-
-    <!-- BLUEPRINT BACKGROUND -->
-    <div class="blueprint-bg">
-        <div class="bp-circle"></div>
-        <div class="bp-line-h"></div>
-        <div class="bp-line-v"></div>
-        <div class="bp-line-d1"></div>
-        <div class="bp-line-d2"></div>
-    </div>
-
-    <!-- BREATHING GRADIENT -->
-    <div class="breathing-gradient"></div>
-
-
-
-    <!-- LOADING SCREEN -->
-    <div id="loading-screen"
-        style="position: fixed; inset: 0; z-index: 50; display: flex; justify-content: center; align-items: center; background-color: #000; font-family: 'Syncopate', sans-serif; font-size: 2rem; color: #2BA648; flex-direction: column; gap: 1rem;">
-        <img src="./image-assets/white-no bg.png" class="w-8 h-8 animate-[spin_4s_linear_infinite]">
-    </div>
-
-    <!-- ====== MAIN BARBA CONTAINER ====== -->
-    <main data-barba="container" data-barba-namespace="team">
         <nav>
             <div class="logo"><a href="index.html" data-barba-prevent>ENIGMA.</a></div>
             <div class="nav-items">
@@ -625,7 +659,6 @@
         // HERO ANIMATIONS
         // =============================================
         function animateHero(delay = 0) {
-            // Letter-by-letter reveal
             const titleEl = document.getElementById('heroTitle');
             if (!titleEl) return;
             const text = "OUR TEAM";
@@ -639,11 +672,7 @@
 
             const letters = titleEl.querySelectorAll('.letter');
             gsap.to(letters, {
-                opacity: 1,
-                y: 0,
-                duration: 0.6,
-                stagger: 0.06,
-                ease: "power4.out",
+                opacity: 1, y: 0, duration: 0.6, stagger: 0.06, ease: "power4.out",
                 delay: delay + 0.2,
                 onComplete: () => {
                     letters.forEach((l, i) => {
@@ -652,52 +681,17 @@
                 }
             });
 
-            // Subtitle
-            gsap.to('#heroSubtitle', {
-                opacity: 1, y: 0,
-                duration: 0.8,
-                ease: "power3.out",
-                delay: delay + 0.8
-            });
+            gsap.to('#heroSubtitle', { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: delay + 0.8 });
+            gsap.to('#heroLine', { opacity: 1, scaleX: 1, duration: 0.6, ease: "power2.out", delay: delay + 1 });
 
-            // Line
-            gsap.to('#heroLine', {
-                opacity: 1, scaleX: 1,
-                duration: 0.6,
-                ease: "power2.out",
-                delay: delay + 1
-            });
-
-            // Circuit lines
-            gsap.to('.circuit-line', {
-                strokeDashoffset: 0,
-                duration: 2.5,
-                stagger: 0.15,
-                ease: "power1.inOut",
-                delay: delay + 0.3
-            });
-
-            // Circuit dots
+            gsap.to('.circuit-line', { strokeDashoffset: 0, duration: 2.5, stagger: 0.15, ease: "power1.inOut", delay: delay + 0.3 });
+            gsap.to('.circuit-dot', { opacity: 1, duration: 0.4, stagger: 0.08, ease: "power2.out", delay: delay + 1.2 });
             gsap.to('.circuit-dot', {
-                opacity: 1,
-                duration: 0.4,
-                stagger: 0.08,
-                ease: "power2.out",
-                delay: delay + 1.2
-            });
-
-            // Pulse the dots periodically
-            gsap.to('.circuit-dot', {
-                r: 6,
-                opacity: 0.5,
-                duration: 1.5,
+                r: 6, opacity: 0.5, duration: 1.5,
                 stagger: { each: 0.2, repeat: -1, yoyo: true },
-                ease: "sine.inOut",
-                delay: delay + 2
+                ease: "sine.inOut", delay: delay + 2
             });
         }
-
-
 
         // =============================================
         // SHARED GLOBALS & DATA
@@ -764,24 +758,19 @@
                 grid.appendChild(card);
             });
 
-            // Staggered card entrance with 3D perspective
+            const isMobile = window.innerWidth <= 640;
+
             gsap.fromTo(".team-card-wrapper", {
                 autoAlpha: 0,
-                y: 60,
-                rotateX: 15,
-                scale: 0.9,
+                y: isMobile ? 30 : 60,
+                rotateX: isMobile ? 0 : 15,
+                scale: isMobile ? 1 : 0.9,
                 transformOrigin: "bottom center"
             }, {
-                autoAlpha: 1,
-                y: 0,
-                rotateX: 0,
-                scale: 1,
-                duration: 0.7,
+                autoAlpha: 1, y: 0, rotateX: 0, scale: 1,
+                duration: isMobile ? 0.4 : 0.7,
                 ease: "power4.out",
-                stagger: {
-                    each: 0.06,
-                    from: "start"
-                },
+                stagger: { each: isMobile ? 0.03 : 0.06, from: "start" },
                 delay: delay
             });
         }
@@ -792,16 +781,8 @@
                 btn.onclick = (e) => {
                     buttons.forEach(b => b.classList.remove('active'));
                     e.target.classList.add('active');
-
-                    // Animate out
                     gsap.to(".team-card-wrapper", {
-                        autoAlpha: 0,
-                        y: -30,
-                        rotateX: -10,
-                        scale: 0.95,
-                        duration: 0.3,
-                        stagger: 0.02,
-                        ease: "power2.in",
+                        autoAlpha: 0, y: -30, rotateX: -10, scale: 0.95, duration: 0.3, stagger: 0.02, ease: "power2.in",
                         onComplete: () => renderTeam(e.target.getAttribute('data-filter'), 0)
                     });
                 };
