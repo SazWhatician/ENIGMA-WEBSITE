@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ENIGMA</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Syncopate:wght@400;700&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
@@ -55,18 +58,24 @@
             font-family: "Host Grotesk", sans-serif;
             background-color: #000;
             color: #fff;
-            overflow-x: hidden; 
+            overflow-x: hidden;
         }
 
-        ::-webkit-scrollbar { display: none; }
-        html { -ms-overflow-style: none; scrollbar-width: none; }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        html {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
         /* --- LOADER SECTION --- */
         #loader-wrapper {
             position: fixed;
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
+            top: 0;
+            left: 0;
+            width: 100vw;
             height: 100vh;
             z-index: 9999;
             display: flex;
@@ -76,10 +85,10 @@
 
         .loader-window {
             position: absolute;
-            top: 50%; 
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 150px; 
+            width: 150px;
             height: 150px;
             box-shadow: 0 0 0 150vmax #000000;
             border: 1px solid rgba(255, 255, 255, 0);
@@ -92,9 +101,9 @@
 
         .loader-black-cover {
             position: absolute;
-            top: 0; 
+            top: 0;
             left: 0;
-            width: 100%; 
+            width: 100%;
             height: 100%;
             background-color: #000000;
             z-index: 1;
@@ -111,29 +120,42 @@
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            mix-blend-mode: difference; 
+            mix-blend-mode: difference;
         }
 
-        nav, .logo p { font-weight: 700; font-size: 0.9rem; }
-        .nav-items { display: flex; gap: 2rem; }
-        
+        nav,
+        .logo p {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 2rem;
+        }
+
         /* --- NAV HOVER GLOW EFFECT --- */
-        .nav-items a, .nav-items p { 
-            font-weight: 450; 
-            font-size: 0.9rem; 
+        .nav-items a,
+        .nav-items p {
+            font-weight: 450;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
         }
 
-        .nav-items a:hover, .nav-items p:hover {
+        .nav-items a:hover,
+        .nav-items p:hover {
             color: #2BA648;
             text-shadow: 0 0 10px rgba(43, 166, 72, 0.8), 0 0 20px rgba(43, 166, 72, 0.4);
             transform: scale(1.05);
         }
 
-        @media(max-width: 1000px){
-            nav { flex-direction: column; gap: 1rem; }
+        @media(max-width: 1000px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
         }
 
         /* --- HERO SECTION --- */
@@ -147,16 +169,19 @@
 
         .gradient-canvas {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1;
         }
 
         .hero-fade-bottom {
             position: absolute;
-            bottom: -1px; 
+            bottom: -1px;
             left: 0;
-            width: 100vw; height: 15vh;
+            width: 100vw;
+            height: 15vh;
             background: linear-gradient(to bottom, transparent, #000000);
             z-index: 5;
             pointer-events: none;
@@ -164,7 +189,8 @@
 
         .hero-logo {
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
             width: 25%;
             z-index: 2;
@@ -174,7 +200,8 @@
 
         .hero-footer {
             position: absolute;
-            bottom: 0; left: 0;
+            bottom: 0;
+            left: 0;
             width: 100vw;
             padding: 2rem;
             display: flex;
@@ -184,7 +211,11 @@
             pointer-events: none;
         }
 
-        @media(max-width: 1000px){ .hero-logo { width: 50%; } }
+        @media(max-width: 1000px) {
+            .hero-logo {
+                width: 50%;
+            }
+        }
 
         /* --- SLIDER SECTION --- */
         .slider-section {
@@ -198,7 +229,10 @@
             overflow: hidden;
             touch-action: pan-y;
         }
-        .slider-section:active { cursor: grabbing; }
+
+        .slider-section:active {
+            cursor: grabbing;
+        }
 
         .section-heading {
             position: absolute;
@@ -209,7 +243,7 @@
             font-size: 0.9rem;
             font-weight: 700;
             letter-spacing: 0.4em;
-            color: #2BA648; 
+            color: #2BA648;
             text-transform: uppercase;
             z-index: 5;
             pointer-events: none;
@@ -217,7 +251,8 @@
 
         .title-overlay {
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
             z-index: 0;
             font-family: 'Syncopate', sans-serif;
@@ -230,48 +265,54 @@
 
         .slide {
             position: absolute;
-            left: 0; 
+            left: 0;
             top: 50%;
-            width: 22vw; 
+            width: 22vw;
             height: 65vh;
-            margin-top: -32.5vh; 
+            margin-top: -32.5vh;
             overflow: hidden;
             will-change: transform;
         }
 
         .slide-inner {
             position: relative;
-            width: 100%; height: 100%;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
             border-radius: 8px;
         }
 
         .slide img {
             position: absolute;
-            top: 0; left: -30%; 
-            width: 160% !important; 
+            top: 0;
+            left: -30%;
+            width: 160% !important;
             min-width: 160% !important;
-            max-width: none !important; 
+            max-width: none !important;
             height: 100% !important;
             object-fit: cover !important;
             display: block;
             will-change: transform;
-            filter: grayscale(40%) brightness(0.5); 
+            filter: grayscale(40%) brightness(0.5);
             transition: filter 0.5s ease;
-            pointer-events: none; 
-            -webkit-user-drag: none; 
-            backface-visibility: hidden; 
+            pointer-events: none;
+            -webkit-user-drag: none;
+            backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            transform: translateZ(0); 
+            transform: translateZ(0);
         }
 
-        .slide:hover img { filter: grayscale(0%) brightness(0.8); }
+        .slide:hover img {
+            filter: grayscale(0%) brightness(0.8);
+        }
 
         .glass-panel {
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            width: 80%; max-width: 220px;
+            width: 80%;
+            max-width: 220px;
             background: rgba(43, 166, 72, 0.05);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -295,76 +336,186 @@
             border-color: rgba(43, 166, 72, 0.4);
         }
 
-        .glass-panel svg { width: 42px; height: 42px; stroke-width: 1.5; margin-bottom: 1rem; }
+        .glass-panel svg {
+            width: 42px;
+            height: 42px;
+            stroke-width: 1.5;
+            margin-bottom: 1rem;
+        }
+
         .glass-panel h3 {
             font-family: 'Syncopate', sans-serif;
-            font-size: 0.75rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.05em;
-            margin: 0; line-height: 1.4;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 0;
+            line-height: 1.4;
         }
 
         .slide-info {
             position: absolute;
-            bottom: -2.5rem; left: 0; width: 100%;
+            bottom: -2.5rem;
+            left: 0;
+            width: 100%;
             display: flex;
             font-family: 'Syncopate', sans-serif;
-            font-size: 0.8rem; letter-spacing: 0.05em;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
             opacity: 0.5;
         }
 
         @media (max-width: 900px) {
-            .slide { width: 55vw; height: 50vh; margin-top: -25vh; }
-            .glass-panel { width: 85%; padding: 1.5rem 1rem; }
-            .glass-panel svg { width: 32px; height: 32px; margin-bottom: 0.75rem; }
-            .glass-panel h3 { font-size: 0.65rem; }
-            .section-heading { font-size: 0.75rem; top: 10%; }
+            .slide {
+                width: 55vw;
+                height: 50vh;
+                margin-top: -25vh;
+            }
+
+            .glass-panel {
+                width: 85%;
+                padding: 1.5rem 1rem;
+            }
+
+            .glass-panel svg {
+                width: 32px;
+                height: 32px;
+                margin-bottom: 0.75rem;
+            }
+
+            .glass-panel h3 {
+                font-size: 0.65rem;
+            }
+
+            .section-heading {
+                font-size: 0.75rem;
+                top: 10%;
+            }
         }
 
         /* --- FOOTER SECTION --- */
-        :root { 
-            --base-orbit: #000000; 
-            --accent-glow: #2BA648; 
+        :root {
+            --base-orbit: #000000;
+            --accent-glow: #2BA648;
         }
-        
-        .reactor-zone h1 { font-weight: 300; font-size: clamp(3rem, 5vw, 6rem); margin: 0; line-height: 1; letter-spacing: -0.02em; }
-        .reactor-zone h3 { font-weight: 400; font-size: clamp(1.25rem, 1.75vw, 2.5rem); margin: 0; color: #94a3b8; }
-        
-        .reactor-zone a { 
-            text-decoration: none; color: #fff; display: block;
-            font-size: clamp(1.25rem,1.75vw,2.5rem); font-weight: 300; transition: all 0.4s ease;
+
+        .reactor-zone h1 {
+            font-weight: 300;
+            font-size: clamp(3rem, 5vw, 6rem);
+            margin: 0;
+            line-height: 1;
+            letter-spacing: -0.02em;
         }
-        .reactor-zone a:hover { color: var(--accent-glow); transform: translateX(10px); text-shadow: 0 0 10px rgba(43, 166, 72, 0.5); }
-        
-        .glow-text { 
+
+        .reactor-zone h3 {
+            font-weight: 400;
+            font-size: clamp(1.25rem, 1.75vw, 2.5rem);
+            margin: 0;
+            color: #94a3b8;
+        }
+
+        .reactor-zone a {
+            text-decoration: none;
+            color: #fff;
+            display: block;
+            font-size: clamp(1.25rem, 1.75vw, 2.5rem);
+            font-weight: 300;
+            transition: all 0.4s ease;
+        }
+
+        .reactor-zone a:hover {
+            color: var(--accent-glow);
+            transform: translateX(10px);
+            text-shadow: 0 0 10px rgba(43, 166, 72, 0.5);
+        }
+
+        .glow-text {
             text-shadow: 0 0 5px rgba(43, 166, 72, 0.8), 0 0 20px rgba(24, 93, 40, 0.5);
         }
 
         footer {
-            position: relative; width: 100%; 
-            height: 100vh; height: 100svh;
-            background-color: var(--base-orbit); overflow: hidden; z-index: 1; 
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            height: 100svh;
+            background-color: var(--base-orbit);
+            overflow: hidden;
+            z-index: 1;
         }
+
         .footer-container {
-            position: relative; width: 100%; height: 100%; padding: 3rem;
-            display: flex; flex-direction: column; justify-content: space-between;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        #footer-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+
+        #footer-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
         .footer-content {
-            position: relative; width: 100%; height: 100%; z-index: 1; padding-top: 100px;
-            display: flex; flex-direction: column; justify-content: space-between;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            padding-top: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .footer-row { display: flex; justify-content: space-between; width: 100%; }
-        .footer-col { flex: 1; }
-        .footer-col-right { flex: 1; display: flex; gap: 4rem; justify-content: flex-end; }
-        .footer-sub-col { display: flex; flex-direction: column; gap: 1rem; text-align: right;}
-        
-        @media(max-width: 1000px){
-            .footer-row { flex-direction: column; gap: 4rem; }
-            .footer-col-right { justify-content: flex-start; gap: 2rem; }
-            .footer-sub-col { text-align: left; }
+
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .footer-col {
+            flex: 1;
+        }
+
+        .footer-col-right {
+            flex: 1;
+            display: flex;
+            gap: 4rem;
+            justify-content: flex-end;
+        }
+
+        .footer-sub-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            text-align: right;
+        }
+
+        @media(max-width: 1000px) {
+            .footer-row {
+                flex-direction: column;
+                gap: 4rem;
+            }
+
+            .footer-col-right {
+                justify-content: flex-start;
+                gap: 2rem;
+            }
+
+            .footer-sub-col {
+                text-align: left;
+            }
         }
     </style>
 </head>
+
 <body class="antialiased selection:bg-orbitGreen selection:text-void">
 
     <div id="loader-wrapper">
@@ -374,12 +525,14 @@
     </div>
 
     <nav>
-        <div class="logo"><p>ENIGMA.</p></div>
+        <div class="logo">
+            <p>ENIGMA.</p>
+        </div>
         <div class="nav-items">
             <p>Events</p>
             <p><a href="project.html">Projects</a></p>
             <p><a href="team.html">Team</a></p>
-            <p>Contact</p>
+            <p><a href="contact.html">Contact</a></p>
         </div>
     </nav>
 
@@ -387,7 +540,7 @@
         <div class="gradient-canvas"></div>
         <div class="hero-fade-bottom"></div>
         <div class="hero-logo">
-            <div><img src="/image-assets/white-no bg.png" alt="Logo"/></div>
+            <div><img src="/image-assets/white-no bg.png" alt="Logo" /></div>
         </div>
         <div class="hero-footer">
             <p>Coding Club</p>
@@ -398,30 +551,38 @@
     <section class="slider-section">
         <div class="section-heading">WHAT WE DO</div>
         <div class="title-overlay">DOMAINS</div>
-        
+
         <div class="slide">
             <div class="slide-inner">
                 <img src="image-assets/bd6172951c03813bdf043d30bb63c737.jpg" alt="Web Dev">
                 <div class="glass-panel">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4">
+                        </path>
                     </svg>
                     <h3>Web Dev</h3>
                 </div>
             </div>
             <div class="slide-info"><span>01</span></div>
         </div>
-        
+
         <div class="slide">
             <div class="slide-inner">
                 <img src="image-assets/aiml.jpg" alt="AI/ML">
                 <div class="glass-panel">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.599 6.5a3 3 0 0 0 .399-1.375"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.002 6.5A3 3 0 0 1 5.603 5.125"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.599 6.5a3 3 0 0 0 .399-1.375">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.002 6.5A3 3 0 0 1 5.603 5.125">
+                        </path>
                     </svg>
                     <h3>AI / ML</h3>
                 </div>
@@ -434,7 +595,8 @@
                 <img src="./image-assets/59e1b74783bbaf6b4ea5b0058a0c51dd.jpg" alt="App Dev">
                 <div class="glass-panel">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                     </svg>
                     <h3>App Dev</h3>
                 </div>
@@ -447,7 +609,9 @@
                 <img src="image-assets/cubers.jpg" alt="Cybersecurity">
                 <div class="glass-panel">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                        </path>
                     </svg>
                     <h3>Cyber Security</h3>
                 </div>
@@ -470,7 +634,8 @@
 
         <div class="slide">
             <div class="slide-inner">
-                <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670&auto=format&fit=crop" alt="Game Dev">
+                <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670&auto=format&fit=crop"
+                    alt="Game Dev">
                 <div class="glass-panel">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect>
@@ -538,19 +703,19 @@
         gsap.ticker.lagSmoothing(0);
 
         // --- FAST SEAMLESS TRANSFORM LOADER ANIMATION ---
-        lenis.stop(); 
+        lenis.stop();
         gsap.set(["nav", ".hero-footer"], { opacity: 0, y: 15 });
-        gsap.set(".hero-logo", { 
-            opacity: 0, 
-            scale: 0.25, 
-            zIndex: 10000 
+        gsap.set(".hero-logo", {
+            opacity: 0,
+            scale: 0.25,
+            zIndex: 10000
         });
 
         const loaderTl = gsap.timeline({
             onComplete: () => {
-                document.getElementById('loader-wrapper').remove(); 
-                gsap.set(".hero-logo", { clearProps: "zIndex" }); 
-                lenis.start(); 
+                document.getElementById('loader-wrapper').remove();
+                gsap.set(".hero-logo", { clearProps: "zIndex" });
+                lenis.start();
             }
         });
 
@@ -559,7 +724,7 @@
             .to(".loader-window", { borderColor: "rgba(255, 255, 255, 0.2)", duration: 0.4 }, "-=0.4")
             .to(".loader-black-cover", { opacity: 0, duration: 0.3, ease: "power2.inOut" }, "+=0.2")
             .to(".loader-window", {
-                width: "250vmax", 
+                width: "250vmax",
                 height: "250vmax",
                 borderColor: "rgba(255, 255, 255, 0)",
                 duration: 0.8,
@@ -598,7 +763,7 @@
 
         const orbitCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
         const orbitRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-        
+
         const gradientCanvas = document.querySelector(".gradient-canvas");
         orbitRenderer.setSize(window.innerWidth, window.innerHeight);
         orbitRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -606,7 +771,7 @@
 
         const renderTargetParams = {
             minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter,
-            format: THREE.RGBAFormat, type: THREE.HalfFloatType, 
+            format: THREE.RGBAFormat, type: THREE.HalfFloatType,
         };
 
         const fluidTarget1 = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParams);
@@ -674,7 +839,7 @@
         // ==========================================
         const slides = document.querySelectorAll('.slide');
         const images = document.querySelectorAll('.slide img');
-        const autoScrollSpeed = 1.2; 
+        const autoScrollSpeed = 1.2;
 
         let targetX = 0, currentX = 0;
         const ease = 0.075;
@@ -682,10 +847,10 @@
 
         function initDimensions() {
             windowWidth = window.innerWidth;
-            slideWidth = slides[0].offsetWidth; 
-            gap = windowWidth * 0.08; 
-            step = slideWidth + gap; 
-            totalWidth = step * slides.length; 
+            slideWidth = slides[0].offsetWidth;
+            gap = windowWidth * 0.08;
+            step = slideWidth + gap;
+            totalWidth = step * slides.length;
         }
         initDimensions();
 
@@ -697,18 +862,18 @@
         window.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
             const delta = e.clientX - startX;
-            targetX -= delta * 1.5; 
+            targetX -= delta * 1.5;
             startX = e.clientX;
         });
         window.addEventListener('mouseup', () => isDragging = false);
 
-        sliderSection.addEventListener('touchstart', (e) => { isDragging = true; startX = e.touches[0].clientX; }, {passive: true});
+        sliderSection.addEventListener('touchstart', (e) => { isDragging = true; startX = e.touches[0].clientX; }, { passive: true });
         window.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
             const delta = e.touches[0].clientX - startX;
             targetX -= delta * 2;
             startX = e.touches[0].clientX;
-        }, {passive: true});
+        }, { passive: true });
         window.addEventListener('touchend', () => isDragging = false);
         sliderSection.addEventListener('mouseleave', () => isDragging = false);
 
@@ -721,7 +886,7 @@
         footerScene.fog = new THREE.FogExp2(0x000000, 0.1);
 
         const footerCamera = new THREE.PerspectiveCamera(75, footerContainerEl.offsetWidth / footerContainerEl.offsetHeight, 0.1, 1000);
-        footerCamera.position.set(0, 0, 5); 
+        footerCamera.position.set(0, 0, 5);
         const footerRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         footerRenderer.setSize(footerContainerEl.offsetWidth, footerContainerEl.offsetHeight);
         footerRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -729,12 +894,12 @@
         footerContainerEl.appendChild(footerRenderer.domElement);
 
         footerScene.add(new THREE.AmbientLight(0x000000));
-        
-        const pointLight = new THREE.PointLight(0x2BA648, 5, 50); 
+
+        const pointLight = new THREE.PointLight(0x2BA648, 5, 50);
         pointLight.position.set(0, 0, 0);
         footerScene.add(pointLight);
-        
-        const rimLight = new THREE.DirectionalLight(0x185D28, 4); 
+
+        const rimLight = new THREE.DirectionalLight(0x185D28, 4);
         rimLight.position.set(5, 5, 5);
         footerScene.add(rimLight);
 
@@ -743,33 +908,33 @@
 
         const innerCrystal = new THREE.Mesh(
             new THREE.OctahedronGeometry(1.2, 0),
-            new THREE.MeshStandardMaterial({ 
-                color: 0x2BA648, 
-                emissive: 0x0F3918, 
-                emissiveIntensity: 1, 
-                roughness: 0.1, 
-                metalness: 0.8 
+            new THREE.MeshStandardMaterial({
+                color: 0x2BA648,
+                emissive: 0x0F3918,
+                emissiveIntensity: 1,
+                roughness: 0.1,
+                metalness: 0.8
             })
         );
         crystalGroup.add(innerCrystal);
 
         const outerCage = new THREE.Mesh(
             new THREE.IcosahedronGeometry(1.6, 0),
-            new THREE.MeshStandardMaterial({ 
-                color: 0xffffff, 
-                wireframe: true, 
-                transparent: true, 
-                opacity: 0.25 
+            new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.25
             })
         );
         crystalGroup.add(outerCage);
 
         const particlesGeo = new THREE.BufferGeometry();
         const posArray = new Float32Array(800 * 3);
-        for(let i=0; i<800 * 3; i++) posArray[i] = (Math.random()-0.5)*12;
+        for (let i = 0; i < 800 * 3; i++) posArray[i] = (Math.random() - 0.5) * 12;
         particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
         const particles = new THREE.Points(
-            particlesGeo, 
+            particlesGeo,
             new THREE.PointsMaterial({ size: 0.015, color: 0x2BA648, transparent: true, opacity: 0.6 })
         );
         crystalGroup.add(particles);
@@ -783,7 +948,7 @@
         const footerContentContainer = document.querySelector(".footer-container");
         gsap.set(footerContentContainer, { yPercent: -50 });
         let scrollProgress = 0;
-        
+
         ScrollTrigger.create({
             trigger: "footer", start: "top bottom", end: "bottom bottom", scrub: true,
             onUpdate: (self) => {
@@ -844,7 +1009,7 @@
             frameCount++;
 
             if (!isDragging) {
-                targetX += autoScrollSpeed; 
+                targetX += autoScrollSpeed;
             }
 
             currentX += (targetX - currentX) * ease;
@@ -865,19 +1030,20 @@
             outerCage.rotation.y -= 0.005;
             outerCage.rotation.z += 0.002;
             particles.rotation.y += 0.001;
-            
+
             const scale = 1 + Math.sin(time * 2) * 0.05;
             innerCrystal.scale.set(scale, scale, scale);
-            
+
             const targetZ = -5 + (scrollProgress * 5);
             crystalGroup.position.z += (targetZ - crystalGroup.position.z) * 0.05;
             crystalGroup.rotation.x += (footerMouse.y * 0.2 - crystalGroup.rotation.x) * 0.05;
             crystalGroup.rotation.y += (footerMouse.x * 0.2 - crystalGroup.rotation.y) * 0.05;
-            
+
             footerRenderer.render(footerScene, footerCamera);
         }
 
         renderAll();
     </script>
 </body>
+
 </html>
