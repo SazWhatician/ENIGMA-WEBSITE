@@ -568,7 +568,7 @@
             .team-card-wrapper { height: 260px; }
 
             .card-front, .card-back { padding: 0.8rem; border-radius: 12px; }
-            .card-avatar { width: 55px; height: 55px; margin-bottom: 0.6rem; }
+            .card-avatar { width: 75px; height: 75px; margin-bottom: 0.6rem; }
             .card-front h2 { font-size: 0.7rem; margin-bottom: 0.4rem; }
             .card-role { font-size: 0.55rem; padding: 0.2rem 0.5rem; letter-spacing: 1px; gap: 0.3rem; }
             .role-dot { width: 4px; height: 4px; }
@@ -593,7 +593,7 @@
         /* Very small phones */
         @media (max-width: 360px) {
             .team-card-wrapper { height: 230px; }
-            .card-avatar { width: 45px; height: 45px; margin-bottom: 0.4rem; }
+            .card-avatar { width: 60px; height: 60px; margin-bottom: 0.4rem; }
             .card-front h2 { font-size: 0.6rem; }
             .card-role { font-size: 0.5rem; }
             .social-links a { padding: 0.35rem; font-size: 0.55rem; }
@@ -717,6 +717,8 @@
         function renderTeam(filterValue, delay = 0) {
             const grid = document.getElementById('team-grid');
             if (!grid) return;
+            // Kill existing ScrollTrigger instances for cards before re-rendering
+            ScrollTrigger.getAll().forEach(st => st.kill());
             grid.innerHTML = '';
             const filteredData = filterValue === 'all' ? teamData : teamData.filter(member => member.year === filterValue);
 
@@ -760,18 +762,29 @@
 
             const isMobile = window.innerWidth <= 640;
 
-            gsap.fromTo(".team-card-wrapper", {
+            // Set initial state immediately so cards are hidden but don't leave blank space
+            gsap.set(".team-card-wrapper", {
                 autoAlpha: 0,
                 y: isMobile ? 30 : 60,
                 rotateX: isMobile ? 0 : 15,
                 scale: isMobile ? 1 : 0.9,
                 transformOrigin: "bottom center"
-            }, {
-                autoAlpha: 1, y: 0, rotateX: 0, scale: 1,
-                duration: isMobile ? 0.4 : 0.7,
-                ease: "power4.out",
-                stagger: { each: isMobile ? 0.03 : 0.06, from: "start" },
-                delay: delay
+            });
+
+            // Use ScrollTrigger so cards only animate when the grid is in view
+            ScrollTrigger.batch(".team-card-wrapper", {
+                start: "top 90%",
+                onEnter: (batch) => {
+                    gsap.to(batch, {
+                        autoAlpha: 1, y: 0, rotateX: 0, scale: 1,
+                        duration: isMobile ? 0.4 : 0.7,
+                        ease: "power4.out",
+                        stagger: { each: isMobile ? 0.03 : 0.06 },
+                        delay: delay,
+                        overwrite: true
+                    });
+                },
+                once: true
             });
         }
 
