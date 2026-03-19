@@ -351,6 +351,109 @@ window.initFooterCrystal = function() {
     animateFooter();
 };
 
+// --- EVENTS SPIRAL GALLERY ---
+window.initEventsSpiral = function() {
+    window.cleanupEventsSpiral();
+    
+    if (typeof Lenis !== 'undefined') {
+        window.eventsLenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+        window.eventsLenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => window.eventsLenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(0);
+    }
+    
+    const container = document.getElementById('spiral-container');
+    if (!container) return;
+
+    const eventsData = [
+        { title: "HACKATHON 25", date: "MAR 10, 2026", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" },
+        { title: "WEB DEV BOOTCAMP", date: "FEB 22, 2026", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg" },
+        { title: "AI/ML SUMMIT", date: "JAN 15, 2026", img: "image-assets/aiml.jpg" },
+        { title: "DEF-CON", date: "DEC 05, 2025", img: "image-assets/cubers.jpg" },
+        { title: "GAME JAM", date: "NOV 20, 2025", img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670" },
+        { title: "CP CONTEST", date: "OCT 12, 2025", img: "image-assets/cp.jpg" },
+        { title: "APP DEV WEEK", date: "SEP 08, 2025", img: "./image-assets/59e1b74783bbaf6b4ea5b0058a0c51dd.jpg" },
+        { title: "UI/UX WORKSHOP", date: "AUG 14, 2025", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" },
+        { title: "TECH SYMPOSIUM", date: "JUL 30, 2025", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg" },
+        { title: "CODE SPRINT", date: "JUN 15, 2025", img: "image-assets/cp.jpg" }
+    ];
+
+    container.innerHTML = '';
+    
+    // Dynamic radius and spread based on screen size
+    const radius = window.innerWidth > 768 ? Math.max(window.innerWidth * 0.45, 600) : 300;
+    const yStep = window.innerWidth > 768 ? 200 : 120;
+    const yOffset = window.innerWidth > 768 ? 600 : 350; 
+    const totalHeight = (eventsData.length * yStep) + yOffset;
+
+    // Give doc enough scroll height
+    document.querySelector('.spiral-viewport').style.height = `${(eventsData.length * 40) + 120}vh`;
+
+    eventsData.forEach((ev, i) => {
+        const card = document.createElement('div');
+        card.className = 'spiral-card';
+        card.innerHTML = `
+            <div class="spiral-card-inner">
+                <img src="${ev.img}" alt="${ev.title}">
+                <div class="spiral-card-overlay">
+                    <p class="spiral-card-date">${ev.date}</p>
+                    <h2 class="spiral-card-title">${ev.title}</h2>
+                    <a href="#" onclick="alert('Entering event: ${ev.title}'); return false;" class="btn-cyber mt-4 block text-center py-2 text-xs">ENTER DETAIL</a>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+        
+        const theta = i * 0.45; // Amount of twist
+        // Position card starting deep inside screen, coming up towards user
+        const yPos = -i * yStep - yOffset; 
+        
+        gsap.set(card, {
+            x: Math.sin(theta) * radius,
+            z: Math.cos(theta) * radius,
+            y: yPos,
+            rotationY: theta * (180 / Math.PI),
+            rotationX: 10
+        });
+    });
+
+    const twistRot = -eventsData.length * 0.45 * (180 / Math.PI); // Keep them facing viewer
+    
+    // ScrollTrigger to descend past the cards
+    window.eventsScrollTrigger = ScrollTrigger.create({
+        trigger: ".spiral-viewport",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1.5,
+        animation: gsap.to(container, {
+            y: totalHeight,
+            rotationY: twistRot, 
+            ease: "none"
+        })
+    });
+    
+    // Fade out hero text
+    ScrollTrigger.create({
+        trigger: ".spiral-viewport",
+        start: "top top",
+        end: "+=300",
+        scrub: true,
+        animation: gsap.to('#spiral-hero', { opacity: 0, y: -50, scale: 0.9 })
+    });
+    
+    // Initial pop in
+    gsap.fromTo('.spiral-card', 
+        { opacity: 0, scale: 0.2 }, 
+        { opacity: 1, scale: 1, duration: 1.5, stagger: 0.05, ease: 'back.out(1.2)', delay: 0.2 }
+    );
+};
+
+window.cleanupEventsSpiral = function() {
+    if (window.eventsScrollTrigger) { window.eventsScrollTrigger.kill(); window.eventsScrollTrigger = null; }
+    if (window.eventsLenis) { window.eventsLenis.destroy(); window.eventsLenis = null; }
+    if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.getAll().forEach(t => { if(t.vars.trigger === '.spiral-viewport') t.kill(); }); }
+};
+
 // --- BARBA CORE ---
 window.initBarba = function() {
     if (window.barbaInitialized) return;
@@ -463,6 +566,22 @@ window.initBarba = function() {
                 },
                 afterOnce() {
                     window.initFooterCrystal();
+                }
+            },
+            {
+                namespace: 'events',
+                beforeEnter(data) {
+                    document.body.style.overflowY = 'auto';
+                    document.body.style.touchAction = 'auto';
+                    window.initEventsSpiral();
+                },
+                beforeLeave() {
+                    window.cleanupEventsSpiral();
+                },
+                beforeOnce(data) {
+                    document.body.style.overflowY = 'auto';
+                    document.body.style.touchAction = 'auto';
+                    window.initEventsSpiral();
                 }
             }
         ]
