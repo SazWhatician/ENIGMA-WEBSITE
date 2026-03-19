@@ -351,7 +351,7 @@ window.initFooterCrystal = function() {
     animateFooter();
 };
 
-// --- EVENTS SPIRAL GALLERY ---
+// --- EVENTS Z-TUNNEL GALLERY ---
 window.initEventsSpiral = function() {
     window.cleanupEventsSpiral();
     
@@ -362,8 +362,8 @@ window.initEventsSpiral = function() {
         gsap.ticker.lagSmoothing(0);
     }
     
-    const container = document.getElementById('spiral-container');
-    if (!container) return;
+    const scene = document.getElementById('tunnel-scene');
+    if (!scene) return;
 
     const eventsData = [
         { title: "HACKATHON 25", date: "MAR 10, 2026", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" },
@@ -378,80 +378,122 @@ window.initEventsSpiral = function() {
         { title: "CODE SPRINT", date: "JUN 15, 2025", img: "image-assets/cp.jpg" }
     ];
 
-    container.innerHTML = '';
+    scene.innerHTML = '';
     
-    // Dynamic radius and spread based on screen size
-    const radius = window.innerWidth > 768 ? Math.max(window.innerWidth * 0.45, 600) : 300;
-    const yStep = window.innerWidth > 768 ? 200 : 120;
-    const yOffset = window.innerWidth > 768 ? 600 : 350; 
-    const totalHeight = (eventsData.length * yStep) + yOffset;
+    const zGap = window.innerWidth > 768 ? 2000 : 1500;
+    const totalZ = (eventsData.length - 1) * zGap;
+    
+    // Total height dictates scroll distance. Bigger = slower scrub.
+    const scrollHeight = eventsData.length * 150; 
+    document.querySelector('.z-tunnel-viewport').style.height = `${scrollHeight}vh`;
 
-    // Give doc enough scroll height
-    document.querySelector('.spiral-viewport').style.height = `${(eventsData.length * 40) + 120}vh`;
+    const cards = [];
 
     eventsData.forEach((ev, i) => {
         const card = document.createElement('div');
-        card.className = 'spiral-card';
+        card.className = 'z-card';
+        
+        // Offset alternating sides smoothly
+        const xOffset = window.innerWidth > 768 ? (i % 2 === 0 ? 150 : -150) : (i % 2 === 0 ? 40 : -40);
+        const yOffset = (Math.random() - 0.5) * 100;
+        
         card.innerHTML = `
-            <div class="spiral-card-inner">
-                <img src="${ev.img}" alt="${ev.title}">
-                <div class="spiral-card-overlay">
-                    <p class="spiral-card-date">${ev.date}</p>
-                    <h2 class="spiral-card-title">${ev.title}</h2>
-                    <a href="#" onclick="alert('Entering event: ${ev.title}'); return false;" class="btn-cyber mt-4 block text-center py-2 text-xs">ENTER DETAIL</a>
-                </div>
+            <div class="z-card-image-wrapper">
+                <img src="${ev.img}" alt="${ev.title}" />
+                <div class="z-card-gradient"></div>
+            </div>
+            <div class="z-card-number">0${i+1}</div>
+            <div class="z-card-content">
+                <div class="z-card-date">${ev.date}</div>
+                <h2 class="z-card-title glow-text">${ev.title}</h2>
+                <a href="#" onclick="alert('Viewing: ${ev.title}'); return false;" class="z-btn-cyber">ENTER RECORD</a>
             </div>
         `;
-        container.appendChild(card);
-        
-        const theta = i * 0.45; // Amount of twist
-        // Position card starting deep inside screen, coming up towards user
-        const yPos = -i * yStep - yOffset; 
+        scene.appendChild(card);
+        cards.push(card);
         
         gsap.set(card, {
-            x: Math.sin(theta) * radius,
-            z: Math.cos(theta) * radius,
-            y: yPos,
-            rotationY: theta * (180 / Math.PI),
-            rotationX: 10
+            z: -i * zGap,
+            x: xOffset,
+            y: yOffset,
+            opacity: 0 // initially hidden via opacty (updated in onscroll)
         });
     });
 
-    const twistRot = -eventsData.length * 0.45 * (180 / Math.PI); // Keep them facing viewer
-    
-    // ScrollTrigger to descend past the cards
     window.eventsScrollTrigger = ScrollTrigger.create({
-        trigger: ".spiral-viewport",
+        trigger: ".z-tunnel-viewport",
         start: "top top",
         end: "bottom bottom",
-        scrub: 1.5,
-        animation: gsap.to(container, {
-            y: totalHeight,
-            rotationY: twistRot, 
+        scrub: 1.2,
+        animation: gsap.to(scene, {
+            z: totalZ,
             ease: "none"
-        })
+        }),
+        onUpdate: (self) => {
+             const progressZ = self.progress * totalZ;
+             
+             cards.forEach((card, i) => {
+                 const cardZ = (-i * zGap) + progressZ;
+                 
+                 let opacity = 1;
+                 // As it passes the camera (cardZ > 100), fade out extremely fast
+                 if (cardZ > 200) {
+                     opacity = 1 - (cardZ - 200) / 300;
+                 } 
+                 // As it appears in the distance (cardZ < -2500)
+                 else if (cardZ < -2000) {
+                     opacity = 1 - ((-cardZ - 2000) / 1000);
+                 }
+                 
+                 gsap.set(card, { 
+                     opacity: Math.max(0, Math.min(1, opacity)),
+                     // slight extra scale as it hits camera so it rushes past
+                     scale: cardZ > 0 ? 1 + (cardZ/800) : 1
+                 });
+             });
+             
+             // Move progress bar height
+             gsap.to('.scroll-progress-bar', { height: `${self.progress * 100}%`, duration: 0.1 });
+        }
     });
-    
-    // Fade out hero text
-    ScrollTrigger.create({
-        trigger: ".spiral-viewport",
-        start: "top top",
-        end: "+=300",
-        scrub: true,
-        animation: gsap.to('#spiral-hero', { opacity: 0, y: -50, scale: 0.9 })
+
+    // Hero Text fade out softly in the first 10% scroll
+    gsap.to('.hero-z-text', {
+        opacity: 0,
+        y: -100,
+        scrollTrigger: {
+            trigger: ".z-tunnel-viewport",
+            start: "top top",
+            end: "10%",
+            scrub: true
+        }
     });
-    
-    // Initial pop in
-    gsap.fromTo('.spiral-card', 
-        { opacity: 0, scale: 0.2 }, 
-        { opacity: 1, scale: 1, duration: 1.5, stagger: 0.05, ease: 'back.out(1.2)', delay: 0.2 }
-    );
+
+    // Elegant Mouse Parallax tracking
+    window.tunnelMouseMove = (e) => {
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        const dx = (e.clientX - cx) / cx; // -1 to 1
+        const dy = (e.clientY - cy) / cy;
+        
+        gsap.to(scene, {
+            rotationY: dx * 8,
+            rotationX: -dy * 8,
+            duration: 1.5,
+            ease: "power2.out"
+        });
+    };
+    window.addEventListener('mousemove', window.tunnelMouseMove);
+
+    // Initial populate to evaluate opacities immediately
+    ScrollTrigger.refresh();
 };
 
 window.cleanupEventsSpiral = function() {
     if (window.eventsScrollTrigger) { window.eventsScrollTrigger.kill(); window.eventsScrollTrigger = null; }
     if (window.eventsLenis) { window.eventsLenis.destroy(); window.eventsLenis = null; }
-    if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.getAll().forEach(t => { if(t.vars.trigger === '.spiral-viewport') t.kill(); }); }
+    if (window.tunnelMouseMove) { window.removeEventListener('mousemove', window.tunnelMouseMove); window.tunnelMouseMove = null; }
+    if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.getAll().forEach(t => { if(t.vars.trigger === '.z-tunnel-viewport') t.kill(); }); }
 };
 
 // --- BARBA CORE ---
