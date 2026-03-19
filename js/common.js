@@ -396,7 +396,7 @@ window.initEventsSpiral = function () {
             </div>
             
             <!-- The massive text marquee -->
-            <div class="marquee-track" style="--marquee-speed: ${40 + Math.random() * 20}s; --marquee-dir: ${i % 2 === 0 ? 'normal' : 'reverse'};">
+            <div class="marquee-track" style="--marquee-speed: ${80 + Math.random() * 40}s; --marquee-dir: ${i % 2 === 0 ? 'normal' : 'reverse'};">
                 <h1 class="marquee-text">${titleText}</h1>
                 <h1 class="marquee-text">${titleText}</h1>
             </div>
@@ -487,18 +487,18 @@ window.initEventsSpiral = function () {
         row.addEventListener('click', (e) => {
             // Guarantee actual button clicks are respected and ignored by the row toggle
             if (e.target.closest('.z-btn-cyber')) return;
-            
+
             // Only govern click behavior on touch-sized viewports
             if (window.innerWidth <= 768) {
-                 if (isOpen) {
-                     closeShutter();
-                 } else {
-                     // Shut all other active rows cleanly to prevent visual mess
-                     document.querySelectorAll('.marquee-row').forEach(r => {
-                         if (r !== row && r._closeShutter) r._closeShutter();
-                     });
-                     openShutter();
-                 }
+                if (isOpen) {
+                    closeShutter();
+                } else {
+                    // Shut all other active rows cleanly to prevent visual mess
+                    document.querySelectorAll('.marquee-row').forEach(r => {
+                        if (r !== row && r._closeShutter) r._closeShutter();
+                    });
+                    openShutter();
+                }
             }
         });
 

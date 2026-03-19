@@ -259,7 +259,8 @@
             width: max-content;
             white-space: nowrap;
             animation: marquee-move var(--marquee-speed) linear infinite var(--marquee-dir);
-            pointer-events: none;
+            pointer-events: auto;
+            cursor: pointer;
         }
 
         @keyframes marquee-move {
