@@ -151,10 +151,17 @@
             transform: scale(1.05);
         }
 
-        @media(max-width: 1000px) {
+        @media(max-width: 768px) {
             nav {
+                padding: 1.2rem;
                 flex-direction: column;
+                gap: 0.8rem;
+            }
+            .nav-items {
+                flex-wrap: wrap;
+                justify-content: center;
                 gap: 1rem;
+                font-size: 0.8rem;
             }
         }
 
@@ -390,6 +397,17 @@
             .section-heading {
                 font-size: 0.75rem;
                 top: 10%;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .slide {
+                width: 75vw;
+                height: 45vh;
+                margin-top: -22.5vh;
+            }
+            .title-overlay {
+                font-size: clamp(3rem, 15vw, 6rem);
             }
         }
 
