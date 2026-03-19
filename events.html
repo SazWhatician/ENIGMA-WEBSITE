@@ -197,152 +197,51 @@
             background-color: #2BA648;
             transform: translateY(100%);
             will-change: transform;
+            box-shadow: 2px 0 0 #2BA648;
         }
 
-        /* --- SPIRAL GALLERY --- */
-        .spiral-viewport {
-            position: relative;
-            width: 100%;
-        }
+        /* --- Z-TUNNEL GALLERY --- */
+        .z-tunnel-viewport { position: relative; width: 100%; }
+        .z-tunnel-fixed { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; perspective: 1500px; display: flex; justify-content: center; align-items: center; overflow: hidden; pointer-events: none; z-index: 10; }
+        .z-tunnel-scene { position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform-style: preserve-3d; }
 
-        .spiral-hero {
-            position: fixed;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 5;
-            pointer-events: none;
-            text-align: center;
-        }
+        .hero-z-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 10; font-size: 4rem; pointer-events: none; }
+        .hero-z-text p { font-size: 0.8rem; letter-spacing: 0.3em; margin-top: 1rem; opacity: 0.6; }
+        .glow-text { text-shadow: 0 0 10px rgba(43, 166, 72, 0.4), 0 0 30px rgba(43, 166, 72, 0.2); }
+        @media(min-width: 768px) { .hero-z-text { font-size: 7rem; } }
+
+        .z-card { position: absolute; top: -200px; left: -160px; width: 320px; height: 400px; transform-style: preserve-3d; display: flex; align-items: flex-end; padding: 2rem; pointer-events: auto; }
+        @media(min-width: 768px) { .z-card { top: -225px; left: -400px; width: 800px; height: 450px; padding: 4rem; } }
+
+        .z-card-image-wrapper { position: absolute; inset: 0; border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; transform: translateZ(-50px); box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 50px rgba(43, 166, 72, 0.05); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .z-card-image-wrapper img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4) grayscale(80%); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .z-card-gradient { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.1) 50%, transparent 100%); transition: opacity 0.5s; opacity: 0.8; }
+
+        .z-card:hover .z-card-image-wrapper { border-color: rgba(43, 166, 72, 0.4); box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 80px rgba(43, 166, 72, 0.2); }
+        .z-card:hover .z-card-image-wrapper img { filter: brightness(0.9) grayscale(0%); transform: scale(1.05); }
+        .z-card:hover .z-card-gradient { opacity: 1; }
+
+        .z-card-content { position: relative; z-index: 5; transform: translateZ(80px); transition: transform 0.5s ease; width: 100%; }
+        .z-card:hover .z-card-content { transform: translateZ(120px); }
         
-        .glow-text {
-            text-shadow: 0 0 5px rgba(43, 166, 72, 0.8), 0 0 20px rgba(24, 93, 40, 0.5);
-        }
+        .z-card-date { font-family: 'Host Grotesk', sans-serif; color: #2BA648; letter-spacing: 0.2em; font-size: 0.8rem; margin-bottom: 0.5rem; font-weight: 700; text-transform: uppercase; }
+        .z-card-title { font-family: 'Syncopate', sans-serif; font-size: clamp(1.8rem, 4vw, 3.5rem); color: #fff; line-height: 1.1; margin-bottom: 2rem; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
 
-        .spiral-stage {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            perspective: 1200px;
-            z-index: 10;
-            pointer-events: none;
-        }
+        .z-btn-cyber { padding: 1rem 2.5rem; border: 1px solid rgba(43, 166, 72, 0.5); background: rgba(0,0,0,0.4); color: #2BA648; text-decoration: none; font-family: 'Host Grotesk', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.8rem; backdrop-filter: blur(5px); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; display: inline-block; font-weight: 700; }
+        .z-btn-cyber::before { content: ''; position: absolute; top: 0; left: 0; width: 0%; height: 100%; background: #2BA648; z-index: -1; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .z-btn-cyber:hover { color: #000; letter-spacing: 0.2em; border-color: #2BA648; box-shadow: 0 0 20px rgba(43, 166, 72, 0.4); }
+        .z-btn-cyber:hover::before { width: 100%; }
 
-        .spiral-container {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform-style: preserve-3d;
-            width: 0; height: 0;
-        }
+        .z-card-number { position: absolute; top: -10%; right: -5%; font-family: 'Syncopate', sans-serif; font-size: clamp(5rem, 15vw, 12rem); font-weight: 700; -webkit-text-stroke: 1px rgba(255,255,255,0.05); color: transparent; z-index: 0; transform: translateZ(-100px); pointer-events: none; transition: transform 0.5s; }
+        .z-card:hover .z-card-number { transform: translateZ(-80px); -webkit-text-stroke: 1px rgba(43, 166, 72, 0.1); }
 
-        .spiral-card {
-            position: absolute;
-            top: 0; left: 0;
-            width: 320px; height: 420px;
-            margin-left: -160px; margin-top: -210px;
-            transform-style: preserve-3d;
-            pointer-events: auto;
-            cursor: pointer;
-            will-change: transform;
-        }
-        
+        .scroll-progress { position: absolute; right: 2rem; top: 50%; transform: translateY(-50%); width: 2px; height: 30vh; background: rgba(255,255,255,0.05); z-index: 10; border-radius: 2px; pointer-events: none; }
+        .scroll-progress-bar { width: 100%; height: 0%; background: #2BA648; border-radius: 2px; box-shadow: 0 0 10px #2BA648; }
+
         @media(max-width: 768px) {
-            .spiral-card {
-                width: 240px; height: 320px;
-                margin-left: -120px; margin-top: -160px;
-            }
-        }
-
-        .spiral-card-inner {
-            width: 100%; height: 100%;
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(43, 166, 72, 0.3);
-            background: #050505;
-            transform-style: preserve-3d;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
-        }
-        
-        .spiral-card-inner:hover {
-            transform: translateZ(50px) scale(1.05);
-            box-shadow: 0 30px 60px rgba(43, 166, 72, 0.2);
-            border-color: #2BA648;
-        }
-
-        .spiral-card img {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
-            filter: brightness(0.6) grayscale(40%);
-            transition: filter 0.4s;
-        }
-        
-        .spiral-card:hover img {
-            filter: brightness(0.9) grayscale(0%);
-        }
-
-        .spiral-card-overlay {
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%;
-            padding: 2rem 1.5rem;
-            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
-            transform: translateZ(20px);
-        }
-
-        .spiral-card-date {
-            font-family: 'Host Grotesk', sans-serif;
-            color: #2BA648;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            margin-bottom: 0.5rem;
-        }
-
-        .spiral-card-title {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: white;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-        }
-
-        /* --- CYBER BUTTON --- */
-        .btn-cyber {
-            position: relative;
-            overflow: hidden;
-            border: 1px solid #2BA648;
-            background: rgba(43, 166, 72, 0.05);
-            color: #2BA648;
-            z-index: 1;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            cursor: pointer;
-            font-family: 'Host Grotesk', sans-serif;
-            text-decoration: none;
-        }
-
-        .btn-cyber::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 0%;
-            background: #2BA648;
-            z-index: -1;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .btn-cyber:hover {
-            color: #000;
-            letter-spacing: 0.2em;
-            box-shadow: 0 0 25px rgba(43, 166, 72, 0.4);
-        }
-
-        .btn-cyber:hover::before {
-            height: 100%;
+            .z-card { width: 85vw; left: -42.5vw; height: 60vh; top: -30vh; padding: 1.5rem; }
+            .scroll-progress { right: 1rem; }
+            .hero-z-text { width: 100%; padding: 0 1rem; }
         }
         </style>
 
@@ -356,15 +255,19 @@
             </div>
         </nav>
 
-        <div class="spiral-viewport">
-            <div class="spiral-hero" id="spiral-hero">
-                <h1 class="font-syncopate text-center text-4xl md:text-7xl glow-text leading-tight">OUR<br><span class="text-orbitGreen">EVENTS</span></h1>
-                <p class="text-center text-gray-400 mt-4 tracking-widest uppercase text-sm">Scroll to Descend</p>
-            </div>
-            
-            <div class="spiral-stage">
-                <div class="spiral-container" id="spiral-container">
+        <div class="z-tunnel-viewport">
+            <div class="z-tunnel-fixed">
+                <div class="hero-z-text font-syncopate glow-text">
+                    OUR<br><span class="text-orbitGreen">EVENTS</span>
+                    <p class="font-sans text-white">DESCEND INTO THE ARCHIVES</p>
+                </div>
+                
+                <div class="z-tunnel-scene" id="tunnel-scene">
                     <!-- Events injected via JS -->
+                </div>
+                
+                <div class="scroll-progress">
+                    <div class="scroll-progress-bar"></div>
                 </div>
             </div>
         </div>
