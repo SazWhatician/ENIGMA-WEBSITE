@@ -416,7 +416,11 @@ window.initEventsSpiral = function () {
         const hoverInfo = row.querySelector('.marquee-hover-info');
         const track = row.querySelector('.marquee-track');
 
-        row.addEventListener('mouseenter', () => {
+        let isOpen = false;
+
+        const openShutter = () => {
+            if (isOpen) return;
+            isOpen = true;
             // Explode the image background open from the center horizontal slit
             gsap.to(imgWrapper, {
                 clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -430,26 +434,25 @@ window.initEventsSpiral = function () {
                 ease: "power1.out",
                 overwrite: true
             });
-
             // Dissolve the text into glass outline
             gsap.to(texts, {
                 WebkitTextFillColor: 'transparent',
                 WebkitTextStroke: '2px rgba(255, 255, 255, 0.4)',
-                color: 'transparent', // Fallback
+                color: 'transparent',
                 duration: 0.3,
                 overwrite: true
             });
-
             // Slide in the details
             gsap.to(hoverInfo, {
                 y: 0, opacity: 1, duration: 0.4, ease: "power3.out", delay: 0.1, overwrite: true
             });
-
             // Pause the marquee loop physically so you can read it
             track.style.animationPlayState = 'paused';
-        });
+        };
 
-        row.addEventListener('mouseleave', () => {
+        const closeShutter = () => {
+            if (!isOpen) return;
+            isOpen = false;
             gsap.to(imgWrapper, {
                 clipPath: 'polygon(0% 50%, 100% 50%, 100% 50%, 0% 50%)',
                 duration: 0.4,
@@ -472,6 +475,31 @@ window.initEventsSpiral = function () {
                 y: 50, opacity: 0, duration: 0.3, ease: "power2.in", overwrite: true
             });
             track.style.animationPlayState = 'running';
+        };
+
+        row._closeShutter = closeShutter; // Attach to DOM for global mobile cleanup
+
+        // Desktop Hover Interactions
+        row.addEventListener('mouseenter', openShutter);
+        row.addEventListener('mouseleave', closeShutter);
+
+        // Mobile Touch Toggle Implementation
+        row.addEventListener('click', (e) => {
+            // Guarantee actual button clicks are respected and ignored by the row toggle
+            if (e.target.closest('.z-btn-cyber')) return;
+            
+            // Only govern click behavior on touch-sized viewports
+            if (window.innerWidth <= 768) {
+                 if (isOpen) {
+                     closeShutter();
+                 } else {
+                     // Shut all other active rows cleanly to prevent visual mess
+                     document.querySelectorAll('.marquee-row').forEach(r => {
+                         if (r !== row && r._closeShutter) r._closeShutter();
+                     });
+                     openShutter();
+                 }
+            }
         });
 
         // Add internal inverted parallax movement

@@ -269,7 +269,7 @@
 
         .marquee-text {
             font-family: 'Syncopate', sans-serif;
-            font-size: clamp(3rem, 8vw, 8rem);
+            font-size: clamp(2.5rem, 8vw, 8rem);
             font-weight: 700;
             color: #fff;
             padding-right: 2vw;
@@ -293,8 +293,11 @@
         }
 
         @media(max-width: 768px) {
-             .marquee-hover-info { flex-direction: column; gap: 0.5rem; align-items: flex-start; left: 1rem; }
-             .marquee-row { height: 12vh; min-height: 80px; }
+             .marquee-hover-info { flex-direction: column; gap: 0.8rem; align-items: flex-start; left: 1.5rem; transform: translateY(30px); }
+             .marquee-row { height: 15vh; min-height: 100px; }
+             .marquee-text { font-size: 2.2rem; }
+             .z-btn-cyber { padding: 0.8rem 1.5rem; font-size: 0.7rem; }
+             #btn-open-calendar { bottom: 2rem; right: 1rem; padding: 0.8rem 1.2rem; }
         }
 
         .marquee-hover-info .marquee-date { font-family: 'Host Grotesk', sans-serif; color: #2BA648; font-weight: 700; letter-spacing: 0.1em; font-size: 0.8rem; background: rgba(0,0,0,0.6); padding: 0.5rem 1rem; border-radius: 4px; backdrop-filter: blur(5px); }
