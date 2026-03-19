@@ -200,49 +200,123 @@
             box-shadow: 2px 0 0 #2BA648;
         }
 
-        /* --- Z-TUNNEL GALLERY --- */
-        .z-tunnel-viewport { position: relative; width: 100%; }
-        .z-tunnel-fixed { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; perspective: 1500px; display: flex; justify-content: center; align-items: center; overflow: hidden; pointer-events: none; z-index: 10; }
-        .z-tunnel-scene { position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform-style: preserve-3d; }
+        /* --- KINETIC MARQUEE SHUTTER --- */
+        .marquee-gallery {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            padding: 15vh 0; /* Clear the navbar */
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background: #000;
+        }
 
-        .hero-z-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 10; font-size: 4rem; pointer-events: none; }
-        .hero-z-text p { font-size: 0.8rem; letter-spacing: 0.3em; margin-top: 1rem; opacity: 0.6; }
-        .glow-text { text-shadow: 0 0 10px rgba(43, 166, 72, 0.4), 0 0 30px rgba(43, 166, 72, 0.2); }
-        @media(min-width: 768px) { .hero-z-text { font-size: 7rem; } }
+        .marquee-row {
+            position: relative;
+            width: 100%;
+            height: 18vh; /* Scale naturally */
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05); /* Architectural lines */
+            cursor: pointer;
+            overflow: hidden;
+        }
 
-        .z-card { position: absolute; top: -200px; left: -160px; width: 320px; height: 400px; transform-style: preserve-3d; display: flex; align-items: flex-end; padding: 2rem; pointer-events: auto; }
-        @media(min-width: 768px) { .z-card { top: -225px; left: -400px; width: 800px; height: 450px; padding: 4rem; } }
+        .marquee-row:first-child { border-top: 1px solid rgba(255,255,255,0.05); }
 
-        .z-card-image-wrapper { position: absolute; inset: 0; border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; transform: translateZ(-50px); box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 50px rgba(43, 166, 72, 0.05); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .z-card-image-wrapper img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4) grayscale(80%); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .z-card-gradient { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.1) 50%, transparent 100%); transition: opacity 0.5s; opacity: 0.8; }
+        /* The Image Shutter behind everything */
+        .marquee-image-wrapper {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            /* initial state: slit / invisible */
+            clip-path: polygon(0% 50%, 100% 50%, 100% 50%, 0% 50%);
+            overflow: hidden;
+        }
 
-        .z-card:hover .z-card-image-wrapper { border-color: rgba(43, 166, 72, 0.4); box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 80px rgba(43, 166, 72, 0.2); }
-        .z-card:hover .z-card-image-wrapper img { filter: brightness(0.9) grayscale(0%); transform: scale(1.05); }
-        .z-card:hover .z-card-gradient { opacity: 1; }
+        .marquee-img {
+            position: absolute;
+            top: -20px; left: -20px;
+            width: calc(100% + 40px);
+            height: calc(100% + 40px); /* Buffer for parallax */
+            object-fit: cover;
+            transform: scale(1.1); /* Zoomed in initially */
+            background: #111;
+        }
 
-        .z-card-content { position: relative; z-index: 5; transform: translateZ(80px); transition: transform 0.5s ease; width: 100%; }
-        .z-card:hover .z-card-content { transform: translateZ(120px); }
-        
-        .z-card-date { font-family: 'Host Grotesk', sans-serif; color: #2BA648; letter-spacing: 0.2em; font-size: 0.8rem; margin-bottom: 0.5rem; font-weight: 700; text-transform: uppercase; }
-        .z-card-title { font-family: 'Syncopate', sans-serif; font-size: clamp(1.8rem, 4vw, 3.5rem); color: #fff; line-height: 1.1; margin-bottom: 2rem; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .marquee-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); }
 
-        .z-btn-cyber { padding: 1rem 2.5rem; border: 1px solid rgba(43, 166, 72, 0.5); background: rgba(0,0,0,0.4); color: #2BA648; text-decoration: none; font-family: 'Host Grotesk', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.8rem; backdrop-filter: blur(5px); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; display: inline-block; font-weight: 700; }
-        .z-btn-cyber::before { content: ''; position: absolute; top: 0; left: 0; width: 0%; height: 100%; background: #2BA648; z-index: -1; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .z-btn-cyber:hover { color: #000; letter-spacing: 0.2em; border-color: #2BA648; box-shadow: 0 0 20px rgba(43, 166, 72, 0.4); }
-        .z-btn-cyber:hover::before { width: 100%; }
+        /* The Continuous Marquee Engine */
+        .marquee-track {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            width: max-content;
+            white-space: nowrap;
+            animation: marquee-move var(--marquee-speed) linear infinite var(--marquee-dir);
+            pointer-events: none;
+        }
 
-        .z-card-number { position: absolute; top: -10%; right: -5%; font-family: 'Syncopate', sans-serif; font-size: clamp(5rem, 15vw, 12rem); font-weight: 700; -webkit-text-stroke: 1px rgba(255,255,255,0.05); color: transparent; z-index: 0; transform: translateZ(-100px); pointer-events: none; transition: transform 0.5s; }
-        .z-card:hover .z-card-number { transform: translateZ(-80px); -webkit-text-stroke: 1px rgba(43, 166, 72, 0.1); }
+        @keyframes marquee-move {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
 
-        .scroll-progress { position: absolute; right: 2rem; top: 50%; transform: translateY(-50%); width: 2px; height: 30vh; background: rgba(255,255,255,0.05); z-index: 10; border-radius: 2px; pointer-events: none; }
-        .scroll-progress-bar { width: 100%; height: 0%; background: #2BA648; border-radius: 2px; box-shadow: 0 0 10px #2BA648; }
+        .marquee-text {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(3rem, 8vw, 8rem);
+            font-weight: 700;
+            color: #fff;
+            padding-right: 2vw;
+            line-height: 1;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            -webkit-text-stroke: 0px rgba(255,255,255,0);
+        }
+
+        /* Hover Details injected inside the row */
+        .marquee-hover-info {
+            position: absolute;
+            left: 5vw;
+            z-index: 20;
+            transform: translateY(50px);
+            opacity: 0;
+            pointer-events: none; /* Let hover hit the row */
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
 
         @media(max-width: 768px) {
-            .z-card { width: 85vw; left: -42.5vw; height: 60vh; top: -30vh; padding: 1.5rem; }
-            .scroll-progress { right: 1rem; }
-            .hero-z-text { width: 100%; padding: 0 1rem; }
+             .marquee-hover-info { flex-direction: column; gap: 0.5rem; align-items: flex-start; left: 1rem; }
+             .marquee-row { height: 12vh; min-height: 80px; }
         }
+
+        .marquee-hover-info .marquee-date { font-family: 'Host Grotesk', sans-serif; color: #2BA648; font-weight: 700; letter-spacing: 0.1em; font-size: 0.8rem; background: rgba(0,0,0,0.6); padding: 0.5rem 1rem; border-radius: 4px; backdrop-filter: blur(5px); }
+        .marquee-hover-info .z-btn-cyber { pointer-events: auto; }
+
+        /* The Cyber Button */
+        .z-btn-cyber { padding: 1rem 3rem; border: 1px solid rgba(43, 166, 72, 0.5); background: rgba(0,0,0,0.6); color: #fff; text-decoration: none; font-family: 'Host Grotesk', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.8rem; backdrop-filter: blur(5px); display: inline-block; transition: all 0.4s; position: relative; overflow: hidden; }
+        .z-btn-cyber::before { content: ''; position: absolute; inset:0; background: #2BA648; transform: scaleX(0); transform-origin: left; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: -1; }
+        .z-btn-cyber:hover { color: #000; letter-spacing: 0.2em; font-weight: 700; border-color: #2BA648; box-shadow: 0 0 20px rgba(43, 166, 72, 0.4); }
+        .z-btn-cyber:hover::before { transform: scaleX(1); }
+
+        /* Calendar specific */
+        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: #fff; border-radius: 4px; transition: all 0.3s; background: rgba(255,255,255,0.02); }
+        .cal-day.empty { background: transparent; pointer-events: none; }
+        .cal-day:not(.empty):hover { background: rgba(255,255,255,0.1); cursor: pointer; }
+        .cal-day.has-event { background: rgba(43, 166, 72, 0.15); border: 1px solid #2BA648; color: #2BA648; font-weight: 700; cursor: pointer; box-shadow: 0 0 15px rgba(43, 166, 72, 0.2); }
+        .cal-day.has-event:hover { background: #2BA648; color: #000; box-shadow: 0 0 20px rgba(43, 166, 72, 0.5); transform: scale(1.1); }
+        
+        .modal-overlay { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.5s; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(0,0,0,0.8); }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-box { background: #0a0a0a; border: 1px solid rgba(43, 166, 72, 0.3); padding: 2rem; border-radius: 12px; width: 90vw; max-width: 500px; box-shadow: 0 0 50px rgba(43, 166, 72, 0.1); transform: scale(0.95); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .modal-overlay.active .modal-box { transform: scale(1); }
         </style>
 
         <nav>
@@ -255,19 +329,35 @@
             </div>
         </nav>
 
-        <div class="z-tunnel-viewport">
-            <div class="z-tunnel-fixed">
-                <div class="hero-z-text font-syncopate glow-text">
-                    OUR<br><span class="text-orbitGreen">EVENTS</span>
-                    <p class="font-sans text-white">DESCEND INTO THE ARCHIVES</p>
+        <div class="marquee-gallery" id="marquee-gallery">
+            <!-- Marquee Rows injected via JS -->
+        </div>
+
+        <!-- Float Calendar Trigger -->
+        <button id="btn-open-calendar" class="z-btn-cyber fixed bottom-10 right-10 z-[100] flex items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            CALENDAR
+        </button>
+
+        <!-- Calendar Modal -->
+        <div id="cyber-calendar-modal" class="modal-overlay">
+            <div class="modal-box">
+                <button id="btn-close-calendar" class="absolute top-4 right-4 text-white/50 hover:text-orbitGreen transition-colors">
+                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                
+                <div class="flex justify-between items-center mb-6 mt-2">
+                    <button id="cal-prev" class="text-orbitGreen hover:text-white transition-colors text-sm font-syncopate">&lt; PREV</button>
+                    <h3 id="cal-month-year" class="font-syncopate text-xl text-white tracking-widest">MARCH 2026</h3>
+                    <button id="cal-next" class="text-orbitGreen hover:text-white transition-colors text-sm font-syncopate">NEXT &gt;</button>
                 </div>
                 
-                <div class="z-tunnel-scene" id="tunnel-scene">
-                    <!-- Events injected via JS -->
+                <div class="grid grid-cols-7 gap-2 mb-2 text-center text-xs font-host text-white/40 tracking-widest">
+                    <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
                 </div>
                 
-                <div class="scroll-progress">
-                    <div class="scroll-progress-bar"></div>
+                <div id="cal-grid" class="grid grid-cols-7 gap-2 text-center font-host">
+                    <!-- Days injected via JS -->
                 </div>
             </div>
         </div>

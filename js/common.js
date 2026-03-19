@@ -9,7 +9,7 @@ window.boundTouchMove = null;
 window.footerReqId = null;
 
 // --- TEAM LOGIC ---
-window.fetchTeam = async function() {
+window.fetchTeam = async function () {
     try {
         const response = await fetch('/api/team?t=' + new Date().getTime());
         if (!response.ok) throw new Error("Team API failed.");
@@ -20,7 +20,7 @@ window.fetchTeam = async function() {
     }
 };
 
-window.renderTeam = function(filterValue, delay = 0) {
+window.renderTeam = function (filterValue, delay = 0) {
     const grid = document.getElementById('team-grid');
     if (!grid) return;
     if (typeof ScrollTrigger !== 'undefined') {
@@ -56,7 +56,7 @@ window.renderTeam = function(filterValue, delay = 0) {
     gsap.fromTo(".team-card-wrapper", { autoAlpha: 0, y: 40, scale: 0.95 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out", stagger: 0.05, delay: delay });
 };
 
-window.initFilters = function() {
+window.initFilters = function () {
     const buttons = document.querySelectorAll('.filter-btn');
     buttons.forEach(btn => {
         btn.onclick = (e) => {
@@ -70,7 +70,7 @@ window.initFilters = function() {
     });
 };
 
-window.animateHero = function(delay = 0) {
+window.animateHero = function (delay = 0) {
     const titleEl = document.getElementById('heroTitle');
     if (!titleEl) return;
     const text = "OUR TEAM";
@@ -106,7 +106,7 @@ window.animateHero = function(delay = 0) {
 };
 
 // --- PROJECTS LOGIC ---
-window.fetchProjects = async function() {
+window.fetchProjects = async function () {
     try {
         const response = await fetch('/api/projects?t=' + new Date().getTime());
         if (!response.ok) throw new Error("API not found.");
@@ -116,7 +116,7 @@ window.fetchProjects = async function() {
     }
 };
 
-window.cleanupProjectReel = function() {
+window.cleanupProjectReel = function () {
     if (window.boundResize) window.removeEventListener('resize', window.boundResize);
     if (window.boundWheel) window.removeEventListener('wheel', window.boundWheel);
     if (window.boundTouchStart) window.removeEventListener('touchstart', window.boundTouchStart);
@@ -124,7 +124,7 @@ window.cleanupProjectReel = function() {
     if (window.reelTicker && typeof gsap !== 'undefined') gsap.ticker.remove(window.reelTicker);
 };
 
-window.initProjectReel = function(delay = 0) {
+window.initProjectReel = function (delay = 0) {
     window.cleanupProjectReel();
     const container = document.querySelector('.reel-container');
     if (!container) return;
@@ -186,7 +186,7 @@ window.initProjectReel = function(delay = 0) {
 };
 
 // --- CONTACT LOGIC ---
-window.initContactPage = function(delay = 0) {
+window.initContactPage = function (delay = 0) {
     const form = document.getElementById('contact-form');
     const status = document.getElementById('form-status');
     const btn = document.getElementById('submit-btn');
@@ -229,14 +229,14 @@ window.initContactPage = function(delay = 0) {
 };
 
 // --- FOOTER CRYSTAL 3D SCENE ---
-window.cleanupFooterCrystal = function() {
+window.cleanupFooterCrystal = function () {
     if (window.footerReqId) {
         cancelAnimationFrame(window.footerReqId);
         window.footerReqId = null;
     }
 };
 
-window.initFooterCrystal = function() {
+window.initFooterCrystal = function () {
     window.cleanupFooterCrystal();
     const footerContainerEl = document.getElementById('footer-canvas');
     if (!footerContainerEl || typeof THREE === 'undefined') return;
@@ -351,26 +351,27 @@ window.initFooterCrystal = function() {
     animateFooter();
 };
 
-// --- EVENTS Z-TUNNEL GALLERY ---
-window.initEventsSpiral = function() {
+// --- KINETIC MARQUEE SHUTTER GALLERY ---
+window.initEventsSpiral = function () {
     window.cleanupEventsSpiral();
-    
+
+    // Smooth scroll setup
     if (typeof Lenis !== 'undefined') {
         window.eventsLenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
         window.eventsLenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => window.eventsLenis.raf(time * 1000));
         gsap.ticker.lagSmoothing(0);
     }
-    
-    const scene = document.getElementById('tunnel-scene');
-    if (!scene) return;
+
+    const gallery = document.getElementById('marquee-gallery');
+    if (!gallery) return;
 
     const eventsData = [
-        { title: "HACKATHON 25", date: "MAR 10, 2026", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" },
-        { title: "WEB DEV BOOTCAMP", date: "FEB 22, 2026", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg" },
+        { title: "DevTalk 2026", date: "MAR 10, 2026", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" },
+        { title: "Induction 2026", date: "FEB 22, 2026", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg" },
         { title: "AI/ML SUMMIT", date: "JAN 15, 2026", img: "image-assets/aiml.jpg" },
-        { title: "DEF-CON", date: "DEC 05, 2025", img: "image-assets/cubers.jpg" },
-        { title: "GAME JAM", date: "NOV 20, 2025", img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670" },
+        { title: "Hackathon", date: "DEC 05, 2025", img: "image-assets/cubers.jpg" },
+        { title: "Fifa Tournament", date: "NOV 20, 2025", img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670" },
         { title: "CP CONTEST", date: "OCT 12, 2025", img: "image-assets/cp.jpg" },
         { title: "APP DEV WEEK", date: "SEP 08, 2025", img: "./image-assets/59e1b74783bbaf6b4ea5b0058a0c51dd.jpg" },
         { title: "UI/UX WORKSHOP", date: "AUG 14, 2025", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" },
@@ -378,126 +379,203 @@ window.initEventsSpiral = function() {
         { title: "CODE SPRINT", date: "JUN 15, 2025", img: "image-assets/cp.jpg" }
     ];
 
-    scene.innerHTML = '';
-    
-    const zGap = window.innerWidth > 768 ? 2000 : 1500;
-    const totalZ = (eventsData.length - 1) * zGap;
-    
-    // Total height dictates scroll distance. Bigger = slower scrub.
-    const scrollHeight = eventsData.length * 150; 
-    document.querySelector('.z-tunnel-viewport').style.height = `${scrollHeight}vh`;
-
-    const cards = [];
+    gallery.innerHTML = '';
 
     eventsData.forEach((ev, i) => {
-        const card = document.createElement('div');
-        card.className = 'z-card';
-        
-        // Offset alternating sides smoothly
-        const xOffset = window.innerWidth > 768 ? (i % 2 === 0 ? 150 : -150) : (i % 2 === 0 ? 40 : -40);
-        const yOffset = (Math.random() - 0.5) * 100;
-        
-        card.innerHTML = `
-            <div class="z-card-image-wrapper">
-                <img src="${ev.img}" alt="${ev.title}" />
-                <div class="z-card-gradient"></div>
+        const row = document.createElement('div');
+        row.className = 'marquee-row group';
+
+        // Let's create an infinite CSS-based marquee (Just title, no date in ribbon)
+        const titleText = `${ev.title} <span style="color:#2BA648">—</span> `.repeat(8);
+
+        row.innerHTML = `
+            <!-- The background image that reveals -->
+            <div class="marquee-image-wrapper">
+                <img src="${ev.img}" class="marquee-img" alt="${ev.title}" />
+                <div class="marquee-overlay"></div>
             </div>
-            <div class="z-card-number">0${i+1}</div>
-            <div class="z-card-content">
-                <div class="z-card-date">${ev.date}</div>
-                <h2 class="z-card-title glow-text">${ev.title}</h2>
+            
+            <!-- The massive text marquee -->
+            <div class="marquee-track" style="--marquee-speed: ${40 + Math.random() * 20}s; --marquee-dir: ${i % 2 === 0 ? 'normal' : 'reverse'};">
+                <h1 class="marquee-text">${titleText}</h1>
+                <h1 class="marquee-text">${titleText}</h1>
+            </div>
+
+            <!-- The Hover Info -->
+            <div class="marquee-hover-info">
+                <div class="marquee-date">${ev.date}</div>
                 <a href="#" onclick="alert('Viewing: ${ev.title}'); return false;" class="z-btn-cyber">ENTER RECORD</a>
             </div>
         `;
-        scene.appendChild(card);
-        cards.push(card);
-        
-        gsap.set(card, {
-            z: -i * zGap,
-            x: xOffset,
-            y: yOffset,
-            opacity: 0 // initially hidden via opacty (updated in onscroll)
+        gallery.appendChild(row);
+
+        // GSAP Hover Triggers
+        const imgWrapper = row.querySelector('.marquee-image-wrapper');
+        const img = row.querySelector('.marquee-img');
+        const texts = row.querySelectorAll('.marquee-text');
+        const hoverInfo = row.querySelector('.marquee-hover-info');
+        const track = row.querySelector('.marquee-track');
+
+        row.addEventListener('mouseenter', () => {
+            // Explode the image background open from the center horizontal slit
+            gsap.to(imgWrapper, {
+                clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+                duration: 0.6,
+                ease: "power3.out",
+                overwrite: true
+            });
+            gsap.to(img, {
+                scale: 1,
+                duration: 4,
+                ease: "power1.out",
+                overwrite: true
+            });
+
+            // Dissolve the text into glass outline
+            gsap.to(texts, {
+                WebkitTextFillColor: 'transparent',
+                WebkitTextStroke: '2px rgba(255, 255, 255, 0.4)',
+                color: 'transparent', // Fallback
+                duration: 0.3,
+                overwrite: true
+            });
+
+            // Slide in the details
+            gsap.to(hoverInfo, {
+                y: 0, opacity: 1, duration: 0.4, ease: "power3.out", delay: 0.1, overwrite: true
+            });
+
+            // Pause the marquee loop physically so you can read it
+            track.style.animationPlayState = 'paused';
+        });
+
+        row.addEventListener('mouseleave', () => {
+            gsap.to(imgWrapper, {
+                clipPath: 'polygon(0% 50%, 100% 50%, 100% 50%, 0% 50%)',
+                duration: 0.4,
+                ease: "power2.in",
+                overwrite: true
+            });
+            gsap.to(img, {
+                scale: 1.1,
+                duration: 0.4,
+                overwrite: true
+            });
+            gsap.to(texts, {
+                WebkitTextFillColor: '#ffffff',
+                WebkitTextStroke: '0px rgba(255, 255, 255, 0)',
+                color: '#ffffff',
+                duration: 0.3,
+                overwrite: true
+            });
+            gsap.to(hoverInfo, {
+                y: 50, opacity: 0, duration: 0.3, ease: "power2.in", overwrite: true
+            });
+            track.style.animationPlayState = 'running';
+        });
+
+        // Add internal inverted parallax movement
+        row.addEventListener('mousemove', (e) => {
+            const rect = row.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+            // Move the image slightly tracking cursor inverted
+            gsap.to(img, {
+                x: x * -50,
+                y: y * -50,
+                duration: 1,
+                ease: "power2.out",
+                overwrite: "auto" // Auto is fine here so it only overrides movement
+            });
+        });
+
+        // Reset parallax
+        row.addEventListener('mouseleave', () => {
+            // We do not want to 'overwrite: true' here because it will kill the scale/clipPath mouseleave tweens!
+            // Just auto overwrite movement properties.
+            gsap.to(img, { x: 0, y: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
         });
     });
 
-    window.eventsScrollTrigger = ScrollTrigger.create({
-        trigger: ".z-tunnel-viewport",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1.2,
-        animation: gsap.to(scene, {
-            z: totalZ,
-            ease: "none"
-        }),
-        onUpdate: (self) => {
-             const progressZ = self.progress * totalZ;
-             
-             cards.forEach((card, i) => {
-                 const cardZ = (-i * zGap) + progressZ;
-                 
-                 let opacity = 1;
-                 // As it passes the camera (cardZ > 100), fade out extremely fast
-                 if (cardZ > 200) {
-                     opacity = 1 - (cardZ - 200) / 300;
-                 } 
-                 // As it appears in the distance (cardZ < -2500)
-                 else if (cardZ < -2000) {
-                     opacity = 1 - ((-cardZ - 2000) / 1000);
-                 }
-                 
-                 gsap.set(card, { 
-                     opacity: Math.max(0, Math.min(1, opacity)),
-                     // slight extra scale as it hits camera so it rushes past
-                     scale: cardZ > 0 ? 1 + (cardZ/800) : 1
-                 });
-             });
-             
-             // Move progress bar height
-             gsap.to('.scroll-progress-bar', { height: `${self.progress * 100}%`, duration: 0.1 });
-        }
-    });
+    // --- CYBER CALENDAR LOGIC ---
+    const btnOpen = document.getElementById('btn-open-calendar');
+    const btnClose = document.getElementById('btn-close-calendar');
+    const modal = document.getElementById('cyber-calendar-modal');
+    const grid = document.getElementById('cal-grid');
+    const monthYearTxt = document.getElementById('cal-month-year');
+    const btnPrev = document.getElementById('cal-prev');
+    const btnNext = document.getElementById('cal-next');
 
-    // Hero Text fade out softly in the first 10% scroll
-    gsap.to('.hero-z-text', {
-        opacity: 0,
-        y: -100,
-        scrollTrigger: {
-            trigger: ".z-tunnel-viewport",
-            start: "top top",
-            end: "10%",
-            scrub: true
-        }
-    });
+    if (btnOpen && modal && grid) {
+        // Find the earliest upcoming event or just use the first event's date
+        let currentDate = new Date(eventsData[0].date);
 
-    // Elegant Mouse Parallax tracking
-    window.tunnelMouseMove = (e) => {
-        const cx = window.innerWidth / 2;
-        const cy = window.innerHeight / 2;
-        const dx = (e.clientX - cx) / cx; // -1 to 1
-        const dy = (e.clientY - cy) / cy;
-        
-        gsap.to(scene, {
-            rotationY: dx * 8,
-            rotationX: -dy * 8,
-            duration: 1.5,
-            ease: "power2.out"
-        });
-    };
-    window.addEventListener('mousemove', window.tunnelMouseMove);
+        // Fallback to today if parsing somehow fails
+        if (isNaN(currentDate.getTime())) currentDate = new Date();
 
-    // Initial populate to evaluate opacities immediately
-    ScrollTrigger.refresh();
+        const renderCalendar = (date) => {
+            grid.innerHTML = '';
+            const year = date.getFullYear();
+            const month = date.getMonth();
+
+            const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+            monthYearTxt.textContent = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Find all events in this active month
+            const monthEvents = eventsData.filter(ev => {
+                const evDate = new Date(ev.date);
+                return evDate.getMonth() === month && evDate.getFullYear() === year;
+            });
+
+            // Blank cells for shift
+            for (let i = 0; i < firstDay; i++) {
+                const blank = document.createElement('div');
+                blank.className = 'cal-day empty';
+                grid.appendChild(blank);
+            }
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'cal-day';
+                dayCell.textContent = i;
+
+                // Match exact day
+                const matchingEvent = monthEvents.find(ev => new Date(ev.date).getDate() === i);
+                if (matchingEvent) {
+                    dayCell.classList.add('has-event');
+                    dayCell.title = matchingEvent.title;
+                    dayCell.onclick = () => {
+                        alert(`RECORDS: Event Details\n\nTitle: ${matchingEvent.title}\nDate: ${matchingEvent.date}\nStatus: UPCOMING`);
+                    };
+                }
+
+                grid.appendChild(dayCell);
+            }
+        };
+
+        renderCalendar(currentDate);
+
+        btnPrev.onclick = () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(currentDate); };
+        btnNext.onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(currentDate); };
+
+        btnOpen.onclick = () => { modal.classList.add('active'); };
+        btnClose.onclick = () => { modal.classList.remove('active'); };
+        modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('active'); };
+    }
 };
 
-window.cleanupEventsSpiral = function() {
+window.cleanupEventsSpiral = function () {
     if (window.eventsScrollTrigger) { window.eventsScrollTrigger.kill(); window.eventsScrollTrigger = null; }
     if (window.eventsLenis) { window.eventsLenis.destroy(); window.eventsLenis = null; }
-    if (window.tunnelMouseMove) { window.removeEventListener('mousemove', window.tunnelMouseMove); window.tunnelMouseMove = null; }
-    if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.getAll().forEach(t => { if(t.vars.trigger === '.z-tunnel-viewport') t.kill(); }); }
+    if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.getAll().forEach(t => { if (t.vars.trigger === '.marquee-gallery') t.kill(); }); }
 };
 
 // --- BARBA CORE ---
-window.initBarba = function() {
+window.initBarba = function () {
     if (window.barbaInitialized) return;
     window.barbaInitialized = true;
 
@@ -544,8 +622,8 @@ window.initBarba = function() {
                 afterEnter() {
                     window.cleanupFooterCrystal();
                 },
-                beforeLeave() { 
-                    window.cleanupProjectReel(); 
+                beforeLeave() {
+                    window.cleanupProjectReel();
                 },
                 beforeOnce(data) {
                     document.body.style.overflow = 'hidden';
