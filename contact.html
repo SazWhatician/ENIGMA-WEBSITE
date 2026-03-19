@@ -170,14 +170,8 @@
         }
 
         @media(max-width: 768px) {
-            nav {
-                padding: 1.5rem;
-            }
-
-            .nav-items {
-                gap: 1rem;
-                font-size: 0.8rem;
-            }
+            nav { padding: 1.2rem; flex-direction: column; gap: 0.8rem; }
+            .nav-items { gap: 0.8rem; font-size: 0.75rem; flex-wrap: wrap; justify-content: center; }
         }
 
         /* Page Transitions */
@@ -207,7 +201,11 @@
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 10rem 2rem;
+            padding: 10rem 2rem 4rem 2rem;
+        }
+
+        @media(max-width: 768px) {
+            .contact-container { padding: 8rem 1.25rem 3rem 1.25rem; }
         }
 
         /* --- ENIGMA FORM STYLES --- */
@@ -337,7 +335,7 @@
         </style>
 
         <div class="contact-container">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
 
                 <div class="contact-info">
                     <h1 class="font-syncopate text-5xl md:text-7xl mb-6 leading-tight" id="contact-title">
