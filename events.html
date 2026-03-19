@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ENIGMA | Events</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Syncopate:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.0.45/dist/lenis.min.js"></script>
+    <script src="https://unpkg.com/@barba/core"></script>
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#000000', orbitGreen: '#2BA648', orbitDark: '#0F3918',
+                    },
+                    fontFamily: {
+                        sans: ['"Host Grotesk"', 'sans-serif'], syncopate: ['"Syncopate"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body data-barba="wrapper" class="antialiased selection:bg-orbitGreen selection:text-void bg-black text-white overflow-x-hidden">
+
+    <div class="page-transition">
+        <div class="transition-panel"></div>
+        <div class="transition-panel"></div>
+        <div class="transition-panel"></div>
+    </div>
+
+    <!-- loading screen -->
+    <div id="loading-screen"
+        style="position: fixed; inset: 0; z-index: 50; display: flex; justify-content: center; align-items: center; background-color: #000; font-family: 'Syncopate', sans-serif; font-size: 2rem; color: #2BA648; flex-direction: column; gap: 1rem;">
+        <img src="./image-assets/white-no bg.png" class="w-8 h-8 animate-[spin_4s_linear_infinite]" alt="loader">
+    </div>
+
+    <div class="blueprint-bg">
+        <div class="bp-circle"></div>
+        <div class="bp-line-h"></div>
+        <div class="bp-line-v"></div>
+        <div class="bp-line-d1"></div>
+        <div class="bp-line-d2"></div>
+    </div>
+
+    <main data-barba="container" data-barba-namespace="events">
+        <style>
+        /* --- UNIFIED CSS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Host Grotesk', sans-serif;
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar { display: none; }
+        html { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Blueprint Background */
+        .blueprint-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .bp-circle {
+            position: absolute;
+            width: 90vmin;
+            height: 90vmin;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .bp-line-h {
+            position: absolute;
+            width: 100vw;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .bp-line-v {
+            position: absolute;
+            width: 1px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .bp-line-d1 {
+            position: absolute;
+            width: 150vw;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.03);
+            transform: rotate(30deg);
+        }
+
+        .bp-line-d2 {
+            position: absolute;
+            width: 150vw;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.03);
+            transform: rotate(-30deg);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            mix-blend-mode: difference;
+        }
+
+        nav,
+        .logo p {
+            font-weight: 700;
+            font-size: 0.9rem;
+            font-family: "Host Grotesk", sans-serif;
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-items a {
+            text-decoration: none;
+            color: white;
+            transition: color 0.3s;
+        }
+
+        .nav-items a:hover {
+            color: #2BA648;
+        }
+
+        @media(max-width: 768px) {
+            nav {
+                padding: 1.2rem;
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .nav-items {
+                gap: 0.8rem;
+                font-size: 0.75rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        /* Page Transitions */
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            pointer-events: none;
+            display: flex;
+        }
+
+        .transition-panel {
+            flex: 1;
+            height: 100%;
+            background-color: #2BA648;
+            transform: translateY(100%);
+            will-change: transform;
+        }
+
+        /* --- SPIRAL GALLERY --- */
+        .spiral-viewport {
+            position: relative;
+            width: 100%;
+        }
+
+        .spiral-hero {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            pointer-events: none;
+            text-align: center;
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 5px rgba(43, 166, 72, 0.8), 0 0 20px rgba(24, 93, 40, 0.5);
+        }
+
+        .spiral-stage {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            perspective: 1200px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .spiral-container {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform-style: preserve-3d;
+            width: 0; height: 0;
+        }
+
+        .spiral-card {
+            position: absolute;
+            top: 0; left: 0;
+            width: 320px; height: 420px;
+            margin-left: -160px; margin-top: -210px;
+            transform-style: preserve-3d;
+            pointer-events: auto;
+            cursor: pointer;
+            will-change: transform;
+        }
+        
+        @media(max-width: 768px) {
+            .spiral-card {
+                width: 240px; height: 320px;
+                margin-left: -120px; margin-top: -160px;
+            }
+        }
+
+        .spiral-card-inner {
+            width: 100%; height: 100%;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(43, 166, 72, 0.3);
+            background: #050505;
+            transform-style: preserve-3d;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+        }
+        
+        .spiral-card-inner:hover {
+            transform: translateZ(50px) scale(1.05);
+            box-shadow: 0 30px 60px rgba(43, 166, 72, 0.2);
+            border-color: #2BA648;
+        }
+
+        .spiral-card img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6) grayscale(40%);
+            transition: filter 0.4s;
+        }
+        
+        .spiral-card:hover img {
+            filter: brightness(0.9) grayscale(0%);
+        }
+
+        .spiral-card-overlay {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            padding: 2rem 1.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+            transform: translateZ(20px);
+        }
+
+        .spiral-card-date {
+            font-family: 'Host Grotesk', sans-serif;
+            color: #2BA648;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .spiral-card-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        /* --- CYBER BUTTON --- */
+        .btn-cyber {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #2BA648;
+            background: rgba(43, 166, 72, 0.05);
+            color: #2BA648;
+            z-index: 1;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            font-family: 'Host Grotesk', sans-serif;
+            text-decoration: none;
+        }
+
+        .btn-cyber::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background: #2BA648;
+            z-index: -1;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-cyber:hover {
+            color: #000;
+            letter-spacing: 0.2em;
+            box-shadow: 0 0 25px rgba(43, 166, 72, 0.4);
+        }
+
+        .btn-cyber:hover::before {
+            height: 100%;
+        }
+        </style>
+
+        <nav>
+            <div class="logo"><a href="index.html" data-barba-prevent>ENIGMA.</a></div>
+            <div class="nav-items">
+                <a href="events.html" class="text-orbitGreen">Events</a>
+                <a href="project.html">Projects</a>
+                <a href="team.html">Team</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </nav>
+
+        <div class="spiral-viewport">
+            <div class="spiral-hero" id="spiral-hero">
+                <h1 class="font-syncopate text-center text-4xl md:text-7xl glow-text leading-tight">OUR<br><span class="text-orbitGreen">EVENTS</span></h1>
+                <p class="text-center text-gray-400 mt-4 tracking-widest uppercase text-sm">Scroll to Descend</p>
+            </div>
+            
+            <div class="spiral-stage">
+                <div class="spiral-container" id="spiral-container">
+                    <!-- Events injected via JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="./js/common.js"></script>
+</body>
+
+</html>
