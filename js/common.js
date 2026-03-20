@@ -388,12 +388,15 @@ window.initEventsSpiral = function () {
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x000000, 0.03);
 
+    const isMobileViewport = window.innerWidth <= 768;
+
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 12;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isMobileViewport, powerPreference: "high-performance" });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth > 768 ? 2 : 1));
+    // Hard cap pixel ratio to prevent retina mobile screens from generating massive resolution and lagging
+    renderer.setPixelRatio(isMobileViewport ? Math.min(window.devicePixelRatio, 1) : Math.min(window.devicePixelRatio, 1.5));
     canvasContainer.appendChild(renderer.domElement);
 
     // Lighting
@@ -405,8 +408,8 @@ window.initEventsSpiral = function () {
     window.enigmaCoreGroup = new THREE.Group();
     scene.add(window.enigmaCoreGroup);
 
-    // Inner Cipher Matrix
-    const coreGeo = new THREE.IcosahedronGeometry(2, 1);
+    // Inner Cipher Matrix (Reduced detail on mobile)
+    const coreGeo = new THREE.IcosahedronGeometry(2, isMobileViewport ? 0 : 1);
     const coreMat = new THREE.MeshStandardMaterial({
         color: 0x000000,
         emissive: 0x185D28,
@@ -418,20 +421,21 @@ window.initEventsSpiral = function () {
     const cipherCore = new THREE.Mesh(coreGeo, coreMat);
     window.enigmaCoreGroup.add(cipherCore);
 
-    // Orbiting Data Rings
+    // Orbiting Data Rings (Fewer Rings and Segments on mobile)
     const ringMat = new THREE.MeshStandardMaterial({ color: 0x2BA648, wireframe: true, transparent: true, opacity: 0.4 });
     const rings = [];
-    for(let i = 1; i <= 3; i++) {
-        const ring = new THREE.Mesh(new THREE.TorusGeometry(3 + i * 1.5, 0.05, 8, 64), ringMat);
+    const ringCount = isMobileViewport ? 2 : 3;
+    for(let i = 1; i <= ringCount; i++) {
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(3 + i * 1.5, 0.05, 4, isMobileViewport ? 32 : 64), ringMat);
         ring.rotation.x = Math.random() * Math.PI;
         ring.rotation.y = Math.random() * Math.PI;
         rings.push(ring);
         window.enigmaCoreGroup.add(ring);
     }
 
-    // Data Particles
+    // Data Particles (Drastically reduced count on mobile)
     const particlesGeo = new THREE.BufferGeometry();
-    const particleCount = window.innerWidth > 768 ? 1200 : 400; // Less particles on mobile
+    const particleCount = isMobileViewport ? 150 : 600; 
     const posArray = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount * 3; i++) posArray[i] = (Math.random() - 0.5) * 25;
     particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
@@ -451,9 +455,9 @@ window.initEventsSpiral = function () {
         cipherCore.rotation.y += 0.005;
         cipherCore.rotation.x += 0.002;
         
-        rings[0].rotation.x += 0.008;
-        rings[1].rotation.y -= 0.005;
-        rings[2].rotation.z += 0.007;
+        if(rings[0]) rings[0].rotation.x += 0.008;
+        if(rings[1]) rings[1].rotation.y -= 0.005;
+        if(rings[2]) rings[2].rotation.z += 0.007;
 
         particleSystem.rotation.y = time * 0.05;
 
