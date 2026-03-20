@@ -359,7 +359,10 @@ window.initEventsSpiral = function () {
     if (typeof Lenis !== 'undefined') {
         window.eventsLenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
         window.eventsLenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((time) => window.eventsLenis.raf(time * 1000));
+        window.eventsLenisTicker = (time) => {
+            if (window.eventsLenis) window.eventsLenis.raf(time * 1000);
+        };
+        gsap.ticker.add(window.eventsLenisTicker);
         gsap.ticker.lagSmoothing(0);
     }
 
@@ -648,6 +651,7 @@ window.initEventsSpiral = function () {
 
 window.cleanupEventsSpiral = function () {
     if (window.eventsScrollTrigger) { window.eventsScrollTrigger.kill(); window.eventsScrollTrigger = null; }
+    if (window.eventsLenisTicker) { gsap.ticker.remove(window.eventsLenisTicker); window.eventsLenisTicker = null; }
     if (window.eventsLenis) { window.eventsLenis.destroy(); window.eventsLenis = null; }
     if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.getAll().forEach(t => { if (t.vars.trigger === '#events-scroll-track') t.kill(); }); }
     
