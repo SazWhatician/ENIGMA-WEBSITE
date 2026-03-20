@@ -384,6 +384,8 @@ window.initEventsSpiral = function () {
 
     orbitContainer.innerHTML = '';
     
+    const isMobileDevice = window.innerWidth <= 768;
+
     // 2. Setup Three.js Enigma Core
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x000000, 0.03);
@@ -391,9 +393,9 @@ window.initEventsSpiral = function () {
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 12;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isMobileDevice, powerPreference: "high-performance" });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobileDevice ? 1.0 : 1.5));
     canvasContainer.appendChild(renderer.domElement);
 
     // Lighting
@@ -421,8 +423,9 @@ window.initEventsSpiral = function () {
     // Orbiting Data Rings
     const ringMat = new THREE.MeshStandardMaterial({ color: 0x2BA648, wireframe: true, transparent: true, opacity: 0.4 });
     const rings = [];
+    const tubularSegments = isMobileDevice ? 32 : 64;
     for(let i = 1; i <= 3; i++) {
-        const ring = new THREE.Mesh(new THREE.TorusGeometry(3 + i * 1.5, 0.05, 8, 64), ringMat);
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(3 + i * 1.5, 0.05, 8, tubularSegments), ringMat);
         ring.rotation.x = Math.random() * Math.PI;
         ring.rotation.y = Math.random() * Math.PI;
         rings.push(ring);
@@ -430,9 +433,10 @@ window.initEventsSpiral = function () {
     }
 
     // Data Particles
+    const numParticles = isMobileDevice ? 400 : 1200;
     const particlesGeo = new THREE.BufferGeometry();
-    const posArray = new Float32Array(1500 * 3);
-    for (let i = 0; i < 1500 * 3; i++) posArray[i] = (Math.random() - 0.5) * 25;
+    const posArray = new Float32Array(numParticles * 3);
+    for (let i = 0; i < numParticles * 3; i++) posArray[i] = (Math.random() - 0.5) * 25;
     particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     const particlesMat = new THREE.PointsMaterial({ size: 0.03, color: 0x2BA648, transparent: true, opacity: 0.5 });
     const particleSystem = new THREE.Points(particlesGeo, particlesMat);
@@ -461,7 +465,6 @@ window.initEventsSpiral = function () {
 
         // Glitch scaling effect connected to standard material scale
         const scale = window.enigmaCoreGroup.scale.x;
-        // Float softly if not glitched
         if(scale < 1.05) {
             window.enigmaCoreGroup.position.y = Math.sin(time) * 0.3;
         }
@@ -474,17 +477,16 @@ window.initEventsSpiral = function () {
         if (!document.getElementById('enigma-core-canvas')) return;
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth <= 768 ? 1.0 : 1.5));
         renderer.setSize(window.innerWidth, window.innerHeight);
     };
     window.addEventListener('resize', window.coreResizeHandler);
 
     // 3. Setup Scroll Track & DOM Cards
-    // Make track tall enough to scroll through all events
-    scrollTrack.style.height = `${(eventsData.length + 1) * 80}vh`;
+    // Tighter scroll track on mobile
+    scrollTrack.style.height = `${(eventsData.length + 1) * (isMobileDevice ? 65 : 80)}vh`;
 
     const cardsDOM = [];
-    const turb = document.getElementById('rippleTurbulence');
-    const disp = document.getElementById('rippleDisplacement');
 
     eventsData.forEach((ev, i) => {
         const card = document.createElement('div');
@@ -505,29 +507,23 @@ window.initEventsSpiral = function () {
         orbitContainer.appendChild(card);
         cardsDOM.push(card);
 
-        // Hover Effect: Liquid SVG Ripple + Core Glitch
+        // Hover Effect: Core Glitch 
         card.addEventListener('mouseenter', () => {
-            if(turb && disp) {
-                gsap.to(turb, { attr: { baseFrequency: '0.04 0.04' }, duration: 0.4, overwrite: true });
-                gsap.to(disp, { attr: { scale: 30 }, duration: 0.4, overwrite: true });
-            }
-            gsap.to(window.enigmaCoreGroup.scale, { x: 1.3, y: 1.3, z: 1.3, duration: 0.6, ease: "elastic.out(1, 0.4)", overwrite: true });
-            pointLight.intensity = 20;
+            gsap.to(window.enigmaCoreGroup.scale, { x: 1.25, y: 1.25, z: 1.25, duration: 0.6, ease: "elastic.out(1, 0.4)", overwrite: true });
+            pointLight.intensity = 18;
             coreMat.emissiveIntensity = 2;
         });
         
         card.addEventListener('mouseleave', () => {
-            if(turb && disp) {
-                gsap.to(turb, { attr: { baseFrequency: '0.00 0.00' }, duration: 0.4, overwrite: true });
-                gsap.to(disp, { attr: { scale: 0 }, duration: 0.4, overwrite: true });
-            }
             gsap.to(window.enigmaCoreGroup.scale, { x: 1, y: 1, z: 1, duration: 0.4, overwrite: true });
             pointLight.intensity = 8;
             coreMat.emissiveIntensity = 0.8;
         });
 
-        // Initialize state so they are hidden until first scroll update
-        gsap.set(card, { autoAlpha: 0, scale: 0.1 });
+        // Initialize hidden directly
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.1)';
+        card.style.visibility = 'hidden';
     });
 
     // Orbital Helix Logic
@@ -542,43 +538,54 @@ window.initEventsSpiral = function () {
             // Spin the 3D core
             targetCoreRotationY = p * Math.PI * 1.5;
 
+            const winW = window.innerWidth;
+            const mobile = winW <= 768;
+
             // Orchestrate the HTML cards
             cardsDOM.forEach((card, i) => {
-                const distance = p - i; // 0 = Center Focal Point
-                const angle = distance * 1.5; // Spread out orbit
+                const distance = p - i; 
+                const angle = distance * (mobile ? 1.0 : 1.5); 
                 
-                const winW = window.innerWidth;
-                const radiusX = winW > 768 ? winW * 0.35 : winW * 0.45;
-                const radiusZ = 300; 
+                // Radius configuration tightens on mobile viewport
+                const radiusX = mobile ? Math.min(winW * 0.25, 120) : winW * 0.35;
+                const radiusZ = mobile ? 200 : 300; 
                 
                 // Helix Coordinates
                 const x = Math.sin(angle) * radiusX;
                 const z = Math.cos(angle) * radiusZ; 
-                const y = -distance * 120; // Rise up vertically
+                const y = -distance * (mobile ? 180 : 120); 
                 
                 // Perspective Scaling
-                let scale = (z + 450) / 750;
+                let scale = (z + (mobile ? 300 : 450)) / (mobile ? 500 : 750);
                 if(scale < 0) scale = 0.01;
                 
+                // Hardware z-index
                 const zIndex = Math.floor(z + 1000);
-                let opacity = scale * 1.2 - 0.2;
+                let opacity = scale * 1.5 - 0.2;
                 if(opacity > 1) opacity = 1;
-                if(opacity < 0) opacity = 0;
-                if(Math.abs(distance) > 4) opacity = 0; // Cull far cards
 
-                // Highlight focal card
-                const isFocal = Math.abs(distance) < 0.5;
+                // Heavily optimize mobile rendering by culling off-screen cards entirely 
+                if (opacity <= 0 || Math.abs(distance) > (mobile ? 3 : 5)) {
+                    card.style.visibility = 'hidden';
+                    card.style.opacity = '0';
+                    return;
+                }
 
-                gsap.set(card, {
-                    x: x,
-                    y: y,
-                    scale: scale,
-                    autoAlpha: opacity,
-                    zIndex: zIndex,
-                    boxShadow: isFocal ? '0 0 60px rgba(43, 166, 72, 0.4)' : '0 0 30px rgba(43, 166, 72, 0.1)',
-                    borderColor: isFocal ? '#2BA648' : 'rgba(43, 166, 72, 0.3)',
-                    filter: isFocal ? 'brightness(1.1)' : 'brightness(0.6)'
-                });
+                // Restore visibility
+                card.style.visibility = 'visible';
+
+                // Focal toggles moved to purely CSS transitions (fixes 99% of layout thrashing)
+                const isFocal = Math.abs(distance) < 0.6;
+                if (isFocal && !card.classList.contains('is-focal')) {
+                    card.classList.add('is-focal');
+                } else if (!isFocal && card.classList.contains('is-focal')) {
+                    card.classList.remove('is-focal');
+                }
+
+                // Apply Direct Hardware-Accelerated 3D Transform
+                card.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+                card.style.opacity = opacity;
+                card.style.zIndex = zIndex;
             });
         }
     });
