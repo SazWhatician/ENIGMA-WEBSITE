@@ -351,10 +351,11 @@ window.initFooterCrystal = function () {
     animateFooter();
 };
 
-// --- // --- LIQUID METAL MONOLITHS ---
+// --- ENIGMA CORE 3D SCENE & ORBIT GALLERY ---
 window.initEventsSpiral = function () {
     window.cleanupEventsSpiral();
 
+    // 1. Smooth scroll setup
     if (typeof Lenis !== 'undefined') {
         window.eventsLenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
         window.eventsLenis.on('scroll', ScrollTrigger.update);
@@ -382,153 +383,89 @@ window.initEventsSpiral = function () {
     ];
 
     orbitContainer.innerHTML = '';
-    const isMobileDevice = window.innerWidth <= 768;
-
-    // 2. Setup Three.js Custom GLSL Liquid Metal
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x020202);
     
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, -2, 12);
-    camera.lookAt(0, 0, 0);
+    // 2. Setup Three.js Enigma Core
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x000000, 0.03);
 
-    const renderer = new THREE.WebGLRenderer({ alpha: false, antialias: !isMobileDevice, powerPreference: "high-performance" });
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 12;
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobileDevice ? 1.0 : 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth > 768 ? 2 : 1));
     canvasContainer.appendChild(renderer.domElement);
 
-    const liquidGeo = new THREE.PlaneGeometry(80, 80, isMobileDevice ? 64 : 128, isMobileDevice ? 64 : 128);
+    // Lighting
+    scene.add(new THREE.AmbientLight(0x000000));
+    const pointLight = new THREE.PointLight(0x2BA648, 8, 30);
+    scene.add(pointLight);
 
-    const liquidVertexShader = `
-        uniform float u_time;
-        uniform vec2 u_mouse;
-        varying vec2 vUv;
-        varying vec3 vPos;
-        varying vec3 vNormal;
+    // The Core Group
+    window.enigmaCoreGroup = new THREE.Group();
+    scene.add(window.enigmaCoreGroup);
 
-        vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
-        float snoise(vec2 v){
-            const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
-            vec2 i  = floor(v + dot(v, C.yy) );
-            vec2 x0 = v -   i + dot(i, C.xx);
-            vec2 i1;
-            i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-            vec4 x12 = x0.xyxy + C.xxzz;
-            x12.xy -= i1;
-            i = mod(i, 289.0);
-            vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
-            vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-            m = m*m; m = m*m;
-            vec3 x = 2.0 * fract(p * C.www) - 1.0;
-            vec3 h = abs(x) - 0.5;
-            vec3 ox = floor(x + 0.5);
-            vec3 a0 = x - ox;
-            m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-            vec3 g;
-            g.x  = a0.x  * x0.x  + h.x  * x0.y;
-            g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-            return 130.0 * dot(m, g);
-        }
-
-        void main() {
-            vUv = uv;
-            vec3 pos = position;
-
-            float wave1 = snoise(vec2(pos.x * 0.08, pos.y * 0.08 + u_time * 0.2)) * 1.5;
-            float wave2 = snoise(vec2(pos.x * 0.2 - u_time * 0.1, pos.y * 0.2)) * 0.5;
-            float mainWave = wave1 + wave2;
-            
-            pos.z += mainWave;
-
-            vec2 mouseWorld = vec2(u_mouse.x * 15.0, u_mouse.y * 15.0);
-            float dist = distance(pos.xy, mouseWorld);
-            float repel = smoothstep(12.0, 0.0, dist);
-            pos.z -= repel * 4.0; 
-
-            vPos = pos;
-
-            float eps = 0.1;
-            float nX_w1 = snoise(vec2((pos.x + eps) * 0.08, pos.y * 0.08 + u_time * 0.2)) * 1.5;
-            float nX_w2 = snoise(vec2((pos.x + eps) * 0.2 - u_time * 0.1, pos.y * 0.2)) * 0.5;
-            float nX_r = smoothstep(12.0, 0.0, distance(vec2(pos.x + eps, pos.y), mouseWorld)) * 4.0;
-            float dzdx = ((nX_w1 + nX_w2 - nX_r) - (mainWave - repel * 4.0)) / eps;
-            
-            float nY_w1 = snoise(vec2(pos.x * 0.08, (pos.y + eps) * 0.08 + u_time * 0.2)) * 1.5;
-            float nY_w2 = snoise(vec2(pos.x * 0.2 - u_time * 0.1, (pos.y + eps) * 0.2)) * 0.5;
-            float nY_r = smoothstep(12.0, 0.0, distance(vec2(pos.x, pos.y + eps), mouseWorld)) * 4.0;
-            float dzdy = ((nY_w1 + nY_w2 - nY_r) - (mainWave - repel * 4.0)) / eps;
-
-            vNormal = normalize(vec3(-dzdx, -dzdy, 1.0));
-
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-        }
-    `;
-
-    const liquidFragmentShader = `
-        uniform vec3 u_color;
-        varying vec2 vUv;
-        varying vec3 vPos;
-        varying vec3 vNormal;
-
-        void main() {
-            vec3 viewDir = normalize(cameraPosition - vPos);
-            vec3 normal = normalize(vNormal);
-
-            vec3 lightDir1 = normalize(vec3(5.0, -10.0, 10.0)); 
-            vec3 lightDir2 = normalize(vec3(-10.0, 10.0, 5.0)); 
-
-            float spec1 = pow(max(dot(viewDir, reflect(-lightDir1, normal)), 0.0), 32.0);
-            float spec2 = pow(max(dot(viewDir, reflect(-lightDir2, normal)), 0.0), 16.0);
-            float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 3.0);
-
-            vec3 base = u_color * 0.02; 
-            vec3 specularColor = vec3(0.9, 0.95, 1.0) * spec1 * 0.8;
-            vec3 specularFill = vec3(0.6, 0.7, 0.8) * spec2 * 0.3;
-            vec3 rim = vec3(0.3, 0.4, 0.5) * fresnel * 0.6;
-
-            vec3 finalColor = base + specularColor + specularFill + rim;
-            finalColor *= smoothstep(-3.0, 2.0, vPos.z);
-
-            gl_FragColor = vec4(finalColor, 1.0);
-        }
-    `;
-
-    const liquidMat = new THREE.ShaderMaterial({
-        vertexShader: liquidVertexShader,
-        fragmentShader: liquidFragmentShader,
-        uniforms: {
-            u_time: { value: 0 },
-            u_mouse: { value: new THREE.Vector2(0, 0) },
-            u_color: { value: new THREE.Color(0x050505) }
-        },
-        wireframe: false,
-        side: THREE.FrontSide
+    // Inner Cipher Matrix
+    const coreGeo = new THREE.IcosahedronGeometry(2, 1);
+    const coreMat = new THREE.MeshStandardMaterial({
+        color: 0x000000,
+        emissive: 0x185D28,
+        emissiveIntensity: 0.8,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.8
     });
+    const cipherCore = new THREE.Mesh(coreGeo, coreMat);
+    window.enigmaCoreGroup.add(cipherCore);
 
-    const liquidMesh = new THREE.Mesh(liquidGeo, liquidMat);
-    liquidMesh.rotation.x = -Math.PI / 2.5; // Tilted back
-    liquidMesh.position.y = -2.0; 
-    scene.add(liquidMesh);
+    // Orbiting Data Rings
+    const ringMat = new THREE.MeshStandardMaterial({ color: 0x2BA648, wireframe: true, transparent: true, opacity: 0.4 });
+    const rings = [];
+    for(let i = 1; i <= 3; i++) {
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(3 + i * 1.5, 0.05, 8, 64), ringMat);
+        ring.rotation.x = Math.random() * Math.PI;
+        ring.rotation.y = Math.random() * Math.PI;
+        rings.push(ring);
+        window.enigmaCoreGroup.add(ring);
+    }
 
-    window.monolithMouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
-    window.monolithMouseHandler = (e) => {
-        window.monolithMouse.targetX = (e.clientX / window.innerWidth) * 2 - 1;
-        window.monolithMouse.targetY = -(e.clientY / window.innerHeight) * 2 + 1;
-    };
-    window.addEventListener('mousemove', window.monolithMouseHandler);
+    // Data Particles
+    const particlesGeo = new THREE.BufferGeometry();
+    const particleCount = window.innerWidth > 768 ? 1200 : 400; // Less particles on mobile
+    const posArray = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i++) posArray[i] = (Math.random() - 0.5) * 25;
+    particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMat = new THREE.PointsMaterial({ size: 0.03, color: 0x2BA648, transparent: true, opacity: 0.5 });
+    const particleSystem = new THREE.Points(particlesGeo, particlesMat);
+    scene.add(particleSystem);
 
     window.enigmaReqId = null;
+    let targetCoreRotationY = 0;
     
     function animateCore() {
         if (!document.getElementById('enigma-core-canvas')) return;
         window.enigmaReqId = requestAnimationFrame(animateCore);
 
         const time = performance.now() * 0.001;
-        window.monolithMouse.x += (window.monolithMouse.targetX - window.monolithMouse.x) * 0.05;
-        window.monolithMouse.y += (window.monolithMouse.targetY - window.monolithMouse.y) * 0.05;
+        
+        cipherCore.rotation.y += 0.005;
+        cipherCore.rotation.x += 0.002;
+        
+        rings[0].rotation.x += 0.008;
+        rings[1].rotation.y -= 0.005;
+        rings[2].rotation.z += 0.007;
 
-        liquidMat.uniforms.u_time.value = time;
-        liquidMat.uniforms.u_mouse.value.set(window.monolithMouse.x, window.monolithMouse.y);
+        particleSystem.rotation.y = time * 0.05;
+
+        // Smoothly interpolate GSAP scroll rotation
+        window.enigmaCoreGroup.rotation.y += (targetCoreRotationY - window.enigmaCoreGroup.rotation.y) * 0.1;
+
+        // Glitch scaling effect connected to standard material scale
+        const scale = window.enigmaCoreGroup.scale.x;
+        // Float softly if not glitched
+        if(scale < 1.05) {
+            window.enigmaCoreGroup.position.y = Math.sin(time) * 0.3;
+        }
 
         renderer.render(scene, camera);
     }
@@ -538,29 +475,30 @@ window.initEventsSpiral = function () {
         if (!document.getElementById('enigma-core-canvas')) return;
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth <= 768 ? 1.0 : 1.5));
         renderer.setSize(window.innerWidth, window.innerHeight);
     };
     window.addEventListener('resize', window.coreResizeHandler);
 
-    // 3. Monolith Scroll Track & DOM Cards
-    scrollTrack.style.height = `${(eventsData.length + 1) * (isMobileDevice ? 80 : 100)}vh`;
+    // 3. Setup Scroll Track & DOM Cards
+    // Make track tall enough to scroll through all events
+    scrollTrack.style.height = `${(eventsData.length + 1) * 80}vh`;
 
     const cardsDOM = [];
+    const turb = document.getElementById('rippleTurbulence');
+    const disp = document.getElementById('rippleDisplacement');
 
     eventsData.forEach((ev, i) => {
         const card = document.createElement('div');
-        card.className = 'monolith-card';
+        card.className = 'orbit-card';
         card.innerHTML = `
-            <div class="monolith-image-wrap">
-                <img src="${ev.img}" class="monolith-image" alt="${ev.title}" crossorigin="anonymous" />
-                <div class="monolith-mirror-surface"></div>
+            <div class="orbit-image-wrap">
+                <img src="${ev.img}" class="orbit-image" alt="${ev.title}" crossorigin="anonymous" />
             </div>
-            <div class="monolith-info">
-                <h3 class="monolith-title">${ev.title}</h3>
-                <p class="monolith-date">${ev.date}</p>
-                <a href="#" class="monolith-btn">
-                    VIEW DETAILS
+            <div class="orbit-info">
+                <h3 class="orbit-title">${ev.title}</h3>
+                <p class="orbit-date">${ev.date}</p>
+                <a href="#" class="orbit-btn">
+                    ENTER SEQUENCE
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </a>
             </div>
@@ -568,12 +506,24 @@ window.initEventsSpiral = function () {
         orbitContainer.appendChild(card);
         cardsDOM.push(card);
 
-        card.style.opacity = '0';
-        card.style.transform = 'scale(0.1)';
-        card.style.visibility = 'hidden';
+        // Hover Effect: Core Glitch Flash only
+        card.addEventListener('mouseenter', () => {
+            gsap.to(window.enigmaCoreGroup.scale, { x: 1.15, y: 1.15, z: 1.15, duration: 0.4, ease: "back.out(1.5)", overwrite: true });
+            pointLight.intensity = 15;
+            coreMat.emissiveIntensity = 1.5;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            gsap.to(window.enigmaCoreGroup.scale, { x: 1, y: 1, z: 1, duration: 0.4, overwrite: true });
+            pointLight.intensity = 8;
+            coreMat.emissiveIntensity = 0.8;
+        });
+
+        // Initialize state so they are hidden until first scroll update
+        gsap.set(card, { autoAlpha: 0, scale: 0.1 });
     });
 
-    // Monolith Ascension Logic
+    // Orbital Helix Logic
     window.eventsScrollTrigger = ScrollTrigger.create({
         trigger: '#events-scroll-track',
         start: 'top top',
@@ -581,60 +531,62 @@ window.initEventsSpiral = function () {
         scrub: 1.5,
         onUpdate: (self) => {
             const p = self.progress * eventsData.length;
-            const winW = window.innerWidth;
-            const mobile = winW <= 768;
+            
+            // Spin the 3D core
+            targetCoreRotationY = p * Math.PI * 1.5;
 
+            // Orchestrate the HTML cards
             cardsDOM.forEach((card, i) => {
-                const distance = p - i; 
-                const dir = (i % 2 === 0 ? -1 : 1);
-                const x = dir * (mobile ? winW * 0.15 : winW * 0.2) * (1.0 - Math.abs(distance)*0.2); 
+                const distance = p - i; // 0 = Center Focal Point
+                const angle = distance * 1.5; // Spread out orbit
                 
-                let y = 0;
-                let rotateX = 0;
-                let scale = 1.0;
-                let opacity = 0;
+                const winW = window.innerWidth;
+                const isMobile = winW <= 768;
+                
+                const radiusX = isMobile ? winW * 0.25 : winW * 0.35;
+                const radiusZ = isMobile ? 220 : 300; 
+                
+                // Helix Coordinates
+                const x = Math.sin(angle) * radiusX;
+                const z = Math.cos(angle) * radiusZ; 
+                const y = -distance * (isMobile ? 180 : 120); // Rise up vertically (push more on mobile)
+                
+                // Perspective Scaling
+                let scale = (z + (isMobile ? 350 : 450)) / (isMobile ? 600 : 750);
+                if(scale < 0) scale = 0.01;
+                
+                const zIndex = Math.floor(z + 1000);
+                let opacity = scale * 1.2 - 0.2;
+                if(opacity > 1) opacity = 1;
+                if(opacity < 0) opacity = 0;
+                if(Math.abs(distance) > (isMobile ? 3 : 4)) opacity = 0; // Cull far cards aggressively
 
-                if (distance < 0) {
-                    const absDist = Math.abs(distance);
-                    y = Math.pow(absDist, 1.4) * (mobile ? 120 : 180);
-                    rotateX = absDist * 15; 
-                    scale = 1.0 - absDist * 0.15;
-                    opacity = 1.0 - absDist * 0.35;
-                } else {
-                    y = -Math.pow(distance, 1.5) * (mobile ? 150 : 250);
-                    rotateX = -distance * 25; 
-                    scale = 1.0 + distance * 0.4;
-                    opacity = 1.0 - distance * 0.4;
-                }
-                
-                if (scale < 0) scale = 0.01;
-                
-                const isActive = Math.abs(distance) < 0.3;
-                if (isActive && !card.classList.contains('is-active')) {
+                // Highlight focal card
+                const isFocal = Math.abs(distance) < 0.5;
+                if(isFocal && !card.classList.contains('is-active')) {
                     card.classList.add('is-active');
-                } else if (!isActive && card.classList.contains('is-active')) {
+                } else if(!isFocal && card.classList.contains('is-active')) {
                     card.classList.remove('is-active');
                 }
 
-                if (opacity <= 0 || Math.abs(distance) > 4) {
-                    card.style.visibility = 'hidden';
-                    card.style.opacity = '0';
-                    return;
-                }
-
-                card.style.visibility = 'visible';
-                card.style.opacity = opacity;
-                card.style.zIndex = Math.floor(1000 - Math.abs(distance) * 10);
-                card.style.transform = `perspective(1200px) translate3d(${x}px, ${y}px, 0) rotateX(${rotateX}deg) scale(${scale})`;
+                // ONLY update transforms and opacity to avoid mobile layout thrashing
+                gsap.set(card, {
+                    x: x,
+                    y: y,
+                    scale: scale,
+                    autoAlpha: opacity,
+                    zIndex: zIndex
+                });
             });
         }
     });
 
+    // Force initial render frame
     if(window.eventsScrollTrigger) {
         window.eventsScrollTrigger.update(0);
     }
 
-    // --- CYBER CALENDAR LOGIC ---
+    // --- CYBER CALENDAR LOGIC (Retained from original) ---
     const btnOpen = document.getElementById('btn-open-calendar');
     const btnClose = document.getElementById('btn-close-calendar');
     const modal = document.getElementById('cyber-calendar-modal');
@@ -695,9 +647,9 @@ window.cleanupEventsSpiral = function () {
     if (window.eventsLenis) { window.eventsLenis.destroy(); window.eventsLenis = null; }
     if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.getAll().forEach(t => { if (t.vars.trigger === '#events-scroll-track') t.kill(); }); }
     
+    // Core Three.js Cleanup
     if (window.enigmaReqId) { cancelAnimationFrame(window.enigmaReqId); window.enigmaReqId = null; }
     if (window.coreResizeHandler) { window.removeEventListener('resize', window.coreResizeHandler); window.coreResizeHandler = null; }
-    if (window.monolithMouseHandler) { window.removeEventListener('mousemove', window.monolithMouseHandler); window.monolithMouseHandler = null; }
     
     const canvasContainer = document.getElementById('enigma-core-canvas');
     if(canvasContainer) canvasContainer.innerHTML = '';
