@@ -91,7 +91,6 @@
             width: 150px;
             height: 150px;
             box-shadow: 0 0 0 150vmax #000000;
-            border: 1px solid rgba(255, 255, 255, 0);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -224,6 +223,15 @@
             z-index: 2;
             pointer-events: none;
             transform-origin: center center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-logo img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
         }
 
         .hero-footer {
@@ -760,12 +768,10 @@
 
         loaderTl
             .to(".hero-logo", { opacity: 1, duration: 0.6, ease: "power2.out" }, "+=0.1")
-            .to(".loader-window", { borderColor: "rgba(255, 255, 255, 0.2)", duration: 0.4 }, "-=0.4")
             .to(".loader-black-cover", { opacity: 0, duration: 0.3, ease: "power2.inOut" }, "+=0.2")
             .to(".loader-window", {
                 width: "250vmax",
                 height: "250vmax",
-                borderColor: "rgba(255, 255, 255, 0)",
                 duration: 0.8,
                 ease: "expo.inOut"
             }, "+=0.1")
