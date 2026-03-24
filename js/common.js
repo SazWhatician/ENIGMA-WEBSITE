@@ -351,9 +351,9 @@ window.initFooterCrystal = function () {
     animateFooter();
 };
 
-// --- EXTREME 3D ARC CARD GALLERY ---
-window.initEventsCards = function () {
-    window.cleanupEventsCards();
+// --- LIQUID PORTAL WEBGL BACKGROUND ---
+window.initEventsLiquid = function () {
+    window.cleanupEventsLiquid();
 
     // 1. Smooth scroll setup
     if (typeof Lenis !== 'undefined') {
@@ -366,217 +366,220 @@ window.initEventsCards = function () {
         gsap.ticker.lagSmoothing(0);
     }
 
-    const pinContainer = document.getElementById('events-pin-container');
-    const rig = document.getElementById('events-card-rig');
-    const proxy = document.getElementById('events-scroll-proxy');
+    const canvasContainer = document.getElementById('liquid-portal-canvas');
+    const eventsContainer = document.getElementById('liquid-events-container');
     
-    if (!pinContainer || !rig || !proxy) return;
+    if (!canvasContainer || !eventsContainer) return;
 
     const eventsData = [
-        { title: "DevTalk 2026", date: "MAR 10, 2026", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg", category: "SPEAKER" },
-        { title: "Induction 2026", date: "FEB 22, 2026", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg", category: "COMMUNITY" },
-        { title: "AI/ML SUMMIT", date: "JAN 15, 2026", img: "image-assets/aiml.jpg", category: "CONFERENCE" },
-        { title: "Hackathon", date: "DEC 05, 2025", img: "image-assets/cubers.jpg", category: "COMPETITION" },
-        { title: "Fifa Tournament", date: "NOV 20, 2025", img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670", category: "ESPORTS" },
-        { title: "CP CONTEST", date: "OCT 12, 2025", img: "image-assets/cp.jpg", category: "CODING" },
-        { title: "APP DEV WEEK", date: "SEP 08, 2025", img: "./image-assets/59e1b74783bbaf6b4ea5b0058a0c51dd.jpg", category: "WORKSHOP" },
-        { title: "UI/UX WORKSHOP", date: "AUG 14, 2025", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg", category: "DESIGN" },
-        { title: "TECH SYMPOSIUM", date: "JUL 30, 2025", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg", category: "EXHIBITION" },
-        { title: "CODE SPRINT", date: "JUN 15, 2025", img: "image-assets/cp.jpg", category: "CODING" }
+        { title: "DevTalk 2026", date: "MAR 10, 2026", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" },
+        { title: "Induction 2026", date: "FEB 22, 2026", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg" },
+        { title: "AI/ML SUMMIT", date: "JAN 15, 2026", img: "image-assets/aiml.jpg" },
+        { title: "Hackathon", date: "DEC 05, 2025", img: "image-assets/cubers.jpg" },
+        { title: "Fifa Tournament", date: "NOV 20, 2025", img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670" },
+        { title: "CP CONTEST", date: "OCT 12, 2025", img: "image-assets/cp.jpg" },
+        { title: "APP DEV WEEK", date: "SEP 08, 2025", img: "./image-assets/59e1b74783bbaf6b4ea5b0058a0c51dd.jpg" },
+        { title: "UI/UX WORKSHOP", date: "AUG 14, 2025", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" },
+        { title: "TECH SYMPOSIUM", date: "JUL 30, 2025", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg" },
+        { title: "CODE SPRINT", date: "JUN 15, 2025", img: "image-assets/cp.jpg" }
     ];
 
-    proxy.style.height = `${eventsData.length * 100}vh`;
+    eventsContainer.innerHTML = '';
+    eventsContainer.style.height = `${eventsData.length * 100}vh`;
 
-    const cardsDOM = [];
-    
     eventsData.forEach((ev, i) => {
-        const card = document.createElement('div');
-        card.className = 'extreme-card';
-        card.style.position = 'absolute';
-        
-        const isMobile = window.innerWidth <= 768;
-        const cWidth = isMobile ? 300 : 420;
-        const cHeight = isMobile ? 420 : 580;
-        
-        card.style.width = `${cWidth}px`;
-        card.style.height = `${cHeight}px`;
-        card.style.marginLeft = `${-cWidth / 2}px`;
-        card.style.marginTop = `${-cHeight / 2}px`;
-        card.style.transformStyle = 'preserve-3d';
-        card.style.borderRadius = '16px';
-        card.style.pointerEvents = 'auto'; // allow hover
-        card.style.cursor = 'pointer';
-        card.style.overflow = 'hidden';
-        card.style.boxShadow = '0 30px 60px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.1)';
-        card.style.background = '#0a0a0a';
-        card.style.willChange = 'transform, opacity, filter';
+        const el = document.createElement('div');
+        el.className = 'liquid-event-sect';
+        el.style.position = 'absolute';
+        el.style.top = `${i * 100}vh`;
+        el.style.width = '100%';
+        el.style.height = '100vh';
+        el.style.display = 'flex';
+        el.style.flexDirection = 'column';
+        el.style.justifyContent = 'center';
+        el.style.alignItems = 'center';
+        el.style.pointerEvents = 'none';
 
-        card.innerHTML = `
-            <div class="card-glare" style="position: absolute; inset:0; z-index: 5; background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 60%); opacity: 0; pointer-events: none; transition: opacity 0.3s;"></div>
-            <div class="card-img-wrap" style="position: absolute; inset:0; overflow: hidden; border-radius: 16px;">
-                <img src="${ev.img}" style="width: 120%; height: 120%; object-fit: cover; position: absolute; top: -10%; left: -10%; transition: transform 0.2s ease-out; filter: brightness(0.6) saturate(1.2);" class="card-img" />
-            </div>
-            <div class="card-content" style="position: absolute; inset:0; z-index: 10; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);">
-                <span style="font-family: 'Syncopate', sans-serif; font-size: 0.6rem; color: #2BA648; letter-spacing: 2px; margin-bottom: 0.5rem; text-shadow: 0 0 10px rgba(43, 166, 72, 0.5);">${ev.category}</span>
-                <h2 style="font-family: 'Host Grotesk', sans-serif; font-size: ${isMobile ? '2rem' : '2.5rem'}; font-weight: 800; color: #fff; margin: 0 0 0.5rem 0; line-height: 1.1;">${ev.title}</h2>
-                <p style="font-family: 'Host Grotesk', sans-serif; font-size: 1rem; color: #aaa; margin: 0;">${ev.date}</p>
-                <div class="card-btn" style="margin-top: 1.5rem; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; overflow: hidden; transition: all 0.4s;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.4s;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </div>
-            </div>
-        `;
-        
-        rig.appendChild(card);
-        cardsDOM.push(card);
-
-        const img = card.querySelector('.card-img');
-        const glare = card.querySelector('.card-glare');
-        const btn = card.querySelector('.card-btn');
-        const svg = card.querySelector('svg');
-
-        card.addEventListener('mousemove', (e) => {
-            if(card.style.opacity < 0.9) return;
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const px = x / rect.width;
-            const py = y / rect.height;
-            
-            const rotateY = (px - 0.5) * 20; 
-            const rotateX = (0.5 - py) * 20;
-
-            gsap.to(card, { rotateY: rotateY, rotateX: rotateX, scale: 1.05, duration: 0.4, ease: "power2.out", overwrite: "auto" });
-            gsap.to(img, { x: (0.5 - px) * 30, y: (0.5 - py) * 30, filter: 'brightness(1) saturate(1.2)', duration: 0.4, ease: "power2.out" });
-            gsap.to(glare, { opacity: 1, background: `radial-gradient(circle at ${px*100}% ${py*100}%, rgba(255,255,255,0.3) 0%, transparent 50%)`, duration: 0.1 });
-        });
-
-        card.addEventListener('mouseenter', () => {
-            if(card.style.opacity < 0.9) return;
-            gsap.to(btn, { width: '140px', borderRadius: '30px', background: '#2BA648', borderColor: '#2BA648', duration: 0.4, ease: 'back.out(1.5)' });
-            gsap.to(svg, { stroke: '#000', x: 40, duration: 0.4 });
-            card.style.zIndex = Math.floor(Date.now() / 1000);
-        });
-
-        card.addEventListener('mouseleave', () => {
-            gsap.to(img, { x: 0, y: 0, filter: 'brightness(0.6) saturate(1.2)', duration: 0.8, ease: "power2.out" });
-            gsap.to(glare, { opacity: 0, duration: 0.8 });
-            
-            gsap.to(btn, { width: '40px', borderRadius: '50%', background: 'transparent', borderColor: 'rgba(255,255,255,0.2)', duration: 0.4, ease: 'power2.out' });
-            gsap.to(svg, { stroke: '#fff', x: 0, duration: 0.4 });
-
-            if(window.cardsScrollTrigger) window.cardsScrollTrigger.update();
-        });
+        el.innerHTML = `<h2 style="font-family: 'Syncopate', sans-serif; font-size: clamp(2rem, 8vw, 8rem); font-weight: 700; color: white; mix-blend-mode: difference; text-transform: uppercase; margin: 0; pointer-events: auto; cursor: crosshair; text-align: center;" class="liq-evt-title">${ev.title}</h2><p style="font-family: 'Host Grotesk', sans-serif; font-size: clamp(1rem, 2vw, 1.5rem); color: #2BA648; font-weight: 700; margin-top: -1rem; pointer-events: auto; background: black; padding: 0.2rem 1rem; border-radius: 4px;">${ev.date}</p>`;
+        eventsContainer.appendChild(el);
     });
 
-    window.cardsScrollTrigger = ScrollTrigger.create({
-        trigger: proxy,
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    canvasContainer.appendChild(renderer.domElement);
+
+    const textureLoader = new THREE.TextureLoader();
+    let textures = eventsData.map(ev => textureLoader.load(ev.img));
+
+    const material = new THREE.ShaderMaterial({
+        uniforms: {
+            uTexture1: { value: textures[0] },
+            uTexture2: { value: textures[1] },
+            uTransition: { value: 0 },
+            uTime: { value: 0 },
+            uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+            uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+            uHover: { value: 0 }
+        },
+        vertexShader: `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform sampler2D uTexture1;
+            uniform sampler2D uTexture2;
+            uniform float uTransition;
+            uniform float uTime;
+            uniform vec2 uResolution;
+            uniform vec2 uMouse;
+            uniform float uHover;
+            varying vec2 vUv;
+
+            vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+            vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+            vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+            float snoise(vec2 v) {
+                const vec4 C = vec4(0.211324865405187,  0.366025403784439, -0.577350269189626, 0.024390243902439);
+                vec2 i  = floor(v + dot(v, C.yy) );
+                vec2 x0 = v -   i + dot(i, C.xx);
+                vec2 i1;  i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+                vec4 x12 = x0.xyxy + C.xxzz;  x12.xy -= i1;  i = mod289(i);
+                vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+                vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+                m = m*m; m = m*m;
+                vec3 x = 2.0 * fract(p * C.www) - 1.0;
+                vec3 h = abs(x) - 0.5;
+                vec3 ox = floor(x + 0.5);
+                vec3 a0 = x - ox;
+                m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+                vec3 g;   g.x  = a0.x  * x0.x  + h.x  * x0.y; g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+                return 130.0 * dot(m, g);
+            }
+
+            void main() {
+                float screenAspect = uResolution.x / uResolution.y;
+                float imgAspect = 16.0 / 9.0;
+                vec2 uv = vUv;
+                if(screenAspect > imgAspect) {
+                    uv.y = (uv.y - 0.5) * (imgAspect / screenAspect) + 0.5;
+                } else {
+                    uv.x = (uv.x - 0.5) * (screenAspect / imgAspect) + 0.5;
+                }
+
+                float dist = distance(vUv, uMouse);
+                float mouseDisplace = smoothstep(0.4, 0.0, dist) * 0.15 * uHover;
+                vec2 dir = normalize(vUv - uMouse);
+                if (length(dir) == 0.0) dir = vec2(1.0, 0.0);
+                vec2 mouseOffset = dir * mouseDisplace;
+
+                float noise = snoise(vUv * 3.0 + uTime * 0.2);
+                float disp1 = noise * uTransition * 0.6;
+                float disp2 = noise * (1.0 - uTransition) * 0.6;
+                
+                vec2 uv1 = uv + vec2(disp1) + mouseOffset;
+                vec2 uv2 = uv - vec2(disp2) + mouseOffset;
+                
+                float rgbSplit = uTransition * (1.0 - uTransition) * 0.1;
+                
+                vec4 c1 = texture2D(uTexture1, vec2(uv1.x + rgbSplit, uv1.y));
+                vec4 c2 = texture2D(uTexture1, vec2(uv1.x, uv1.y));
+                vec4 c3 = texture2D(uTexture1, vec2(uv1.x - rgbSplit, uv1.y));
+                vec4 color1 = vec4(c1.r, c2.g, c3.b, 1.0);
+
+                vec4 c4 = texture2D(uTexture2, vec2(uv2.x + rgbSplit, uv2.y));
+                vec4 c5 = texture2D(uTexture2, vec2(uv2.x, uv2.y));
+                vec4 c6 = texture2D(uTexture2, vec2(uv2.x - rgbSplit, uv2.y));
+                vec4 color2 = vec4(c4.r, c5.g, c6.b, 1.0);
+                
+                vec4 blended = mix(color1, color2, clamp(uTransition + noise*0.2, 0.0, 1.0));
+                
+                blended.rgb *= 0.7;
+                gl_FragColor = blended;
+            }
+        `
+    });
+
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+    scene.add(plane);
+
+    window.liquidMouseTarget = new THREE.Vector2(0.5, 0.5);
+    window.liquidMouseCurrent = new THREE.Vector2(0.5, 0.5);
+
+    window.liquidMouseMove = (e) => {
+        window.liquidMouseTarget.x = e.clientX / window.innerWidth;
+        window.liquidMouseTarget.y = 1.0 - (e.clientY / window.innerHeight);
+    };
+    document.addEventListener('mousemove', window.liquidMouseMove);
+
+    const titles = document.querySelectorAll('.liq-evt-title');
+    titles.forEach(t => {
+        t.addEventListener('mouseenter', () => gsap.to(material.uniforms.uHover, { value: 1, duration: 0.8, ease: "power2.out" }));
+        t.addEventListener('mouseleave', () => gsap.to(material.uniforms.uHover, { value: 0, duration: 0.8, ease: "power2.out" }));
+    });
+
+    window.liquidReqId = null;
+    function animateLiquid() {
+        if (!document.getElementById('liquid-portal-canvas')) return;
+        window.liquidReqId = requestAnimationFrame(animateLiquid);
+        
+        material.uniforms.uTime.value += 0.01;
+        
+        window.liquidMouseCurrent.lerp(window.liquidMouseTarget, 0.1);
+        material.uniforms.uMouse.value.copy(window.liquidMouseCurrent);
+
+        renderer.render(scene, camera);
+    }
+    animateLiquid();
+
+    window.liquidResizeHandler = () => {
+        if (!document.getElementById('liquid-portal-canvas')) return;
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        material.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+    };
+    window.addEventListener('resize', window.liquidResizeHandler);
+
+    window.liquidScrollTrigger = ScrollTrigger.create({
+        trigger: eventsContainer,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 1,
-        pin: pinContainer,
+        scrub: true,
         onUpdate: (self) => {
-            const isMobile = window.innerWidth <= 768;
-            const RADIUS = isMobile ? 320 : 750;
-            const ARC_SPREAD = isMobile ? 0.4 : 0.28; 
-
-            const p = self.progress * (eventsData.length - 1);
+            let maxIndex = eventsData.length - 1;
+            if(maxIndex < 1) return;
+            let progress = self.progress * maxIndex;
+            progress = Math.max(0, Math.min(progress, maxIndex));
             
-            cardsDOM.forEach((card, i) => {
-                const distance = i - p; 
-                const angle = distance * ARC_SPREAD;
-                
-                const x = Math.sin(angle) * RADIUS;
-                const z = (Math.cos(angle) - 1) * RADIUS; 
-                const rotateY = -angle * (180 / Math.PI); 
-                
-                const absDist = Math.abs(distance);
-                const scale = 1 - Math.min(absDist * 0.15, 0.8);
-                const opacity = 1 - Math.min(absDist * 0.4, 1);
-                
-                const zIndex = 1000 - Math.floor(absDist * 10);
-
-                if(!card.matches(':hover') || opacity < 0.9) {
-                    gsap.set(card, {
-                        x: x, 
-                        z: z,
-                        rotateY: rotateY,
-                        rotateX: 0,
-                        scale: scale,
-                        opacity: opacity,
-                        zIndex: zIndex
-                    });
-                }
-            });
+            let i = Math.floor(progress);
+            let f = progress - i;
+            let nextI = Math.min(i + 1, maxIndex);
+            
+            material.uniforms.uTexture1.value = textures[i] || textures[0];
+            material.uniforms.uTexture2.value = textures[nextI] || textures[0];
+            material.uniforms.uTransition.value = f;
         }
     });
 
-    if(window.cardsScrollTrigger) window.cardsScrollTrigger.update(0);
-    
-    // Calendar Setup (re-inject exactly the same for events)
-    const btnOpen = document.getElementById('btn-open-calendar');
-    const btnClose = document.getElementById('btn-close-calendar');
-    const modal = document.getElementById('cyber-calendar-modal');
-    const grid = document.getElementById('cal-grid');
-    const monthYearTxt = document.getElementById('cal-month-year');
-    const btnPrev = document.getElementById('cal-prev');
-    const btnNext = document.getElementById('cal-next');
-
-    if (btnOpen && modal && grid) {
-        let currentDate = new Date(eventsData[0].date);
-        if (isNaN(currentDate.getTime())) currentDate = new Date();
-
-        const renderCalendar = (date) => {
-            grid.innerHTML = '';
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
-            monthYearTxt.textContent = \`\${monthNames[month]} \${year}\`;
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const monthEvents = eventsData.filter(ev => {
-                const evDate = new Date(ev.date);
-                return evDate.getMonth() === month && evDate.getFullYear() === year;
-            });
-
-            for (let i = 0; i < firstDay; i++) {
-                const blank = document.createElement('div');
-                blank.className = 'cal-day empty';
-                grid.appendChild(blank);
-            }
-
-            for (let i = 1; i <= daysInMonth; i++) {
-                const dayCell = document.createElement('div');
-                dayCell.className = 'cal-day';
-                dayCell.textContent = i;
-                const matchingEvent = monthEvents.find(ev => new Date(ev.date).getDate() === i);
-                if (matchingEvent) {
-                    dayCell.classList.add('has-event');
-                    dayCell.title = matchingEvent.title;
-                    dayCell.onclick = () => alert(\`RECORDS: Event Details\\n\\nTitle: \${matchingEvent.title}\\nDate: \${matchingEvent.date}\\nStatus: UPCOMING\`);
-                }
-                grid.appendChild(dayCell);
-            }
-        };
-
-        renderCalendar(currentDate);
-        btnPrev.onclick = () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(currentDate); };
-        btnNext.onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(currentDate); };
-        btnOpen.onclick = () => { modal.classList.add('active'); };
-        btnClose.onclick = () => { modal.classList.remove('active'); };
-        modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('active'); };
-    }
+    if(window.liquidScrollTrigger) window.liquidScrollTrigger.update(0);
 };
 
-window.cleanupEventsCards = function () {
-    if (window.cardsScrollTrigger) { window.cardsScrollTrigger.kill(); window.cardsScrollTrigger = null; }
+window.cleanupEventsLiquid = function () {
+    if (window.liquidScrollTrigger) { window.liquidScrollTrigger.kill(); window.liquidScrollTrigger = null; }
     if (window.eventsLenisTicker) { gsap.ticker.remove(window.eventsLenisTicker); window.eventsLenisTicker = null; }
     if (window.eventsLenis) { window.eventsLenis.destroy(); window.eventsLenis = null; }
-    if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.getAll().forEach(t => { if (t.vars.trigger === '#events-scroll-proxy') t.kill(); }); }
+    if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.getAll().forEach(t => { if (t.vars.trigger === '#liquid-events-container') t.kill(); }); }
     
-    const rig = document.getElementById('events-card-rig');
-    if(rig) rig.innerHTML = '';
+    if (window.liquidReqId) { cancelAnimationFrame(window.liquidReqId); window.liquidReqId = null; }
+    if (window.liquidResizeHandler) { window.removeEventListener('resize', window.liquidResizeHandler); window.liquidResizeHandler = null; }
+    if (window.liquidMouseMove) { document.removeEventListener('mousemove', window.liquidMouseMove); window.liquidMouseMove = null; }
+    
+    const canvasContainer = document.getElementById('liquid-portal-canvas');
+    if(canvasContainer) canvasContainer.innerHTML = '';
 };
 
 // --- BARBA CORE ---
@@ -698,22 +701,28 @@ window.initBarba = function () {
                 beforeEnter(data) {
                     document.body.style.overflowY = 'auto';
                     document.body.style.touchAction = 'auto';
-                    window.initEventsCards();
+                    window.initEventsLiquid();
                 },
-                afterEnter() {
-                    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
-                },
+                afterEnter() { if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); },
                 beforeLeave() {
-                    window.cleanupEventsCards();
+                    window.cleanupEventsLiquid();
                 },
                 beforeOnce(data) {
                     document.body.style.overflowY = 'auto';
                     document.body.style.touchAction = 'auto';
-                    window.initEventsCards();
-                },
-                afterOnce() {
-                    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+                    window.initEventsLiquid();
                 }
+            ,
+                beforeEnter(data) {
+                    document.body.style.overflowY = 'auto';
+                    document.body.style.touchAction = 'auto';
+                    window.initEventsLiquid();
+                },
+                afterEnter() { if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); },
+                beforeLeave() {
+                    window.cleanupEventsLiquid();
+                },
+                afterOnce() { if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); }
             }
         ]
     });
