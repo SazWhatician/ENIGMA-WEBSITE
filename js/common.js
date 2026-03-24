@@ -351,9 +351,9 @@ window.initFooterCrystal = function () {
     animateFooter();
 };
 
-// --- ENIGMA CORE 3D SCENE & ORBIT GALLERY ---
-window.initEventsSpiral = function () {
-    window.cleanupEventsSpiral();
+// --- EXTREME 3D ARC CARD GALLERY ---
+window.initEventsCards = function () {
+    window.cleanupEventsCards();
 
     // 1. Smooth scroll setup
     if (typeof Lenis !== 'undefined') {
@@ -366,234 +366,154 @@ window.initEventsSpiral = function () {
         gsap.ticker.lagSmoothing(0);
     }
 
-    const canvasContainer = document.getElementById('enigma-core-canvas');
-    const scrollTrack = document.getElementById('events-scroll-track');
-    const orbitContainer = document.getElementById('events-orbit-container');
+    const pinContainer = document.getElementById('events-pin-container');
+    const rig = document.getElementById('events-card-rig');
+    const proxy = document.getElementById('events-scroll-proxy');
     
-    if (!canvasContainer || !scrollTrack || !orbitContainer) return;
+    if (!pinContainer || !rig || !proxy) return;
 
     const eventsData = [
-        { title: "DevTalk 2026", date: "MAR 10, 2026", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" },
-        { title: "Induction 2026", date: "FEB 22, 2026", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg" },
-        { title: "AI/ML SUMMIT", date: "JAN 15, 2026", img: "image-assets/aiml.jpg" },
-        { title: "Hackathon", date: "DEC 05, 2025", img: "image-assets/cubers.jpg" },
-        { title: "Fifa Tournament", date: "NOV 20, 2025", img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670" },
-        { title: "CP CONTEST", date: "OCT 12, 2025", img: "image-assets/cp.jpg" },
-        { title: "APP DEV WEEK", date: "SEP 08, 2025", img: "./image-assets/59e1b74783bbaf6b4ea5b0058a0c51dd.jpg" },
-        { title: "UI/UX WORKSHOP", date: "AUG 14, 2025", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" },
-        { title: "TECH SYMPOSIUM", date: "JUL 30, 2025", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg" },
-        { title: "CODE SPRINT", date: "JUN 15, 2025", img: "image-assets/cp.jpg" }
+        { title: "DevTalk 2026", date: "MAR 10, 2026", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg", category: "SPEAKER" },
+        { title: "Induction 2026", date: "FEB 22, 2026", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg", category: "COMMUNITY" },
+        { title: "AI/ML SUMMIT", date: "JAN 15, 2026", img: "image-assets/aiml.jpg", category: "CONFERENCE" },
+        { title: "Hackathon", date: "DEC 05, 2025", img: "image-assets/cubers.jpg", category: "COMPETITION" },
+        { title: "Fifa Tournament", date: "NOV 20, 2025", img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670", category: "ESPORTS" },
+        { title: "CP CONTEST", date: "OCT 12, 2025", img: "image-assets/cp.jpg", category: "CODING" },
+        { title: "APP DEV WEEK", date: "SEP 08, 2025", img: "./image-assets/59e1b74783bbaf6b4ea5b0058a0c51dd.jpg", category: "WORKSHOP" },
+        { title: "UI/UX WORKSHOP", date: "AUG 14, 2025", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg", category: "DESIGN" },
+        { title: "TECH SYMPOSIUM", date: "JUL 30, 2025", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg", category: "EXHIBITION" },
+        { title: "CODE SPRINT", date: "JUN 15, 2025", img: "image-assets/cp.jpg", category: "CODING" }
     ];
 
-    orbitContainer.innerHTML = '';
-    
-    // 2. Setup Three.js Enigma Core
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x000000, 0.03);
-
-    const isMobileViewport = window.innerWidth <= 768;
-
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 12;
-
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isMobileViewport, powerPreference: "high-performance" });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    // Hard cap pixel ratio to prevent retina mobile screens from generating massive resolution and lagging
-    renderer.setPixelRatio(isMobileViewport ? Math.min(window.devicePixelRatio, 1) : Math.min(window.devicePixelRatio, 1.5));
-    canvasContainer.appendChild(renderer.domElement);
-
-    // Lighting
-    scene.add(new THREE.AmbientLight(0x000000));
-    const pointLight = new THREE.PointLight(0x2BA648, 8, 30);
-    scene.add(pointLight);
-
-    // The Core Group
-    window.enigmaCoreGroup = new THREE.Group();
-    scene.add(window.enigmaCoreGroup);
-
-    // Inner Cipher Matrix (Reduced detail on mobile)
-    const coreGeo = new THREE.IcosahedronGeometry(2, isMobileViewport ? 0 : 1);
-    const coreMat = new THREE.MeshStandardMaterial({
-        color: 0x000000,
-        emissive: 0x185D28,
-        emissiveIntensity: 0.8,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.8
-    });
-    const cipherCore = new THREE.Mesh(coreGeo, coreMat);
-    window.enigmaCoreGroup.add(cipherCore);
-
-    // Orbiting Data Rings (Fewer Rings and Segments on mobile)
-    const ringMat = new THREE.MeshStandardMaterial({ color: 0x2BA648, wireframe: true, transparent: true, opacity: 0.4 });
-    const rings = [];
-    const ringCount = isMobileViewport ? 2 : 3;
-    for(let i = 1; i <= ringCount; i++) {
-        const ring = new THREE.Mesh(new THREE.TorusGeometry(3 + i * 1.5, 0.05, 4, isMobileViewport ? 32 : 64), ringMat);
-        ring.rotation.x = Math.random() * Math.PI;
-        ring.rotation.y = Math.random() * Math.PI;
-        rings.push(ring);
-        window.enigmaCoreGroup.add(ring);
-    }
-
-    // Data Particles (Drastically reduced count on mobile)
-    const particlesGeo = new THREE.BufferGeometry();
-    const particleCount = isMobileViewport ? 150 : 600; 
-    const posArray = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount * 3; i++) posArray[i] = (Math.random() - 0.5) * 25;
-    particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-    const particlesMat = new THREE.PointsMaterial({ size: 0.03, color: 0x2BA648, transparent: true, opacity: 0.5 });
-    const particleSystem = new THREE.Points(particlesGeo, particlesMat);
-    scene.add(particleSystem);
-
-    window.enigmaReqId = null;
-    let targetCoreRotationY = 0;
-    
-    function animateCore() {
-        if (!document.getElementById('enigma-core-canvas')) return;
-        window.enigmaReqId = requestAnimationFrame(animateCore);
-
-        const time = performance.now() * 0.001;
-        
-        cipherCore.rotation.y += 0.005;
-        cipherCore.rotation.x += 0.002;
-        
-        if(rings[0]) rings[0].rotation.x += 0.008;
-        if(rings[1]) rings[1].rotation.y -= 0.005;
-        if(rings[2]) rings[2].rotation.z += 0.007;
-
-        particleSystem.rotation.y = time * 0.05;
-
-        // Smoothly interpolate GSAP scroll rotation
-        window.enigmaCoreGroup.rotation.y += (targetCoreRotationY - window.enigmaCoreGroup.rotation.y) * 0.1;
-
-        // Glitch scaling effect connected to standard material scale
-        const scale = window.enigmaCoreGroup.scale.x;
-        // Float softly if not glitched
-        if(scale < 1.05) {
-            window.enigmaCoreGroup.position.y = Math.sin(time) * 0.3;
-        }
-
-        renderer.render(scene, camera);
-    }
-    animateCore();
-
-    window.coreResizeHandler = () => {
-        if (!document.getElementById('enigma-core-canvas')) return;
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener('resize', window.coreResizeHandler);
-
-    // 3. Setup Scroll Track & DOM Cards
-    // Make track tall enough to scroll through all events
-    scrollTrack.style.height = `${(eventsData.length + 1) * 80}vh`;
+    proxy.style.height = `${eventsData.length * 100}vh`;
 
     const cardsDOM = [];
-    const turb = document.getElementById('rippleTurbulence');
-    const disp = document.getElementById('rippleDisplacement');
-
+    
     eventsData.forEach((ev, i) => {
         const card = document.createElement('div');
-        card.className = 'orbit-card';
+        card.className = 'extreme-card';
+        card.style.position = 'absolute';
+        
+        const isMobile = window.innerWidth <= 768;
+        const cWidth = isMobile ? 300 : 420;
+        const cHeight = isMobile ? 420 : 580;
+        
+        card.style.width = `${cWidth}px`;
+        card.style.height = `${cHeight}px`;
+        card.style.marginLeft = `${-cWidth / 2}px`;
+        card.style.marginTop = `${-cHeight / 2}px`;
+        card.style.transformStyle = 'preserve-3d';
+        card.style.borderRadius = '16px';
+        card.style.pointerEvents = 'auto'; // allow hover
+        card.style.cursor = 'pointer';
+        card.style.overflow = 'hidden';
+        card.style.boxShadow = '0 30px 60px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.1)';
+        card.style.background = '#0a0a0a';
+        card.style.willChange = 'transform, opacity, filter';
+
         card.innerHTML = `
-            <div class="orbit-image-wrap">
-                <img src="${ev.img}" class="orbit-image" alt="${ev.title}" crossorigin="anonymous" />
+            <div class="card-glare" style="position: absolute; inset:0; z-index: 5; background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 60%); opacity: 0; pointer-events: none; transition: opacity 0.3s;"></div>
+            <div class="card-img-wrap" style="position: absolute; inset:0; overflow: hidden; border-radius: 16px;">
+                <img src="${ev.img}" style="width: 120%; height: 120%; object-fit: cover; position: absolute; top: -10%; left: -10%; transition: transform 0.2s ease-out; filter: brightness(0.6) saturate(1.2);" class="card-img" />
             </div>
-            <div class="orbit-info">
-                <h3 class="orbit-title">${ev.title}</h3>
-                <p class="orbit-date">${ev.date}</p>
-                <a href="#" class="orbit-btn">
-                    ENTER SEQUENCE
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </a>
+            <div class="card-content" style="position: absolute; inset:0; z-index: 10; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);">
+                <span style="font-family: 'Syncopate', sans-serif; font-size: 0.6rem; color: #2BA648; letter-spacing: 2px; margin-bottom: 0.5rem; text-shadow: 0 0 10px rgba(43, 166, 72, 0.5);">${ev.category}</span>
+                <h2 style="font-family: 'Host Grotesk', sans-serif; font-size: ${isMobile ? '2rem' : '2.5rem'}; font-weight: 800; color: #fff; margin: 0 0 0.5rem 0; line-height: 1.1;">${ev.title}</h2>
+                <p style="font-family: 'Host Grotesk', sans-serif; font-size: 1rem; color: #aaa; margin: 0;">${ev.date}</p>
+                <div class="card-btn" style="margin-top: 1.5rem; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; overflow: hidden; transition: all 0.4s;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.4s;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
             </div>
         `;
-        orbitContainer.appendChild(card);
+        
+        rig.appendChild(card);
         cardsDOM.push(card);
 
-        // Hover Effect: Core Glitch Flash only
-        card.addEventListener('mouseenter', () => {
-            gsap.to(window.enigmaCoreGroup.scale, { x: 1.15, y: 1.15, z: 1.15, duration: 0.4, ease: "back.out(1.5)", overwrite: true });
-            pointLight.intensity = 15;
-            coreMat.emissiveIntensity = 1.5;
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            gsap.to(window.enigmaCoreGroup.scale, { x: 1, y: 1, z: 1, duration: 0.4, overwrite: true });
-            pointLight.intensity = 8;
-            coreMat.emissiveIntensity = 0.8;
+        const img = card.querySelector('.card-img');
+        const glare = card.querySelector('.card-glare');
+        const btn = card.querySelector('.card-btn');
+        const svg = card.querySelector('svg');
+
+        card.addEventListener('mousemove', (e) => {
+            if(card.style.opacity < 0.9) return;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const px = x / rect.width;
+            const py = y / rect.height;
+            
+            const rotateY = (px - 0.5) * 20; 
+            const rotateX = (0.5 - py) * 20;
+
+            gsap.to(card, { rotateY: rotateY, rotateX: rotateX, scale: 1.05, duration: 0.4, ease: "power2.out", overwrite: "auto" });
+            gsap.to(img, { x: (0.5 - px) * 30, y: (0.5 - py) * 30, filter: 'brightness(1) saturate(1.2)', duration: 0.4, ease: "power2.out" });
+            gsap.to(glare, { opacity: 1, background: `radial-gradient(circle at ${px*100}% ${py*100}%, rgba(255,255,255,0.3) 0%, transparent 50%)`, duration: 0.1 });
         });
 
-        // Initialize state so they are hidden until first scroll update
-        gsap.set(card, { autoAlpha: 0, scale: 0.1 });
+        card.addEventListener('mouseenter', () => {
+            if(card.style.opacity < 0.9) return;
+            gsap.to(btn, { width: '140px', borderRadius: '30px', background: '#2BA648', borderColor: '#2BA648', duration: 0.4, ease: 'back.out(1.5)' });
+            gsap.to(svg, { stroke: '#000', x: 40, duration: 0.4 });
+            card.style.zIndex = Math.floor(Date.now() / 1000);
+        });
+
+        card.addEventListener('mouseleave', () => {
+            gsap.to(img, { x: 0, y: 0, filter: 'brightness(0.6) saturate(1.2)', duration: 0.8, ease: "power2.out" });
+            gsap.to(glare, { opacity: 0, duration: 0.8 });
+            
+            gsap.to(btn, { width: '40px', borderRadius: '50%', background: 'transparent', borderColor: 'rgba(255,255,255,0.2)', duration: 0.4, ease: 'power2.out' });
+            gsap.to(svg, { stroke: '#fff', x: 0, duration: 0.4 });
+
+            if(window.cardsScrollTrigger) window.cardsScrollTrigger.update();
+        });
     });
 
-    // Orbital Helix Logic
-    window.eventsScrollTrigger = ScrollTrigger.create({
-        trigger: '#events-scroll-track',
+    window.cardsScrollTrigger = ScrollTrigger.create({
+        trigger: proxy,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 1.5,
+        scrub: 1,
+        pin: pinContainer,
         onUpdate: (self) => {
-            const p = self.progress * eventsData.length;
+            const isMobile = window.innerWidth <= 768;
+            const RADIUS = isMobile ? 320 : 750;
+            const ARC_SPREAD = isMobile ? 0.4 : 0.28; 
+
+            const p = self.progress * (eventsData.length - 1);
             
-            // Spin the 3D core
-            targetCoreRotationY = p * Math.PI * 1.5;
-
-            // Orchestrate the HTML cards
             cardsDOM.forEach((card, i) => {
-                const distance = p - i; // 0 = Center Focal Point
-                const angle = distance * 1.5; // Spread out orbit
+                const distance = i - p; 
+                const angle = distance * ARC_SPREAD;
                 
-                const winW = window.innerWidth;
-                const isMobile = winW <= 768;
+                const x = Math.sin(angle) * RADIUS;
+                const z = (Math.cos(angle) - 1) * RADIUS; 
+                const rotateY = -angle * (180 / Math.PI); 
                 
-                const radiusX = isMobile ? winW * 0.25 : winW * 0.35;
-                const radiusZ = isMobile ? 220 : 300; 
+                const absDist = Math.abs(distance);
+                const scale = 1 - Math.min(absDist * 0.15, 0.8);
+                const opacity = 1 - Math.min(absDist * 0.4, 1);
                 
-                // Helix Coordinates
-                const x = Math.sin(angle) * radiusX;
-                const z = Math.cos(angle) * radiusZ; 
-                const y = -distance * (isMobile ? 180 : 120); // Rise up vertically (push more on mobile)
-                
-                // Perspective Scaling
-                let scale = (z + (isMobile ? 350 : 450)) / (isMobile ? 600 : 750);
-                if(scale < 0) scale = 0.01;
-                
-                const zIndex = Math.floor(z + 1000);
-                let opacity = scale * 1.2 - 0.2;
-                if(opacity > 1) opacity = 1;
-                if(opacity < 0) opacity = 0;
-                if(Math.abs(distance) > (isMobile ? 3 : 4)) opacity = 0; // Cull far cards aggressively
+                const zIndex = 1000 - Math.floor(absDist * 10);
 
-                // Highlight focal card
-                const isFocal = Math.abs(distance) < 0.5;
-                if(isFocal && !card.classList.contains('is-active')) {
-                    card.classList.add('is-active');
-                } else if(!isFocal && card.classList.contains('is-active')) {
-                    card.classList.remove('is-active');
+                if(!card.matches(':hover') || opacity < 0.9) {
+                    gsap.set(card, {
+                        x: x, 
+                        z: z,
+                        rotateY: rotateY,
+                        rotateX: 0,
+                        scale: scale,
+                        opacity: opacity,
+                        zIndex: zIndex
+                    });
                 }
-
-                // ONLY update transforms and opacity to avoid mobile layout thrashing
-                gsap.set(card, {
-                    x: x,
-                    y: y,
-                    scale: scale,
-                    autoAlpha: opacity,
-                    zIndex: zIndex
-                });
             });
         }
     });
 
-    // Force initial render frame
-    if(window.eventsScrollTrigger) {
-        window.eventsScrollTrigger.update(0);
-    }
-
-    // --- CYBER CALENDAR LOGIC (Retained from original) ---
+    if(window.cardsScrollTrigger) window.cardsScrollTrigger.update(0);
+    
+    // Calendar Setup (re-inject exactly the same for events)
     const btnOpen = document.getElementById('btn-open-calendar');
     const btnClose = document.getElementById('btn-close-calendar');
     const modal = document.getElementById('cyber-calendar-modal');
@@ -611,7 +531,7 @@ window.initEventsSpiral = function () {
             const year = date.getFullYear();
             const month = date.getMonth();
             const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
-            monthYearTxt.textContent = `${monthNames[month]} ${year}`;
+            monthYearTxt.textContent = \`\${monthNames[month]} \${year}\`;
 
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -634,7 +554,7 @@ window.initEventsSpiral = function () {
                 if (matchingEvent) {
                     dayCell.classList.add('has-event');
                     dayCell.title = matchingEvent.title;
-                    dayCell.onclick = () => alert(`RECORDS: Event Details\n\nTitle: ${matchingEvent.title}\nDate: ${matchingEvent.date}\nStatus: UPCOMING`);
+                    dayCell.onclick = () => alert(\`RECORDS: Event Details\\n\\nTitle: \${matchingEvent.title}\\nDate: \${matchingEvent.date}\\nStatus: UPCOMING\`);
                 }
                 grid.appendChild(dayCell);
             }
@@ -649,18 +569,14 @@ window.initEventsSpiral = function () {
     }
 };
 
-window.cleanupEventsSpiral = function () {
-    if (window.eventsScrollTrigger) { window.eventsScrollTrigger.kill(); window.eventsScrollTrigger = null; }
+window.cleanupEventsCards = function () {
+    if (window.cardsScrollTrigger) { window.cardsScrollTrigger.kill(); window.cardsScrollTrigger = null; }
     if (window.eventsLenisTicker) { gsap.ticker.remove(window.eventsLenisTicker); window.eventsLenisTicker = null; }
     if (window.eventsLenis) { window.eventsLenis.destroy(); window.eventsLenis = null; }
-    if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.getAll().forEach(t => { if (t.vars.trigger === '#events-scroll-track') t.kill(); }); }
+    if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.getAll().forEach(t => { if (t.vars.trigger === '#events-scroll-proxy') t.kill(); }); }
     
-    // Core Three.js Cleanup
-    if (window.enigmaReqId) { cancelAnimationFrame(window.enigmaReqId); window.enigmaReqId = null; }
-    if (window.coreResizeHandler) { window.removeEventListener('resize', window.coreResizeHandler); window.coreResizeHandler = null; }
-    
-    const canvasContainer = document.getElementById('enigma-core-canvas');
-    if(canvasContainer) canvasContainer.innerHTML = '';
+    const rig = document.getElementById('events-card-rig');
+    if(rig) rig.innerHTML = '';
 };
 
 // --- BARBA CORE ---
@@ -782,15 +698,21 @@ window.initBarba = function () {
                 beforeEnter(data) {
                     document.body.style.overflowY = 'auto';
                     document.body.style.touchAction = 'auto';
-                    window.initEventsSpiral();
+                    window.initEventsCards();
+                },
+                afterEnter() {
+                    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
                 },
                 beforeLeave() {
-                    window.cleanupEventsSpiral();
+                    window.cleanupEventsCards();
                 },
                 beforeOnce(data) {
                     document.body.style.overflowY = 'auto';
                     document.body.style.touchAction = 'auto';
-                    window.initEventsSpiral();
+                    window.initEventsCards();
+                },
+                afterOnce() {
+                    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
                 }
             }
         ]
