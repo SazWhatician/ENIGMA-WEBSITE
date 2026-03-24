@@ -367,15 +367,13 @@
 
 
 
-        <!-- The 3D Canvas Background -->
-        <div id="enigma-core-canvas" style="position: fixed; inset: 0; z-index: 0; pointer-events: none;"></div>
-
-        <!-- The Scroll Track (Forces page height for ScrollTrigger) -->
-        <div id="events-scroll-track" style="position: relative; width: 100%; z-index: 10;"></div>
-
-        <!-- The Orbiting Cards Container (Locked to screen) -->
-        <div id="events-orbit-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 20; pointer-events: none;">
-            <!-- Orbit cards injected via JS -->
+        <!-- 3D Card Gallery Rig -->
+        <div id="events-pin-container" style="position: relative; width: 100vw; height: 100vh; overflow: hidden; perspective: 2000px; background: #000;">
+            <div id="events-card-rig" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform-style: preserve-3d; pointer-events: none;">
+                <!-- Cards injected via JS -->
+            </div>
+            <!-- Scroll proxy container to force scroll height -->
+            <div id="events-scroll-proxy" style="position: absolute; top: 0; left: 0; width: 1px; z-index: -1;"></div>
         </div>
 
         <!-- Float Calendar Trigger -->
