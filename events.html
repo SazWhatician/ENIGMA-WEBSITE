@@ -994,6 +994,60 @@
                 .capsule-intro h1 { font-size: clamp(1.5rem, 6vw, 2.5rem); }
                 .capsule-intro p { font-size: 0.9rem; padding: 0 1rem; }
                 .capsule-outro h1 { font-size: 1.5rem; width: 95%; }
+
+                /* --- MOBILE STICKY-COLS FIX: stack vertically --- */
+                .sticky-cols {
+                    height: auto;
+                    overflow: visible;
+                    padding: 1rem 0.75rem;
+                }
+
+                .sticky-cols-wrapper {
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                    height: auto;
+                }
+
+                .col {
+                    position: relative;
+                    width: 100%;
+                    height: auto;
+                    transform: none !important;
+                    opacity: 1 !important;
+                }
+
+                .col-content, .col-img {
+                    position: relative;
+                    height: auto;
+                    padding: 0;
+                }
+
+                .col-content-1 { position: relative; }
+                .col-content-2 { display: none; }
+
+                .col-img-1 { position: relative; }
+                .col-img-2 { display: none; }
+
+                .col-content-wrapper, .col-content-wrapper-2 {
+                    padding: 2rem;
+                }
+
+                .col-img-wrapper {
+                    aspect-ratio: 4/3;
+                    border-radius: 1.5rem;
+                }
+
+                .col h1 {
+                    font-size: 1.3rem;
+                    width: 100%;
+                }
+
+                .col p {
+                    font-size: 0.9rem;
+                    width: 100%;
+                }
             }
         </style>
 
