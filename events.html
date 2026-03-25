@@ -955,6 +955,50 @@
                     width: 90%;
                 }
             }
+
+            @media (max-width: 768px) {
+                .sticky-cols {
+                    height: auto !important;
+                    padding: 4rem 1.5rem !important;
+                    overflow: visible !important;
+                }
+                .sticky-cols-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2rem;
+                    height: auto !important;
+                }
+                .col {
+                    position: relative !important;
+                    width: 100% !important;
+                    height: auto !important;
+                    transform: none !important;
+                    opacity: 1 !important;
+                    scale: 1 !important;
+                }
+                .col-content,
+                .col-img,
+                .col-content-1,
+                .col-content-2,
+                .col-img-1,
+                .col-img-2 {
+                    position: relative !important;
+                    width: 100% !important;
+                    height: 400px !important;
+                    padding: 0 !important;
+                    margin-bottom: 2rem !important;
+                    clip-path: none !important;
+                }
+                .col-img-wrapper img {
+                    transform: none !important;
+                }
+                .col-content-wrapper,
+                .col-content-wrapper-2,
+                .col-img-wrapper {
+                    padding: 2.5rem !important;
+                }
+                .col-3 { padding: 0 !important; }
+            }
         </style>
 
         <!-- Global Navbar (Blend Mode) -->
@@ -1066,7 +1110,7 @@
         </div>
 
         <!-- Float Calendar Trigger -->
-        <button id="btn-open-calendar" class="z-btn-cyber fixed bottom-10 right-10 z-[100] flex items-center gap-2"
+        <button id="btn-open-calendar" class="z-btn-cyber fixed bottom-6 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:bottom-10 md:right-10 w-[90%] md:w-auto justify-center z-[100] flex items-center gap-2"
             data-cursor-hover>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
