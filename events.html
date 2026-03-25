@@ -496,41 +496,50 @@
                 }
 
                 .dossier-container {
-                    padding: 4rem 1rem;
+                    padding: 4rem 0.75rem;
                 }
 
                 .dossier-grid {
-                    grid-template-columns: 1fr;
-                    gap: 1.5rem;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 1rem;
                 }
 
                 .dossier-card {
-                    aspect-ratio: 4/3;
-                    border-radius: 20px;
+                    aspect-ratio: 3/4;
+                    border-radius: 16px;
                 }
                 
+                .dossier-card:nth-child(even) {
+                    margin-top: 0;
+                }
+
                 .card-content {
-                    padding: 1.5rem;
+                    padding: 1rem;
                 }
 
                 .card-title {
-                    font-size: 1.4rem;
+                    font-size: 1rem;
                     max-width: 100%;
                 }
 
                 .card-desc {
                     display: none;
                 }
-                
-                .card-status {
+
+                .card-date {
                     font-size: 0.65rem;
-                    padding: 0.3rem 0.8rem;
                 }
                 
-                .count-current { font-size: 1rem; }
+                .card-status {
+                    font-size: 0.55rem;
+                    padding: 0.2rem 0.6rem;
+                }
+                
+                .count-current { font-size: 0.9rem; }
+                .count-total { font-size: 0.7rem; }
                 
                 .card-overlay {
-                    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.95) 100%);
+                    background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.95) 100%);
                 }
             }
 
@@ -978,28 +987,12 @@
             }
 
             @media (max-width: 768px) {
-                .col {
-                    width: 100vw !important;
-                }
-                .col-1, .col-2 {
-                    height: 100vh !important;
-                }
-                .col-3 {
-                    height: 50vh !important;
-                    top: 0 !important;
-                }
-                .col-4 {
-                    height: 50vh !important;
-                    top: 50vh !important;
-                    margin-left: -100vw !important;
-                }
-                .col h1 { font-size: 1.5rem; width: 100%; margin-bottom: 1rem; }
-                .col p { font-size: 0.9rem; width: 100%; }
-                .col-content, .col-img { padding: 1rem; }
                 .col-content-wrapper, .col-content-wrapper-2, .col-img-wrapper {
                      padding: 1.5rem;
                      border-radius: 1.5rem;
                 }
+                .capsule-intro h1 { font-size: clamp(1.5rem, 6vw, 2.5rem); }
+                .capsule-intro p { font-size: 0.9rem; padding: 0 1rem; }
                 .capsule-outro h1 { font-size: 1.5rem; width: 95%; }
             }
         </style>
