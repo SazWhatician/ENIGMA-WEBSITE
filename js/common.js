@@ -351,9 +351,20 @@ window.initFooterCrystal = function () {
     animateFooter();
 };
 
-// --- LIQUID PORTAL WEBGL BACKGROUND ---
-window.initEventsLiquid = function () {
-    window.cleanupEventsLiquid();
+// --- BRUTALIST EVENTS JS ENGINE ---
+const brutalEventsData = [
+    { id: '01', title: "DevTalk 2026", date: "MAR 10, 2026", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg", status: "ONLINE", desc: "A deep dive into advanced frontend architecture and state management paradigms." },
+    { id: '02', title: "Induction 2026", date: "FEB 22, 2026", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg", status: "ACCESS GRANTED", desc: "Initiation protocol for new recruits. System access levels will be distributed." },
+    { id: '03', title: "AI/ML SUMMIT", date: "JAN 15, 2026", img: "image-assets/aiml.jpg", status: "COMPUTING", desc: "Neural network optimization and predictive modeling workshops with industry leads." },
+    { id: '04', title: "Hackathon", date: "DEC 05, 2025", img: "image-assets/cubers.jpg", status: "LIVE", desc: "48-hour continuous coding sprint. Create solutions. Break systems. Build them better." },
+    { id: '05', title: "Fifa Tournament", date: "NOV 20, 2025", img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670", status: "OFFLINE", desc: "Tactical simulation engine testing via competitive electronic sports." },
+    { id: '06', title: "CP CONTEST", date: "OCT 12, 2025", img: "image-assets/cp.jpg", status: "ARCHIVED", desc: "Algorithmic optimization and competitive problem solving under extreme time constraints." },
+    { id: '07', title: "APP DEV WEEK", date: "SEP 08, 2025", img: "./image-assets/59e1b74783bbaf6b4ea5b0058a0c51dd.jpg", status: "ARCHIVED", desc: "Cross-platform mobile application development using cutting-edge frameworks." },
+    { id: '08', title: "UI/UX WORKSHOP", date: "AUG 14, 2025", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg", status: "ARCHIVED", desc: "Human-computer interaction design principles and brutalist aesthetic theory." }
+];
+
+window.initEventsBrutalist = function () {
+    window.cleanupEventsBrutalist();
 
     // 1. Smooth scroll setup
     if (typeof Lenis !== 'undefined') {
@@ -366,220 +377,434 @@ window.initEventsLiquid = function () {
         gsap.ticker.lagSmoothing(0);
     }
 
-    const canvasContainer = document.getElementById('liquid-portal-canvas');
-    const eventsContainer = document.getElementById('liquid-events-container');
-    
-    if (!canvasContainer || !eventsContainer) return;
+    // 2. Custom Cursor (Removed to match project aesthetics)
 
-    const eventsData = [
-        { title: "DevTalk 2026", date: "MAR 10, 2026", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" },
-        { title: "Induction 2026", date: "FEB 22, 2026", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg" },
-        { title: "AI/ML SUMMIT", date: "JAN 15, 2026", img: "image-assets/aiml.jpg" },
-        { title: "Hackathon", date: "DEC 05, 2025", img: "image-assets/cubers.jpg" },
-        { title: "Fifa Tournament", date: "NOV 20, 2025", img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670" },
-        { title: "CP CONTEST", date: "OCT 12, 2025", img: "image-assets/cp.jpg" },
-        { title: "APP DEV WEEK", date: "SEP 08, 2025", img: "./image-assets/59e1b74783bbaf6b4ea5b0058a0c51dd.jpg" },
-        { title: "UI/UX WORKSHOP", date: "AUG 14, 2025", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" },
-        { title: "TECH SYMPOSIUM", date: "JUL 30, 2025", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg" },
-        { title: "CODE SPRINT", date: "JUN 15, 2025", img: "image-assets/cp.jpg" }
-    ];
+    // --- 3D INTRO ANIMATION ---
+    const introCanvas = document.getElementById('intro-canvas');
+    if (introCanvas && typeof THREE !== 'undefined') {
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.05);
 
-    eventsContainer.innerHTML = '';
-    eventsContainer.style.height = `${eventsData.length * 100}vh`;
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 15;
 
-    eventsData.forEach((ev, i) => {
-        const el = document.createElement('div');
-        el.className = 'liquid-event-sect';
-        el.style.position = 'absolute';
-        el.style.top = `${i * 100}vh`;
-        el.style.width = '100%';
-        el.style.height = '100vh';
-        el.style.display = 'flex';
-        el.style.flexDirection = 'column';
-        el.style.justifyContent = 'center';
-        el.style.alignItems = 'center';
-        el.style.pointerEvents = 'none';
-
-        el.innerHTML = `<h2 style="font-family: 'Syncopate', sans-serif; font-size: clamp(2rem, 8vw, 8rem); font-weight: 700; color: white; mix-blend-mode: difference; text-transform: uppercase; margin: 0; pointer-events: auto; cursor: crosshair; text-align: center;" class="liq-evt-title">${ev.title}</h2><p style="font-family: 'Host Grotesk', sans-serif; font-size: clamp(1rem, 2vw, 1.5rem); color: #2BA648; font-weight: 700; margin-top: -1rem; pointer-events: auto; background: black; padding: 0.2rem 1rem; border-radius: 4px;">${ev.date}</p>`;
-        eventsContainer.appendChild(el);
-    });
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: "high-performance" });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    canvasContainer.appendChild(renderer.domElement);
-
-    const textureLoader = new THREE.TextureLoader();
-    let textures = eventsData.map(ev => textureLoader.load(ev.img));
-
-    const material = new THREE.ShaderMaterial({
-        uniforms: {
-            uTexture1: { value: textures[0] },
-            uTexture2: { value: textures[1] },
-            uTransition: { value: 0 },
-            uTime: { value: 0 },
-            uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-            uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-            uHover: { value: 0 }
-        },
-        vertexShader: `
-            varying vec2 vUv;
-            void main() {
-                vUv = uv;
-                gl_Position = vec4(position, 1.0);
-            }
-        `,
-        fragmentShader: `
-            uniform sampler2D uTexture1;
-            uniform sampler2D uTexture2;
-            uniform float uTransition;
-            uniform float uTime;
-            uniform vec2 uResolution;
-            uniform vec2 uMouse;
-            uniform float uHover;
-            varying vec2 vUv;
-
-            vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-            vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-            vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
-            float snoise(vec2 v) {
-                const vec4 C = vec4(0.211324865405187,  0.366025403784439, -0.577350269189626, 0.024390243902439);
-                vec2 i  = floor(v + dot(v, C.yy) );
-                vec2 x0 = v -   i + dot(i, C.xx);
-                vec2 i1;  i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-                vec4 x12 = x0.xyxy + C.xxzz;  x12.xy -= i1;  i = mod289(i);
-                vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
-                vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-                m = m*m; m = m*m;
-                vec3 x = 2.0 * fract(p * C.www) - 1.0;
-                vec3 h = abs(x) - 0.5;
-                vec3 ox = floor(x + 0.5);
-                vec3 a0 = x - ox;
-                m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-                vec3 g;   g.x  = a0.x  * x0.x  + h.x  * x0.y; g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-                return 130.0 * dot(m, g);
-            }
-
-            void main() {
-                float screenAspect = uResolution.x / uResolution.y;
-                float imgAspect = 16.0 / 9.0;
-                vec2 uv = vUv;
-                if(screenAspect > imgAspect) {
-                    uv.y = (uv.y - 0.5) * (imgAspect / screenAspect) + 0.5;
-                } else {
-                    uv.x = (uv.x - 0.5) * (screenAspect / imgAspect) + 0.5;
-                }
-
-                float dist = distance(vUv, uMouse);
-                float mouseDisplace = smoothstep(0.4, 0.0, dist) * 0.15 * uHover;
-                vec2 dir = normalize(vUv - uMouse);
-                if (length(dir) == 0.0) dir = vec2(1.0, 0.0);
-                vec2 mouseOffset = dir * mouseDisplace;
-
-                float noise = snoise(vUv * 3.0 + uTime * 0.2);
-                float disp1 = noise * uTransition * 0.6;
-                float disp2 = noise * (1.0 - uTransition) * 0.6;
-                
-                vec2 uv1 = uv + vec2(disp1) + mouseOffset;
-                vec2 uv2 = uv - vec2(disp2) + mouseOffset;
-                
-                float rgbSplit = uTransition * (1.0 - uTransition) * 0.1;
-                
-                vec4 c1 = texture2D(uTexture1, vec2(uv1.x + rgbSplit, uv1.y));
-                vec4 c2 = texture2D(uTexture1, vec2(uv1.x, uv1.y));
-                vec4 c3 = texture2D(uTexture1, vec2(uv1.x - rgbSplit, uv1.y));
-                vec4 color1 = vec4(c1.r, c2.g, c3.b, 1.0);
-
-                vec4 c4 = texture2D(uTexture2, vec2(uv2.x + rgbSplit, uv2.y));
-                vec4 c5 = texture2D(uTexture2, vec2(uv2.x, uv2.y));
-                vec4 c6 = texture2D(uTexture2, vec2(uv2.x - rgbSplit, uv2.y));
-                vec4 color2 = vec4(c4.r, c5.g, c6.b, 1.0);
-                
-                vec4 blended = mix(color1, color2, clamp(uTransition + noise*0.2, 0.0, 1.0));
-                
-                blended.rgb *= 0.7;
-                gl_FragColor = blended;
-            }
-        `
-    });
-
-    const plane = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-    scene.add(plane);
-
-    window.liquidMouseTarget = new THREE.Vector2(0.5, 0.5);
-    window.liquidMouseCurrent = new THREE.Vector2(0.5, 0.5);
-
-    window.liquidMouseMove = (e) => {
-        window.liquidMouseTarget.x = e.clientX / window.innerWidth;
-        window.liquidMouseTarget.y = 1.0 - (e.clientY / window.innerHeight);
-    };
-    document.addEventListener('mousemove', window.liquidMouseMove);
-
-    const titles = document.querySelectorAll('.liq-evt-title');
-    titles.forEach(t => {
-        t.addEventListener('mouseenter', () => gsap.to(material.uniforms.uHover, { value: 1, duration: 0.8, ease: "power2.out" }));
-        t.addEventListener('mouseleave', () => gsap.to(material.uniforms.uHover, { value: 0, duration: 0.8, ease: "power2.out" }));
-    });
-
-    window.liquidReqId = null;
-    function animateLiquid() {
-        if (!document.getElementById('liquid-portal-canvas')) return;
-        window.liquidReqId = requestAnimationFrame(animateLiquid);
-        
-        material.uniforms.uTime.value += 0.01;
-        
-        window.liquidMouseCurrent.lerp(window.liquidMouseTarget, 0.1);
-        material.uniforms.uMouse.value.copy(window.liquidMouseCurrent);
-
-        renderer.render(scene, camera);
-    }
-    animateLiquid();
-
-    window.liquidResizeHandler = () => {
-        if (!document.getElementById('liquid-portal-canvas')) return;
+        const renderer = new THREE.WebGLRenderer({ canvas: introCanvas, alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        material.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener('resize', window.liquidResizeHandler);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    window.liquidScrollTrigger = ScrollTrigger.create({
-        trigger: eventsContainer,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: true,
-        onUpdate: (self) => {
-            let maxIndex = eventsData.length - 1;
-            if(maxIndex < 1) return;
-            let progress = self.progress * maxIndex;
-            progress = Math.max(0, Math.min(progress, maxIndex));
-            
-            let i = Math.floor(progress);
-            let f = progress - i;
-            let nextI = Math.min(i + 1, maxIndex);
-            
-            material.uniforms.uTexture1.value = textures[i] || textures[0];
-            material.uniforms.uTexture2.value = textures[nextI] || textures[0];
-            material.uniforms.uTransition.value = f;
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 3000;
+        const posArray = new Float32Array(particlesCount * 3);
+        const colorArray = new Float32Array(particlesCount * 3);
+
+        const color1 = new THREE.Color(0x2BA648);
+        const color2 = new THREE.Color(0xffffff);
+
+        for(let i = 0; i < particlesCount * 3; i+=3) {
+            const radius = 8 + (Math.random() - 0.5) * 4;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(Math.random() * 2 - 1);
+
+            posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
+            posArray[i+1] = radius * Math.sin(phi) * Math.sin(theta);
+            posArray[i+2] = radius * Math.cos(phi);
+
+            const mixedColor = color1.clone().lerp(color2, Math.random());
+            colorArray[i] = mixedColor.r;
+            colorArray[i+1] = mixedColor.g;
+            colorArray[i+2] = mixedColor.b;
         }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.05,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particleMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particleMesh);
+
+        const sphereGeom = new THREE.SphereGeometry(6, 32, 32);
+        const sphereMat = new THREE.MeshBasicMaterial({
+            color: 0x0F3918,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.2
+        });
+        const sphere = new THREE.Mesh(sphereGeom, sphereMat);
+        scene.add(sphere);
+
+        let mouseX = 0;
+        let mouseY = 0;
+        
+        window.introMouseMove = (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2);
+            mouseY = (e.clientY - window.innerHeight / 2);
+        };
+        document.addEventListener('mousemove', window.introMouseMove);
+
+        window.introResize = () => {
+            if (!camera || !renderer) return;
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        };
+        window.addEventListener('resize', window.introResize);
+
+        function animateIntro() {
+            if (!document.getElementById('intro-canvas')) {
+                if (window.introReqId) cancelAnimationFrame(window.introReqId);
+                return;
+            }
+            window.introReqId = requestAnimationFrame(animateIntro);
+
+            let targetX = mouseX * 0.001;
+            let targetY = mouseY * 0.001;
+
+            particleMesh.rotation.y += 0.002;
+            particleMesh.rotation.x += 0.001;
+
+            particleMesh.rotation.y += 0.05 * (targetX - particleMesh.rotation.y);
+            particleMesh.rotation.x += 0.05 * (targetY - particleMesh.rotation.x);
+            
+            sphere.rotation.y -= 0.004;
+            sphere.rotation.z -= 0.002;
+
+            renderer.render(scene, camera);
+        }
+        animateIntro();
+    }
+
+    // Fade in text for Intro
+    gsap.fromTo(".capsule-intro .fade-in-up", 
+        { y: 30, opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 1.5, stagger: 0.2, ease: "power3.out", delay: 0.5 }
+    );
+
+    // 3. Render Cards
+    const grid = document.getElementById('brutal-events-grid');
+    if (grid) {
+        grid.innerHTML = '';
+        brutalEventsData.forEach((ev, i) => {
+            const padId = String(ev.id).padStart(2, '0');
+            const padTotal = String(brutalEventsData.length).padStart(2, '0');
+            const cardHtml = `
+                <div class="dossier-card" data-id="${i}">
+                    <div class="card-img-wrap">
+                        <img src="${ev.img}" class="card-img" alt="${ev.title}" loading="lazy">
+                        <div class="card-overlay"></div>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-content-top">
+                            <div class="title-wrap">
+                                <h2 class="card-title">${ev.title}</h2>
+                                <div class="card-date">${ev.date}</div>
+                            </div>
+                            <div class="card-status">${ev.status}</div>
+                        </div>
+                        <div class="card-content-bottom">
+                            <p class="card-desc">${ev.desc}</p>
+                            <div class="card-counter">
+                                <span class="count-current">${padId}</span>
+                                <span class="count-total">/ ${padTotal}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            grid.insertAdjacentHTML('beforeend', cardHtml);
+        });
+    }
+
+    // 4. Hero Marquee Animation (Removed)
+
+    // 5. Scramble Effect
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+=-/\\|<>[]{}()";
+    
+    function scrambleText(element) {
+        if(element.classList.contains('scrambled')) return;
+        element.classList.add('scrambled');
+        const originalText = element.innerText;
+        let iteration = 0;
+        
+        clearInterval(element.scrambleInterval);
+        element.scrambleInterval = setInterval(() => {
+            element.innerText = originalText
+                .split("")
+                .map((letter, index) => {
+                    if (index < iteration) return originalText[index];
+                    if (letter === " ") return " ";
+                    return chars[Math.floor(Math.random() * chars.length)];
+                })
+                .join("");
+            
+            if (iteration >= originalText.length) {
+                clearInterval(element.scrambleInterval);
+            }
+            iteration += 1 / 3;
+        }, 30);
+    }
+
+    // Decode text on load
+    setTimeout(() => {
+        document.querySelectorAll('.decode-text').forEach(el => scrambleText(el));
+    }, 500);
+
+    // 6. Sticky Cols Animation
+    if (typeof SplitText !== 'undefined') {
+        const textElements = document.querySelectorAll(".col-3 h1, .col-3 p");
+        textElements.forEach((element) => {
+            const split = new SplitText(element, { type: "lines", linesClass: "line" });
+            split.lines.forEach((line) => (line.innerHTML = `<span>${line.textContent}</span>`));
+        });
+        gsap.set(".col-3 .col-content-wrapper .line span", { y: "0%" });
+        gsap.set(".col-3 .col-content-wrapper-2 .line span", { y: "-125%" });
+    }
+
+    let mm = window.matchMedia ? gsap.matchMedia() : null;
+    
+    if (mm) {
+        mm.add("(min-width: 769px)", () => {
+            let currentPhase = 0;
+
+            ScrollTrigger.create({
+                trigger: ".sticky-cols",
+                start: "top top",
+                end: `+=${window.innerHeight * 4}px`,
+                pin: true,
+                pinSpacing: true,
+
+                onUpdate: (self) => {
+                    const progress = self.progress;
+
+                    // Phase 1
+                    if (progress >= 0.25 && currentPhase === 0) {
+                        currentPhase = 1;
+                        gsap.to(".col-1", { opacity: 0, scale: 0.75, duration: 0.75 });
+                        gsap.to(".col-2", { x: "0%", duration: 0.75 });
+                        gsap.to(".col-3", { y: "0%", duration: 0.75 });
+                        gsap.to(".col-img-1 img", { scale: 1.25, duration: 0.75 });
+                        gsap.to(".col-img-2", { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 0.75 });
+                        gsap.to(".col-img-2 img", { scale: 1, duration: 0.75 });
+                    }
+
+                    // Phase 2
+                    if (progress >= 0.5 && currentPhase === 1) {
+                        currentPhase = 2;
+                        gsap.to(".col-2", { opacity: 0, scale: 0.75, duration: 0.75 });
+                        gsap.to(".col-3", { x: "0%", duration: 0.75 });
+                        gsap.to(".col-4", { y: "0%", duration: 0.75 });
+                        gsap.to(".col-3 .col-content-wrapper .line span", { y: "-125%", duration: 0.75 });
+                        gsap.to(".col-3 .col-content-wrapper-2 .line span", { y: "0%", duration: 0.75, delay: 0.5 });
+                    }
+
+                    // Reverse Phase 2 → 1
+                    if (progress < 0.5 && currentPhase === 2) {
+                        currentPhase = 1;
+                        gsap.to(".col-2", { opacity: 1, scale: 1, duration: 0.75 });
+                        gsap.to(".col-3", { x: "100%", duration: 0.75 });
+                        gsap.to(".col-4", { y: "100%", duration: 0.75 });
+                        gsap.to(".col-3 .col-content-wrapper .line span", { y: "0%", duration: 0.75, delay: 0.5 });
+                        gsap.to(".col-3 .col-content-wrapper-2 .line span", { y: "-125%", duration: 0.75 });
+                    }
+
+                    // Reverse Phase 1 → 0
+                    if (progress < 0.25 && currentPhase === 1) {
+                        currentPhase = 0;
+                        gsap.to(".col-1", { opacity: 1, scale: 1, duration: 0.75 });
+                        gsap.to(".col-2", { x: "100%", duration: 0.75 });
+                        gsap.to(".col-3", { y: "100%", duration: 0.75 });
+                        gsap.to(".col-img-1 img", { scale: 1, duration: 0.75 });
+                        gsap.to(".col-img-2", { clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)", duration: 0.75 });
+                        gsap.to(".col-img-2 img", { scale: 1.25, duration: 0.75 });
+                    }
+                },
+            });
+        });
+    }
+
+    // Card scroll reveal
+    const cards = document.querySelectorAll('.dossier-card');
+    cards.forEach((card, i) => {
+        gsap.set(card, { y: 80, opacity: 0, scale: 0.95 });
+        ScrollTrigger.create({
+            trigger: card,
+            start: "top 85%",
+            onEnter: () => {
+                gsap.to(card, { y: 0, opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" });
+            }
+        });
+
+        card.addEventListener('click', () => {
+            const dataIndex = card.getAttribute('data-id');
+            const data = brutalEventsData[dataIndex];
+            openDetailView(data, card);
+        });
     });
 
-    if(window.liquidScrollTrigger) window.liquidScrollTrigger.update(0);
+    // 8. Detail View Logic
+    const detailView = document.getElementById('dossier-detail');
+    const btnCloseDetail = document.getElementById('btn-close-detail');
+    const detailImg = document.getElementById('detail-img-node');
+    const detailTitle = document.getElementById('detail-title-node');
+    const detailDate = document.getElementById('detail-date-node');
+    const detailDesc = document.getElementById('detail-desc-node');
+
+    function openDetailView(data, originCard) {
+        if(window.eventsLenis) window.eventsLenis.stop();
+        document.body.style.overflow = 'hidden';
+        
+        detailImg.src = data.img;
+        detailTitle.innerText = data.title;
+        detailDate.innerText = data.date;
+        detailDesc.innerText = data.desc;
+        detailTitle.classList.remove('scrambled');
+
+        gsap.set(detailView, { opacity: 0, pointerEvents: 'auto' });
+        gsap.set(detailImg, { scale: 1.2, filter: 'grayscale(100%)' });
+        gsap.set('.detail-content > *', { y: 30, opacity: 0 });
+        
+        const tl = gsap.timeline();
+        tl.to(detailView, { opacity: 1, duration: 0.4, ease: "power2.inOut" })
+          .to(detailImg, { scale: 1, filter: 'grayscale(0%)', duration: 1, ease: "expo.out" }, "-=0.2")
+          .to('.detail-content > *', { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "expo.out" }, "-=0.8")
+          .call(() => scrambleText(detailTitle), null, "-=0.6");
+    }
+
+    if (btnCloseDetail) {
+        btnCloseDetail.addEventListener('click', () => {
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    gsap.set(detailView, { pointerEvents: 'none' });
+                    if(window.eventsLenis) window.eventsLenis.start();
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            tl.to('.detail-content > *', { y: -20, opacity: 0, duration: 0.3, stagger: -0.05, ease: "power2.in" })
+              .to(detailImg, { scale: 1.1, filter: 'grayscale(100%)', duration: 0.4, ease: "power2.inOut" }, 0)
+              .to(detailView, { opacity: 0, duration: 0.4, ease: "power2.inOut" }, 0.2);
+        });
+    }
+
+    // 9. Calendar Logic
+    const btnOpenCalendar = document.getElementById('btn-open-calendar');
+    const btnCloseCalendar = document.getElementById('btn-close-calendar');
+    const calendarModal = document.getElementById('cyber-calendar-modal');
+    
+    if (btnOpenCalendar && btnCloseCalendar && calendarModal) {
+        btnOpenCalendar.addEventListener('click', () => {
+            calendarModal.classList.add('active');
+            if(window.eventsLenis) window.eventsLenis.stop();
+            document.body.style.overflow = 'hidden';
+            renderCalendar(currentDate);
+        });
+
+        btnCloseCalendar.addEventListener('click', () => {
+            calendarModal.classList.remove('active');
+            if(window.eventsLenis) window.eventsLenis.start();
+            document.body.style.overflow = '';
+        });
+
+        // Close on background click
+        calendarModal.addEventListener('click', (e) => {
+            if (e.target === calendarModal) {
+                calendarModal.classList.remove('active');
+                if(window.eventsLenis) window.eventsLenis.start();
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
+    // Calendar Generation
+    const calGrid = document.getElementById('cal-grid');
+    const calMonthYear = document.getElementById('cal-month-year');
+    const calPrev = document.getElementById('cal-prev');
+    const calNext = document.getElementById('cal-next');
+
+    // Dates for events to highlight
+    const eventDates = brutalEventsData.map(ev => new Date(ev.date));
+    let currentDate = new Date(2026, 2, 1); // March 2026
+
+    function renderCalendar(date) {
+        if (!calGrid || !calMonthYear) return;
+        
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        
+        const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+        calMonthYear.innerText = `${monthNames[month]} ${year}`;
+        
+        calGrid.innerHTML = '';
+        
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        // Empty slots
+        for (let i = 0; i < firstDay; i++) {
+            calGrid.insertAdjacentHTML('beforeend', `<div class="cal-day empty"></div>`);
+        }
+        
+        // Days
+        for (let i = 1; i <= daysInMonth; i++) {
+            const currentDayDate = new Date(year, month, i);
+            const hasEvent = eventDates.some(ed => 
+                ed.getFullYear() === year && 
+                ed.getMonth() === month && 
+                ed.getDate() === i
+            );
+            
+            const className = hasEvent ? 'cal-day has-event' : 'cal-day';
+            calGrid.insertAdjacentHTML('beforeend', `<div class="${className}" data-cursor-hover>${i}</div>`);
+        }
+        
+        // Re-bind cursor hover for new elements (Removed)
+    }
+
+    if (calPrev && calNext) {
+        calPrev.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar(currentDate);
+        });
+        
+        calNext.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar(currentDate);
+        });
+    }
 };
 
-window.cleanupEventsLiquid = function () {
-    if (window.liquidScrollTrigger) { window.liquidScrollTrigger.kill(); window.liquidScrollTrigger = null; }
+window.cleanupEventsBrutalist = function () {
     if (window.eventsLenisTicker) { gsap.ticker.remove(window.eventsLenisTicker); window.eventsLenisTicker = null; }
     if (window.eventsLenis) { window.eventsLenis.destroy(); window.eventsLenis = null; }
-    if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.getAll().forEach(t => { if (t.vars.trigger === '#liquid-events-container') t.kill(); }); }
+    if (window.marqueeTl) { window.marqueeTl.kill(); window.marqueeTl = null; }
     
-    if (window.liquidReqId) { cancelAnimationFrame(window.liquidReqId); window.liquidReqId = null; }
-    if (window.liquidResizeHandler) { window.removeEventListener('resize', window.liquidResizeHandler); window.liquidResizeHandler = null; }
-    if (window.liquidMouseMove) { document.removeEventListener('mousemove', window.liquidMouseMove); window.liquidMouseMove = null; }
+    if (window.introReqId) { cancelAnimationFrame(window.introReqId); window.introReqId = null; }
+    if (window.introMouseMove) { document.removeEventListener('mousemove', window.introMouseMove); window.introMouseMove = null; }
+    if (window.introResize) { window.removeEventListener('resize', window.introResize); window.introResize = null; }
+
+    // Clear scramblers
+    document.querySelectorAll('.decode-text').forEach(el => {
+        if(el.scrambleInterval) clearInterval(el.scrambleInterval);
+        el.classList.remove('scrambled');
+    });
+
+    if (typeof ScrollTrigger !== 'undefined') { 
+        ScrollTrigger.getAll().forEach(t => { 
+            if (t.vars.trigger) {
+                if ((t.vars.trigger.classList && t.vars.trigger.classList.contains('dossier-card')) || t.vars.trigger === '.sticky-cols') {
+                    t.kill(); 
+                }
+            }
+        }); 
+    }
     
-    const canvasContainer = document.getElementById('liquid-portal-canvas');
-    if(canvasContainer) canvasContainer.innerHTML = '';
+    document.body.style.overflow = '';
 };
 
 // --- BARBA CORE ---
@@ -697,32 +922,22 @@ window.initBarba = function () {
                 }
             },
             {
-                namespace: 'events',
-                beforeEnter(data) {
-                    document.body.style.overflowY = 'auto';
-                    document.body.style.touchAction = 'auto';
-                    window.initEventsLiquid();
-                },
-                afterEnter() { if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); },
-                beforeLeave() {
-                    window.cleanupEventsLiquid();
-                },
-                beforeOnce(data) {
-                    document.body.style.overflowY = 'auto';
-                    document.body.style.touchAction = 'auto';
-                    window.initEventsLiquid();
-                }
-            ,
-                beforeEnter(data) {
-                    document.body.style.overflowY = 'auto';
-                    document.body.style.touchAction = 'auto';
-                    window.initEventsLiquid();
-                },
-                afterEnter() { if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); },
-                beforeLeave() {
-                    window.cleanupEventsLiquid();
-                },
-                afterOnce() { if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); }
+                 namespace: 'events',
+                 beforeEnter(data) {
+                     document.body.style.overflowY = 'auto';
+                     document.body.style.touchAction = 'auto';
+                     window.initEventsBrutalist();
+                 },
+                 afterEnter() { if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); },
+                 beforeLeave() {
+                     window.cleanupEventsBrutalist();
+                 },
+                 beforeOnce(data) {
+                     document.body.style.overflowY = 'auto';
+                     document.body.style.touchAction = 'auto';
+                     window.initEventsBrutalist();
+                 },
+                 afterOnce() { if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); }
             }
         ]
     });
