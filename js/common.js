@@ -555,72 +555,76 @@ window.initEventsBrutalist = function () {
         document.querySelectorAll('.decode-text').forEach(el => scrambleText(el));
     }, 500);
 
-    // 6. Sticky Cols Animation
-    if (typeof SplitText !== 'undefined') {
-        const textElements = document.querySelectorAll(".col-3 h1, .col-3 p");
-        textElements.forEach((element) => {
-            const split = new SplitText(element, { type: "lines", linesClass: "line" });
-            split.lines.forEach((line) => (line.innerHTML = `<span>${line.textContent}</span>`));
+    // 6. Sticky Cols Animation (desktop only — mobile uses stacked layout)
+    const isMobile = window.innerWidth <= 768;
+
+    if (!isMobile) {
+        if (typeof SplitText !== 'undefined') {
+            const textElements = document.querySelectorAll(".col-3 h1, .col-3 p");
+            textElements.forEach((element) => {
+                const split = new SplitText(element, { type: "lines", linesClass: "line" });
+                split.lines.forEach((line) => (line.innerHTML = `<span>${line.textContent}</span>`));
+            });
+            gsap.set(".col-3 .col-content-wrapper .line span", { y: "0%" });
+            gsap.set(".col-3 .col-content-wrapper-2 .line span", { y: "-125%" });
+        }
+
+        let currentPhase = 0;
+
+        ScrollTrigger.create({
+            trigger: ".sticky-cols",
+            start: "top top",
+            end: `+=${window.innerHeight * 4}px`,
+            pin: true,
+            pinSpacing: true,
+
+            onUpdate: (self) => {
+                const progress = self.progress;
+
+                // Phase 1
+                if (progress >= 0.25 && currentPhase === 0) {
+                    currentPhase = 1;
+                    gsap.to(".col-1", { opacity: 0, scale: 0.75, duration: 0.75 });
+                    gsap.to(".col-2", { x: "0%", duration: 0.75 });
+                    gsap.to(".col-3", { y: "0%", duration: 0.75 });
+                    gsap.to(".col-img-1 img", { scale: 1.25, duration: 0.75 });
+                    gsap.to(".col-img-2", { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 0.75 });
+                    gsap.to(".col-img-2 img", { scale: 1, duration: 0.75 });
+                }
+
+                // Phase 2
+                if (progress >= 0.5 && currentPhase === 1) {
+                    currentPhase = 2;
+                    gsap.to(".col-2", { opacity: 0, scale: 0.75, duration: 0.75 });
+                    gsap.to(".col-3", { x: "0%", duration: 0.75 });
+                    gsap.to(".col-4", { y: "0%", duration: 0.75 });
+                    gsap.to(".col-3 .col-content-wrapper .line span", { y: "-125%", duration: 0.75 });
+                    gsap.to(".col-3 .col-content-wrapper-2 .line span", { y: "0%", duration: 0.75, delay: 0.5 });
+                }
+
+                // Reverse Phase 2 → 1
+                if (progress < 0.5 && currentPhase === 2) {
+                    currentPhase = 1;
+                    gsap.to(".col-2", { opacity: 1, scale: 1, duration: 0.75 });
+                    gsap.to(".col-3", { x: "100%", duration: 0.75 });
+                    gsap.to(".col-4", { y: "100%", duration: 0.75 });
+                    gsap.to(".col-3 .col-content-wrapper .line span", { y: "0%", duration: 0.75, delay: 0.5 });
+                    gsap.to(".col-3 .col-content-wrapper-2 .line span", { y: "-125%", duration: 0.75 });
+                }
+
+                // Reverse Phase 1 → 0
+                if (progress < 0.25 && currentPhase === 1) {
+                    currentPhase = 0;
+                    gsap.to(".col-1", { opacity: 1, scale: 1, duration: 0.75 });
+                    gsap.to(".col-2", { x: "100%", duration: 0.75 });
+                    gsap.to(".col-3", { y: "100%", duration: 0.75 });
+                    gsap.to(".col-img-1 img", { scale: 1, duration: 0.75 });
+                    gsap.to(".col-img-2", { clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)", duration: 0.75 });
+                    gsap.to(".col-img-2 img", { scale: 1.25, duration: 0.75 });
+                }
+            },
         });
-        gsap.set(".col-3 .col-content-wrapper .line span", { y: "0%" });
-        gsap.set(".col-3 .col-content-wrapper-2 .line span", { y: "-125%" });
     }
-
-    let currentPhase = 0;
-
-    ScrollTrigger.create({
-        trigger: ".sticky-cols",
-        start: "top top",
-        end: `+=${window.innerHeight * 4}px`,
-        pin: true,
-        pinSpacing: true,
-
-        onUpdate: (self) => {
-            const progress = self.progress;
-
-            // Phase 1
-            if (progress >= 0.25 && currentPhase === 0) {
-                currentPhase = 1;
-                gsap.to(".col-1", { opacity: 0, scale: 0.75, duration: 0.75 });
-                gsap.to(".col-2", { x: "0%", duration: 0.75 });
-                gsap.to(".col-3", { y: "0%", duration: 0.75 });
-                gsap.to(".col-img-1 img", { scale: 1.25, duration: 0.75 });
-                gsap.to(".col-img-2", { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 0.75 });
-                gsap.to(".col-img-2 img", { scale: 1, duration: 0.75 });
-            }
-
-            // Phase 2
-            if (progress >= 0.5 && currentPhase === 1) {
-                currentPhase = 2;
-                gsap.to(".col-2", { opacity: 0, scale: 0.75, duration: 0.75 });
-                gsap.to(".col-3", { x: "0%", duration: 0.75 });
-                gsap.to(".col-4", { y: "0%", duration: 0.75 });
-                gsap.to(".col-3 .col-content-wrapper .line span", { y: "-125%", duration: 0.75 });
-                gsap.to(".col-3 .col-content-wrapper-2 .line span", { y: "0%", duration: 0.75, delay: 0.5 });
-            }
-
-            // Reverse Phase 2 → 1
-            if (progress < 0.5 && currentPhase === 2) {
-                currentPhase = 1;
-                gsap.to(".col-2", { opacity: 1, scale: 1, duration: 0.75 });
-                gsap.to(".col-3", { x: "100%", duration: 0.75 });
-                gsap.to(".col-4", { y: "100%", duration: 0.75 });
-                gsap.to(".col-3 .col-content-wrapper .line span", { y: "0%", duration: 0.75, delay: 0.5 });
-                gsap.to(".col-3 .col-content-wrapper-2 .line span", { y: "-125%", duration: 0.75 });
-            }
-
-            // Reverse Phase 1 → 0
-            if (progress < 0.25 && currentPhase === 1) {
-                currentPhase = 0;
-                gsap.to(".col-1", { opacity: 1, scale: 1, duration: 0.75 });
-                gsap.to(".col-2", { x: "100%", duration: 0.75 });
-                gsap.to(".col-3", { y: "100%", duration: 0.75 });
-                gsap.to(".col-img-1 img", { scale: 1, duration: 0.75 });
-                gsap.to(".col-img-2", { clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)", duration: 0.75 });
-                gsap.to(".col-img-2 img", { scale: 1.25, duration: 0.75 });
-            }
-        },
-    });
 
     // Card scroll reveal
     const cards = document.querySelectorAll('.dossier-card');
