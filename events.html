@@ -16,6 +16,7 @@
     <script src="https://unpkg.com/lenis@1.0.45/dist/lenis.min.js"></script>
     <script src="https://unpkg.com/@barba/core"></script>
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script src="https://assets.codepen.io/16327/SplitText3.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -33,7 +34,8 @@
     </script>
 </head>
 
-<body data-barba="wrapper" class="antialiased selection:bg-orbitGreen selection:text-void bg-black text-white overflow-x-hidden">
+<body data-barba="wrapper"
+    class="antialiased selection:bg-orbitGreen selection:text-void bg-black text-white overflow-x-hidden">
 
     <div class="page-transition">
         <div class="transition-panel"></div>
@@ -57,304 +59,905 @@
 
     <main data-barba="container" data-barba-namespace="events">
         <style>
-        /* --- UNIFIED CSS --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+            /* --- BRUTALIST CSS BASE --- */
+            :root {
+                --b-green: #2BA648;
+                --b-dark-green: #0a2e12;
+                --b-black: #050505;
+                --b-gray: #1a1a1a;
+                --b-light: #f4f4f4;
+                --cursor-size: 20px;
+            }
 
-        body {
-            font-family: 'Host Grotesk', sans-serif;
-            background-color: #000;
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-        ::-webkit-scrollbar { display: none; }
-        html { -ms-overflow-style: none; scrollbar-width: none; }
+            body {
+                font-family: 'Host Grotesk', sans-serif;
+                background-color: var(--b-black);
+                color: var(--b-light);
+                min-height: 100vh;
+                overflow-x: hidden;
+                -webkit-font-smoothing: antialiased;
+            }
 
-        /* Blueprint Background */
-        .blueprint-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6,
+            .brand-font {
+                font-family: 'Syncopate', sans-serif;
+                text-transform: uppercase;
+            }
 
-        .bp-circle {
-            position: absolute;
-            width: 90vmin;
-            height: 90vmin;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-        }
+            ::-webkit-scrollbar {
+                display: none;
+            }
 
-        .bp-line-h {
-            position: absolute;
-            width: 100vw;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.05);
-        }
+            html {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
 
-        .bp-line-v {
-            position: absolute;
-            width: 1px;
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.05);
-        }
+            /* --- CUSTOM CURSOR --- */
+            .brutal-cursor {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: var(--cursor-size);
+                height: var(--cursor-size);
+                background: var(--b-green);
+                mix-blend-mode: difference;
+                border-radius: 0%;
+                pointer-events: none;
+                z-index: 9999;
+                transform: translate(-50%, -50%);
+                transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                    height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                    border-radius 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            }
 
-        .bp-line-d1 {
-            position: absolute;
-            width: 150vw;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.03);
-            transform: rotate(30deg);
-        }
+            .brutal-cursor.hovering {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: rgba(43, 166, 72, 0.2);
+                border: 1px solid var(--b-green);
+                backdrop-filter: blur(4px);
+                mix-blend-mode: normal;
+            }
 
-        .bp-line-d2 {
-            position: absolute;
-            width: 150vw;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.03);
-            transform: rotate(-30deg);
-        }
+            .brutal-cursor.hovering::after {
+                content: 'VIEW';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-family: 'Syncopate', sans-serif;
+                font-size: 10px;
+                font-weight: 700;
+                color: var(--b-green);
+                letter-spacing: 2px;
+            }
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            padding: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            mix-blend-mode: difference;
-        }
+            /* --- BACKGROUND NOISE & GRID --- */
+            .noise-overlay {
+                position: fixed;
+                inset: 0;
+                z-index: 10;
+                pointer-events: none;
+                background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+                opacity: 0.04;
+                mix-blend-mode: overlay;
+            }
 
-        nav,
-        .logo p {
-            font-weight: 700;
-            font-size: 0.9rem;
-            font-family: "Host Grotesk", sans-serif;
-        }
+            .brutal-grid-bg {
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+                pointer-events: none;
+                background-image:
+                    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+                background-size: 100px 100px;
+                background-position: center center;
+            }
 
-        .logo a {
-            text-decoration: none;
-            color: white;
-        }
-
-        .nav-items {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-items a {
-            text-decoration: none;
-            color: white;
-            transition: color 0.3s;
-        }
-
-        .nav-items a:hover {
-            color: #2BA648;
-        }
-
-        @media(max-width: 768px) {
+            /* Navigation Overrides for Brutalist */
             nav {
-                padding: 1.2rem;
-                flex-direction: column;
-                gap: 0.8rem;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                padding: 2rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                z-index: 100;
+                mix-blend-mode: difference;
+            }
+
+            nav,
+            .logo p {
+                font-weight: 700;
+                font-size: 0.9rem;
+                font-family: "Host Grotesk", sans-serif;
+            }
+
+            .logo a {
+                text-decoration: none;
+                color: white;
             }
 
             .nav-items {
-                gap: 0.8rem;
+                display: flex;
+                gap: 2rem;
+            }
+
+            .nav-items a {
+                text-decoration: none;
+                color: white;
+                transition: color 0.3s;
+            }
+
+            .nav-items a:hover,
+            .nav-items a.text-orbitGreen {
+                color: #2BA648;
+            }
+
+            /* --- HERO MARQUEE --- */
+            .events-hero {
+                position: relative;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                overflow: hidden;
+                border-bottom: 2px solid var(--b-light);
+                z-index: 5;
+                background: var(--b-black);
+            }
+
+            .marquee-wrapper {
+                position: relative;
+                display: flex;
+                overflow: hidden;
+                user-select: none;
+                gap: 2rem;
+            }
+
+            .marquee-content {
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                min-width: 100%;
+                gap: 2rem;
+            }
+
+            .hero-title {
+                font-family: 'Syncopate', sans-serif;
+                font-size: clamp(4rem, 15vw, 15rem);
+                font-weight: 700;
+                color: transparent;
+                -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+                line-height: 0.85;
+                margin: 0;
+                white-space: nowrap;
+                letter-spacing: -0.05em;
+            }
+
+            .hero-title.filled {
+                color: var(--b-light);
+                -webkit-text-stroke: 0;
+            }
+
+            .hero-title.accent {
+                color: var(--b-green);
+                -webkit-text-stroke: 0;
+            }
+
+            .hero-sub {
+                position: absolute;
+                bottom: 2rem;
+                left: 2rem;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                max-width: 300px;
+                color: #888;
+            }
+
+            .hero-sub span {
+                color: var(--b-green);
+                font-weight: 700;
+            }
+
+            /* --- DOSSIER GRID (THE CARDS) --- */
+            .dossier-container {
+                position: relative;
+                width: 100%;
+                max-width: 1800px;
+                margin: 0 auto;
+                padding: 8rem 2rem;
+                z-index: 5;
+                background: var(--b-black);
+            }
+
+            .dossier-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 2rem;
+            }
+
+            .dossier-card {
+                position: relative;
+                width: 100%;
+                aspect-ratio: 4/5;
+                border-radius: 40px;
+                overflow: hidden;
+                background: #111;
+                will-change: transform;
+                cursor: pointer;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+                /* Remove transform defaults since we are removing 3D tilt */
+            }
+
+            .dossier-card:nth-child(even) {
+                margin-top: 10vh;
+            }
+
+            /* Image Wrapping */
+            .card-img-wrap {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+            }
+
+            .card-img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                filter: brightness(0.8) contrast(1.1);
+                transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
+            }
+
+            .dossier-card:hover .card-img {
+                transform: scale(1.05);
+                /* Gentle smooth zoom */
+                filter: brightness(1) contrast(1.1);
+            }
+
+            /* Gradient Overlay for text readability */
+            .card-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.1) 30%, rgba(0, 0, 0, 0.1) 60%, rgba(0, 0, 0, 0.8) 100%);
+                z-index: 2;
+                pointer-events: none;
+            }
+
+            /* Content Flex Layout */
+            .card-content {
+                position: absolute;
+                inset: 0;
+                z-index: 3;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 2.5rem;
+                pointer-events: none;
+            }
+
+            .card-content-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .card-content-bottom {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                width: 100%;
+            }
+
+            .title-wrap {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .card-title {
+                font-family: 'Host Grotesk', sans-serif;
+                font-size: clamp(1.8rem, 3vw, 2.5rem);
+                font-weight: 600;
+                line-height: 1.1;
+                margin: 0;
+                color: #fff;
+                max-width: 80%;
+                text-transform: none;
+                /* Classy sentence case */
+                transform: translateY(0);
+                transition: transform 0.4s ease;
+            }
+
+            .card-date {
+                font-family: 'Host Grotesk', sans-serif;
+                font-size: 0.85rem;
+                letter-spacing: 1px;
+                color: rgba(255, 255, 255, 0.7);
+                text-transform: uppercase;
+            }
+
+            .dossier-card:hover .card-title {
+                transform: translateY(-5px);
+            }
+
+            /* Status Pill Badge */
+            .card-status {
+                font-family: 'Host Grotesk', sans-serif;
                 font-size: 0.75rem;
-                flex-wrap: wrap;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                padding: 0.4rem 1.2rem;
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                border-radius: 20px;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(4px);
+                color: #fff;
+            }
+
+            /* Description Hover Revealing */
+            .card-desc {
+                font-family: 'Host Grotesk', sans-serif;
+                font-size: 0.95rem;
+                line-height: 1.5;
+                color: rgba(255, 255, 255, 0.9);
+                max-width: 65%;
+                opacity: 0;
+                transform: translateY(15px);
+                transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            .dossier-card:hover .card-desc {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* Counter on Bottom Right */
+            .card-counter {
+                font-family: 'Host Grotesk', sans-serif;
+                display: flex;
+                align-items: center;
+                gap: 0.3rem;
+            }
+
+            .count-current {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #fff;
+            }
+
+            .count-total {
+                font-size: 0.85rem;
+                color: rgba(255, 255, 255, 0.5);
+                font-weight: 400;
+            }
+
+            /* Responsive Grid */
+            @media (max-width: 1400px) {
+                .dossier-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+
+            @media (max-width: 1024px) {
+                .dossier-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 2rem;
+                }
+
+                .dossier-card:nth-child(even) {
+                    margin-top: 0;
+                }
+
+                .dossier-card {
+                    aspect-ratio: 4/5;
+                    border-radius: 30px;
+                }
+
+                .card-content {
+                    padding: 1.8rem;
+                }
+            }
+
+            @media(max-width: 768px) {
+                nav {
+                    padding: 1.2rem;
+                    flex-direction: column;
+                    gap: 0.8rem;
+                }
+
+                .nav-items {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 0.8rem;
+                    font-size: 0.75rem;
+                }
+
+                .dossier-container {
+                    padding: 6rem 1rem;
+                }
+
+                .dossier-card {
+                    aspect-ratio: 1/1;
+                    border-radius: 20px;
+                }
+
+                .card-title {
+                    font-size: 1.5rem;
+                }
+
+                .card-desc {
+                    display: none;
+                }
+            }
+
+            /* --- DETAIL MODAL (EXPANSION VIEW) --- */
+            .dossier-detail-view {
+                position: fixed;
+                inset: 0;
+                z-index: 200;
+                background: var(--b-black);
+                display: flex;
+                opacity: 0;
+                pointer-events: none;
+                overflow: hidden;
+            }
+
+            .detail-img-container {
+                width: 50%;
+                height: 100%;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .detail-img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                filter: grayscale(100%);
+                transform: scale(1.1);
+                /* Prep for reveal scale in JS */
+            }
+
+            .detail-content {
+                width: 50%;
+                height: 100%;
+                padding: 6rem 4rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                border-left: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .detail-close {
+                position: absolute;
+                top: 2rem;
+                right: 2rem;
+                width: 50px;
+                height: 50px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                z-index: 210;
+                transition: all 0.3s;
+            }
+
+            .detail-close:hover {
+                border-color: var(--b-green);
+                color: var(--b-green);
+                background: rgba(43, 166, 72, 0.1);
+            }
+
+            .detail-date {
+                color: var(--b-green);
+                font-weight: 700;
+                letter-spacing: 2px;
+                font-size: 0.9rem;
+                margin-bottom: 2rem;
+            }
+
+            .detail-title {
+                font-family: 'Syncopate', sans-serif;
+                font-size: clamp(2rem, 5vw, 4rem);
+                line-height: 1.1;
+                margin-bottom: 2rem;
+                text-transform: uppercase;
+            }
+
+            .detail-desc {
+                font-size: 1.1rem;
+                line-height: 1.6;
+                color: #aaa;
+                max-width: 600px;
+                margin-bottom: 3rem;
+            }
+
+            .btn-brutal {
+                padding: 1rem 3rem;
+                background: transparent;
+                border: 1px solid var(--b-light);
+                color: var(--b-light);
+                font-family: 'Syncopate', sans-serif;
+                font-size: 0.8rem;
+                font-weight: 700;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                align-self: flex-start;
+                position: relative;
+                overflow: hidden;
+                transition: color 0.3s, border-color 0.3s;
+            }
+
+            .btn-brutal::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: var(--b-green);
+                transform: scaleX(0);
+                transform-origin: right;
+                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                z-index: -1;
+            }
+
+            .btn-brutal:hover {
+                color: var(--b-black);
+                border-color: var(--b-green);
+            }
+
+            .btn-brutal:hover::before {
+                transform: scaleX(1);
+                transform-origin: left;
+            }
+
+            @media (max-width: 1024px) {
+                .detail-img-container {
+                    width: 40%;
+                }
+
+                .detail-content {
+                    width: 60%;
+                    padding: 4rem 2rem;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .dossier-detail-view {
+                    flex-direction: column;
+                }
+
+                .detail-img-container {
+                    width: 100%;
+                    height: 40%;
+                }
+
+                .detail-content {
+                    width: 100%;
+                    height: 60%;
+                    padding: 2rem;
+                    border-left: none;
+                    border-top: 1px solid rgba(255, 255, 255, 0.1);
+                }
+            }
+
+            /* Calendar specific overrides for brutalist */
+            .z-btn-cyber {
+                padding: 1rem 2rem;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                background: var(--b-black);
+                color: #fff;
+                text-decoration: none;
+                font-family: 'Syncopate', sans-serif;
+                letter-spacing: 2px;
+                font-size: 0.7rem;
+                display: inline-block;
+                transition: all 0.4s;
+                position: relative;
+                overflow: hidden;
+                backdrop-filter: blur(10px);
+                cursor: none;
+            }
+
+            .z-btn-cyber::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: var(--b-green);
+                transform: scaleY(0);
+                transform-origin: bottom;
+                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                z-index: -1;
+            }
+
+            .z-btn-cyber:hover {
+                color: #000;
+                border-color: var(--b-green);
+            }
+
+            .z-btn-cyber:hover::before {
+                transform: scaleY(1);
+            }
+
+            .modal-box {
+                background: var(--b-black);
+                border: 2px solid var(--b-light);
+                border-radius: 0;
+                padding: 3rem;
+            }
+
+            .cal-day.has-event {
+                background: transparent;
+                border: 1px solid var(--b-green);
+                color: var(--b-green);
+                border-radius: 0;
+            }
+
+            .cal-day.has-event:hover {
+                background: var(--b-green);
+                color: #000;
+                transform: scale(1.05);
+            }
+
+            .cal-day {
+                border-radius: 0;
+            }
+
+            .cal-day:not(.empty):hover {
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+            /* --- CAPSULES STICKY COLS CSS --- */
+            .modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(8px);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.4s ease;
+            }
+
+            .modal-overlay.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            #intro-canvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+                pointer-events: none;
+            }
+
+            .capsule-intro h1,
+            .capsule-intro p,
+            .capsule-intro .hero-sub {
+                position: relative;
+                z-index: 2;
+                text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            }
+
+            .capsule-intro,
+            .capsule-outro {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100vw;
+                height: 100vh;
+                background-color: var(--b-black);
+                z-index: 5;
+                position: relative;
+                text-align: center;
+            }
+
+            .capsule-intro h1,
+            .capsule-outro h1 {
+                width: 80%;
+                text-align: center;
+                font-size: clamp(2.5rem, 5vw, 4.5rem);
+                color: var(--b-green);
+                font-family: 'Syncopate', sans-serif;
+                text-transform: uppercase;
+                line-height: 1.1;
+            }
+
+            .capsule-intro p {
+                font-family: 'Host Grotesk', sans-serif;
+                font-size: clamp(1rem, 2vw, 1.25rem);
+                color: var(--b-light);
+                max-width: 600px;
+                margin: 1.5rem auto 0;
+            }
+
+            .sticky-cols {
+                position: relative;
+                width: 100vw;
+                height: 100vh;
+                background-color: var(--b-black);
+                color: var(--b-light);
+                overflow: hidden;
+                padding: 0.5rem;
+                z-index: 5;
+            }
+
+            .sticky-cols-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+
+            .col {
+                position: absolute;
+                width: 50%;
+                height: 100%;
+                will-change: transform;
+            }
+
+            .col h1 {
+                font-family: 'Syncopate', sans-serif;
+                font-weight: 700;
+                color: var(--b-green);
+                width: 80%;
+                font-size: clamp(2rem, 3.5vw, 3rem);
+                line-height: 1.1;
+                margin-bottom: 1.5rem;
+                text-transform: uppercase;
+            }
+
+            .col p {
+                font-family: 'Host Grotesk', sans-serif;
+                font-weight: 600;
+                color: rgba(255, 255, 255, 0.9);
+                width: 80%;
+                font-size: 1.1rem;
+                line-height: 1.5;
+            }
+
+            .col-2 {
+                transform: translateX(100%);
+            }
+
+            .col-3 {
+                transform: translateX(100%) translateY(100%);
+                padding: 0.5rem;
+            }
+
+            .col-4 {
+                transform: translateX(100%) translateY(100%);
+            }
+
+            .col-content,
+            .col-img {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                padding: 3rem;
+            }
+
+            .col-content-1,
+            .col-content-2 {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            .col-content-wrapper,
+            .col-content-wrapper-2,
+            .col-img-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                background-color: var(--b-gray);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                overflow: hidden;
+                border-radius: 2rem;
+            }
+
+            .col-content-wrapper,
+            .col-content-wrapper-2 {
+                padding: 4rem;
+                display: flex;
+                flex-direction: column;
                 justify-content: center;
             }
-        }
 
-        /* Page Transitions */
-        .page-transition {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 9999;
-            pointer-events: none;
-            display: flex;
-        }
-
-        .transition-panel {
-            flex: 1;
-            height: 100%;
-            background-color: #2BA648;
-            transform: translateY(100%);
-            will-change: transform;
-            box-shadow: 2px 0 0 #2BA648;
-        }
-
-        /* --- ENIGMA CORE ORBIT CARDS --- */
-        .orbit-card {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 300px;
-            height: 420px;
-            margin-left: -150px;
-            margin-top: -210px;
-            border-radius: 12px;
-            border: 1px solid rgba(43, 166, 72, 0.4);
-            background: rgba(10, 10, 10, 0.95);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            pointer-events: auto;
-            transform-origin: center center;
-            box-shadow: 0 0 30px rgba(43, 166, 72, 0.1);
-            transition: border-color 0.4s, box-shadow 0.4s, filter 0.4s;
-            will-change: transform, opacity;
-            filter: brightness(0.6) grayscale(20%);
-        }
-
-        .orbit-card.is-active {
-            border-color: #2BA648;
-            box-shadow: 0 0 50px rgba(43, 166, 72, 0.4);
-            filter: brightness(1.1) grayscale(0%);
-        }
-
-        @media(max-width: 768px) {
-            .orbit-card {
-                width: 170px;
-                height: 240px;
-                margin-left: -85px;
-                margin-top: -120px;
+            .col-img-1,
+            .col-img-2 {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
             }
-            .orbit-title { font-size: 0.9rem; }
-            .orbit-btn { font-size: 0.65rem; }
-        }
 
-        .orbit-card:hover {
-            cursor: pointer;
-        }
+            .col-img-2 {
+                clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+            }
 
-        .orbit-image-wrap {
-            position: relative;
-            width: 100%;
-            height: 60%;
-            overflow: hidden;
-            background: #000;
-        }
+            .col-img-2 img {
+                transform: scale(1.25);
+            }
 
-        .orbit-image-wrap::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(43, 166, 72, 0.15) 2px, rgba(43, 166, 72, 0.15) 4px);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.4s;
-            mix-blend-mode: overlay;
-        }
+            .col-img-wrapper img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                filter: grayscale(80%) contrast(1.2);
+                transition: filter 0.5s;
+            }
 
-        .orbit-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s;
-            filter: grayscale(80%) contrast(1.2);
-            opacity: 0.8;
-        }
+            .col-img-wrapper:hover img {
+                filter: grayscale(0%) contrast(1);
+            }
 
-        .orbit-card:hover .orbit-image {
-            transform: scale(1.15);
-            filter: grayscale(0%) contrast(1.1);
-            opacity: 1;
-        }
-        
-        .orbit-card:hover .orbit-image-wrap::after {
-            opacity: 1;
-        }
+            .line {
+                overflow: hidden;
+            }
 
-        .orbit-info {
-            padding: 1.5rem;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 0.5rem;
-            position: relative;
-        }
+            .line span {
+                display: block;
+                will-change: transform;
+            }
 
-        .orbit-title {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: text-shadow 0.3s;
-        }
+            @media (max-width: 1000px) {
+                .col h1 {
+                    font-size: 1.5rem;
+                    width: 100%;
+                }
 
-        .orbit-card:hover .orbit-title {
-            text-shadow: 2px 0 0 rgba(255,0,0,0.6), -2px 0 0 rgba(0,255,255,0.6);
-        }
+                .col p {
+                    font-size: 0.9rem;
+                    width: 100%;
+                }
 
-        .orbit-date {
-            font-family: 'Host Grotesk', sans-serif;
-            font-size: 0.8rem;
-            color: #2BA648;
-            letter-spacing: 0.1em;
-            font-weight: 700;
-        }
+                .col-content-wrapper,
+                .col-content-wrapper-2 {
+                    padding: 2rem;
+                }
 
-        .orbit-btn {
-            position: absolute;
-            bottom: 1.5rem;
-            right: 1.5rem;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-            font-weight: 700;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.4s;
-        }
-
-        .orbit-card:hover .orbit-btn {
-            opacity: 1;
-            color: #2BA648;
-            transform: translateY(0);
-        }
-
-        /* The Cyber Button */
-        .z-btn-cyber { padding: 1rem 3rem; border: 1px solid rgba(43, 166, 72, 0.5); background: rgba(0,0,0,0.6); color: #fff; text-decoration: none; font-family: 'Host Grotesk', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.8rem; backdrop-filter: blur(5px); display: inline-block; transition: all 0.4s; position: relative; overflow: hidden; }
-        .z-btn-cyber::before { content: ''; position: absolute; inset:0; background: #2BA648; transform: scaleX(0); transform-origin: left; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: -1; }
-        .z-btn-cyber:hover { color: #000; letter-spacing: 0.2em; font-weight: 700; border-color: #2BA648; box-shadow: 0 0 20px rgba(43, 166, 72, 0.4); }
-        .z-btn-cyber:hover::before { transform: scaleX(1); }
-
-        /* Calendar specific */
-        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: #fff; border-radius: 4px; transition: all 0.3s; background: rgba(255,255,255,0.02); }
-        .cal-day.empty { background: transparent; pointer-events: none; }
-        .cal-day:not(.empty):hover { background: rgba(255,255,255,0.1); cursor: pointer; }
-        .cal-day.has-event { background: rgba(43, 166, 72, 0.15); border: 1px solid #2BA648; color: #2BA648; font-weight: 700; cursor: pointer; box-shadow: 0 0 15px rgba(43, 166, 72, 0.2); }
-        .cal-day.has-event:hover { background: #2BA648; color: #000; box-shadow: 0 0 20px rgba(43, 166, 72, 0.5); transform: scale(1.1); }
-        
-        .modal-overlay { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.5s; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(0,0,0,0.8); }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-box { background: #0a0a0a; border: 1px solid rgba(43, 166, 72, 0.3); padding: 2rem; border-radius: 12px; width: 90vw; max-width: 500px; box-shadow: 0 0 50px rgba(43, 166, 72, 0.1); transform: scale(0.95); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .modal-overlay.active .modal-box { transform: scale(1); }
+                .capsule-outro h1 {
+                    width: 90%;
+                }
+            }
         </style>
 
+        <!-- Global Navbar (Blend Mode) -->
         <nav>
             <div class="logo"><a href="index.html" data-barba-prevent>ENIGMA.</a></div>
             <div class="nav-items">
@@ -365,43 +968,150 @@
             </div>
         </nav>
 
+        <!-- Intro Section -->
+        <section class="capsule-intro">
+            <canvas id="intro-canvas"></canvas>
+            <div class="hero-sub fade-in-up" style="margin-bottom: 2rem; position: relative;">
+                SYSTEM LOG: <br>
+                <span>AUTHORIZED ACCESS ONLY</span>
+            </div>
+            <h1 class="fade-in-up">ENIGMA CLASSIFIED EVENTS</h1>
+            <p class="fade-in-up">Explore our upcoming and archived protocols. System operations involve deep tech
+                stacks and collaborative decryption.</p>
+        </section>
 
+        <!-- Sticky Cols integration -->
+        <section class="sticky-cols">
+            <div class="sticky-cols-wrapper">
 
-        <!-- The 3D Canvas Background -->
-        <div id="enigma-core-canvas" style="position: fixed; inset: 0; z-index: 0; pointer-events: none;"></div>
+                <div class="col col-1">
+                    <div class="col-content">
+                        <div class="col-content-wrapper">
+                            <h1 class="decode-text">DevTalk 2026</h1>
+                            <p>A deep dive into advanced frontend architecture and state management paradigms.</p>
+                        </div>
+                    </div>
+                </div>
 
-        <!-- The Scroll Track (Forces page height for ScrollTrigger) -->
-        <div id="events-scroll-track" style="position: relative; width: 100%; z-index: 10;"></div>
+                <div class="col col-2">
+                    <div class="col-img col-img-1">
+                        <div class="col-img-wrapper">
+                            <img src="image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" alt="DevTalk 2026" />
+                        </div>
+                    </div>
+                    <div class="col-img col-img-2">
+                        <div class="col-img-wrapper">
+                            <img src="image-assets/bd6172951c03813bdf043d30bb63c737.jpg" alt="Induction 2026" />
+                        </div>
+                    </div>
+                </div>
 
-        <!-- The Orbiting Cards Container (Locked to screen) -->
-        <div id="events-orbit-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 20; pointer-events: none;">
-            <!-- Orbit cards injected via JS -->
+                <div class="col col-3">
+                    <div class="col-content col-content-1">
+                        <div class="col-content-wrapper">
+                            <h1 class="decode-text">Induction 2026</h1>
+                            <p>Initiation protocol for new recruits. System access levels will be distributed.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-content col-content-2">
+                        <div class="col-content-wrapper-2">
+                            <h1 class="decode-text">AI/ML SUMMIT</h1>
+                            <p>Neural network optimization and predictive modeling workshops with industry leads.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col col-4">
+                    <div class="col-img">
+                        <div class="col-img-wrapper">
+                            <img src="image-assets/aiml.jpg" alt="AI/ML SUMMIT" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="outro capsule-outro">
+            <h1 class="decode-text">SYSTEMATIC INTEGRATION COMPLETE. AWAITING FURTHER DIRECTIVES.</h1>
+        </section>
+
+        <!-- Dossier Grid Container -->
+        <div class="dossier-container" id="dossier-grid-container" style="padding-top: 4rem;">
+            <div class="dossier-grid" id="brutal-events-grid">
+                <!-- Cards injected via JS -->
+            </div>
+        </div>
+
+        <!-- Detail Expansion View -->
+        <div class="dossier-detail-view" id="dossier-detail">
+            <button class="detail-close" id="btn-close-detail" data-cursor-hover>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="detail-img-container">
+                <img src="" alt="" class="detail-img" id="detail-img-node">
+            </div>
+            <div class="detail-content">
+                <div class="detail-date" id="detail-date-node"></div>
+                <h2 class="detail-title decode-text" id="detail-title-node"></h2>
+                <p class="detail-desc" id="detail-desc-node">Comprehensive overview of the scheduled protocols.
+                    Operations include deep dives into designated tech stacks, collaborative cipher solving, and
+                    systemic architecture rendering. Clearance granted.</p>
+                <button class="btn-brutal" data-cursor-hover>REGISTER NOW</button>
+            </div>
         </div>
 
         <!-- Float Calendar Trigger -->
-        <button id="btn-open-calendar" class="z-btn-cyber fixed bottom-10 right-10 z-[100] flex items-center gap-2">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        <button id="btn-open-calendar" class="z-btn-cyber fixed bottom-10 right-10 z-[100] flex items-center gap-2"
+            data-cursor-hover>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
             CALENDAR
         </button>
 
         <!-- Calendar Modal -->
         <div id="cyber-calendar-modal" class="modal-overlay">
-            <div class="modal-box">
-                <button id="btn-close-calendar" class="absolute top-4 right-4 text-white/50 hover:text-orbitGreen transition-colors">
-                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <div class="modal-box p-8 md:p-12">
+                <button id="btn-close-calendar"
+                    class="absolute top-6 right-6 text-white/50 hover:text-orbitGreen transition-colors"
+                    data-cursor-hover>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
                 </button>
-                
-                <div class="flex justify-between items-center mb-6 mt-2">
-                    <button id="cal-prev" class="text-orbitGreen hover:text-white transition-colors text-sm font-syncopate">&lt; PREV</button>
-                    <h3 id="cal-month-year" class="font-syncopate text-xl text-white tracking-widest">MARCH 2026</h3>
-                    <button id="cal-next" class="text-orbitGreen hover:text-white transition-colors text-sm font-syncopate">NEXT &gt;</button>
+
+                <div class="flex justify-between items-center mb-8 mt-2">
+                    <button id="cal-prev"
+                        class="text-orbitGreen hover:text-white transition-colors text-xs font-syncopate tracking-widest"
+                        data-cursor-hover>&lt; PREV</button>
+                    <h3 id="cal-month-year" class="font-syncopate text-2xl text-white tracking-widest">MARCH 2026</h3>
+                    <button id="cal-next"
+                        class="text-orbitGreen hover:text-white transition-colors text-xs font-syncopate tracking-widest"
+                        data-cursor-hover>NEXT &gt;</button>
                 </div>
-                
-                <div class="grid grid-cols-7 gap-2 mb-2 text-center text-xs font-host text-white/40 tracking-widest">
-                    <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
+
+                <div
+                    class="grid grid-cols-7 gap-2 mb-4 text-center text-xs font-syncopate text-white/30 tracking-widest border-b border-white/10 pb-4">
+                    <div>SUN</div>
+                    <div>MON</div>
+                    <div>TUE</div>
+                    <div>WED</div>
+                    <div>THU</div>
+                    <div>FRI</div>
+                    <div>SAT</div>
                 </div>
-                
-                <div id="cal-grid" class="grid grid-cols-7 gap-2 text-center font-host">
+
+                <div id="cal-grid" class="grid grid-cols-7 gap-2 text-center font-host text-sm">
                     <!-- Days injected via JS -->
                 </div>
             </div>
