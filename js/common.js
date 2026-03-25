@@ -566,67 +566,61 @@ window.initEventsBrutalist = function () {
         gsap.set(".col-3 .col-content-wrapper-2 .line span", { y: "-125%" });
     }
 
-    let mm = window.matchMedia ? gsap.matchMedia() : null;
-    
-    if (mm) {
-        mm.add("(min-width: 769px)", () => {
-            let currentPhase = 0;
+    let currentPhase = 0;
 
-            ScrollTrigger.create({
-                trigger: ".sticky-cols",
-                start: "top top",
-                end: `+=${window.innerHeight * 4}px`,
-                pin: true,
-                pinSpacing: true,
+    ScrollTrigger.create({
+        trigger: ".sticky-cols",
+        start: "top top",
+        end: `+=${window.innerHeight * 4}px`,
+        pin: true,
+        pinSpacing: true,
 
-                onUpdate: (self) => {
-                    const progress = self.progress;
+        onUpdate: (self) => {
+            const progress = self.progress;
 
-                    // Phase 1
-                    if (progress >= 0.25 && currentPhase === 0) {
-                        currentPhase = 1;
-                        gsap.to(".col-1", { opacity: 0, scale: 0.75, duration: 0.75 });
-                        gsap.to(".col-2", { x: "0%", duration: 0.75 });
-                        gsap.to(".col-3", { y: "0%", duration: 0.75 });
-                        gsap.to(".col-img-1 img", { scale: 1.25, duration: 0.75 });
-                        gsap.to(".col-img-2", { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 0.75 });
-                        gsap.to(".col-img-2 img", { scale: 1, duration: 0.75 });
-                    }
+            // Phase 1
+            if (progress >= 0.25 && currentPhase === 0) {
+                currentPhase = 1;
+                gsap.to(".col-1", { opacity: 0, scale: 0.75, duration: 0.75 });
+                gsap.to(".col-2", { x: "0%", duration: 0.75 });
+                gsap.to(".col-3", { y: "0%", duration: 0.75 });
+                gsap.to(".col-img-1 img", { scale: 1.25, duration: 0.75 });
+                gsap.to(".col-img-2", { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 0.75 });
+                gsap.to(".col-img-2 img", { scale: 1, duration: 0.75 });
+            }
 
-                    // Phase 2
-                    if (progress >= 0.5 && currentPhase === 1) {
-                        currentPhase = 2;
-                        gsap.to(".col-2", { opacity: 0, scale: 0.75, duration: 0.75 });
-                        gsap.to(".col-3", { x: "0%", duration: 0.75 });
-                        gsap.to(".col-4", { y: "0%", duration: 0.75 });
-                        gsap.to(".col-3 .col-content-wrapper .line span", { y: "-125%", duration: 0.75 });
-                        gsap.to(".col-3 .col-content-wrapper-2 .line span", { y: "0%", duration: 0.75, delay: 0.5 });
-                    }
+            // Phase 2
+            if (progress >= 0.5 && currentPhase === 1) {
+                currentPhase = 2;
+                gsap.to(".col-2", { opacity: 0, scale: 0.75, duration: 0.75 });
+                gsap.to(".col-3", { x: "0%", duration: 0.75 });
+                gsap.to(".col-4", { y: "0%", duration: 0.75 });
+                gsap.to(".col-3 .col-content-wrapper .line span", { y: "-125%", duration: 0.75 });
+                gsap.to(".col-3 .col-content-wrapper-2 .line span", { y: "0%", duration: 0.75, delay: 0.5 });
+            }
 
-                    // Reverse Phase 2 → 1
-                    if (progress < 0.5 && currentPhase === 2) {
-                        currentPhase = 1;
-                        gsap.to(".col-2", { opacity: 1, scale: 1, duration: 0.75 });
-                        gsap.to(".col-3", { x: "100%", duration: 0.75 });
-                        gsap.to(".col-4", { y: "100%", duration: 0.75 });
-                        gsap.to(".col-3 .col-content-wrapper .line span", { y: "0%", duration: 0.75, delay: 0.5 });
-                        gsap.to(".col-3 .col-content-wrapper-2 .line span", { y: "-125%", duration: 0.75 });
-                    }
+            // Reverse Phase 2 → 1
+            if (progress < 0.5 && currentPhase === 2) {
+                currentPhase = 1;
+                gsap.to(".col-2", { opacity: 1, scale: 1, duration: 0.75 });
+                gsap.to(".col-3", { x: "100%", duration: 0.75 });
+                gsap.to(".col-4", { y: "100%", duration: 0.75 });
+                gsap.to(".col-3 .col-content-wrapper .line span", { y: "0%", duration: 0.75, delay: 0.5 });
+                gsap.to(".col-3 .col-content-wrapper-2 .line span", { y: "-125%", duration: 0.75 });
+            }
 
-                    // Reverse Phase 1 → 0
-                    if (progress < 0.25 && currentPhase === 1) {
-                        currentPhase = 0;
-                        gsap.to(".col-1", { opacity: 1, scale: 1, duration: 0.75 });
-                        gsap.to(".col-2", { x: "100%", duration: 0.75 });
-                        gsap.to(".col-3", { y: "100%", duration: 0.75 });
-                        gsap.to(".col-img-1 img", { scale: 1, duration: 0.75 });
-                        gsap.to(".col-img-2", { clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)", duration: 0.75 });
-                        gsap.to(".col-img-2 img", { scale: 1.25, duration: 0.75 });
-                    }
-                },
-            });
-        });
-    }
+            // Reverse Phase 1 → 0
+            if (progress < 0.25 && currentPhase === 1) {
+                currentPhase = 0;
+                gsap.to(".col-1", { opacity: 1, scale: 1, duration: 0.75 });
+                gsap.to(".col-2", { x: "100%", duration: 0.75 });
+                gsap.to(".col-3", { y: "100%", duration: 0.75 });
+                gsap.to(".col-img-1 img", { scale: 1, duration: 0.75 });
+                gsap.to(".col-img-2", { clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)", duration: 0.75 });
+                gsap.to(".col-img-2 img", { scale: 1.25, duration: 0.75 });
+            }
+        },
+    });
 
     // Card scroll reveal
     const cards = document.querySelectorAll('.dossier-card');
