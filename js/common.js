@@ -365,285 +365,209 @@ const brutalEventsData = [
 
 window.initEventsBrutalist = function () {
     window.cleanupEventsBrutalist();
+    document.body.style.overflow = 'hidden';
 
-    // 1. Smooth scroll setup
-    if (typeof Lenis !== 'undefined') {
-        window.eventsLenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-        window.eventsLenis.on('scroll', ScrollTrigger.update);
-        window.eventsLenisTicker = (time) => {
-            if (window.eventsLenis) window.eventsLenis.raf(time * 1000);
-        };
-        gsap.ticker.add(window.eventsLenisTicker);
-        gsap.ticker.lagSmoothing(0);
-    }
+    const canvasArea = document.getElementById('tv-canvas-area');
+    const canvas = document.getElementById('tv-canvas');
+    if (!canvas || !canvasArea || typeof THREE === 'undefined') return;
 
-    // 2. Custom Cursor (Removed to match project aesthetics)
+    // --- THREE.JS SCENE ---
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050505);
 
-    // --- 3D INTRO ANIMATION ---
-    const introCanvas = document.getElementById('intro-canvas');
-    if (introCanvas && typeof THREE !== 'undefined') {
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x000000, 0.05);
+    const camera = new THREE.PerspectiveCamera(50, canvasArea.clientWidth / canvasArea.clientHeight, 0.1, 500);
+    camera.position.set(0, 2, 16);
+    camera.lookAt(0, 0, 0);
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 15;
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(canvasArea.clientWidth, canvasArea.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        const renderer = new THREE.WebGLRenderer({ canvas: introCanvas, alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Lighting
+    scene.add(new THREE.AmbientLight(0xffffff, 1.8));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    dirLight.position.set(3, 8, 10);
+    scene.add(dirLight);
+    const greenGlow = new THREE.PointLight(0x2BA648, 3, 30);
+    greenGlow.position.set(0, 5, 8);
+    scene.add(greenGlow);
+    const tvGlow = new THREE.PointLight(0x2BA648, 0, 20);
+    tvGlow.position.set(0, 0, 6);
+    scene.add(tvGlow);
 
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 3000;
-        const posArray = new Float32Array(particlesCount * 3);
-        const colorArray = new Float32Array(particlesCount * 3);
+    const textureLoader = new THREE.TextureLoader();
 
-        const color1 = new THREE.Color(0x2BA648);
-        const color2 = new THREE.Color(0xffffff);
+    // --- CRT TV (centered) ---
+    const tvGroup = new THREE.Group();
+    scene.add(tvGroup);
+    tvGroup.add(new THREE.Mesh(new THREE.BoxGeometry(13, 10, 7), new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: 0.7, metalness: 0.3 })));
+    const bezel = new THREE.Mesh(new THREE.BoxGeometry(11.5, 8.2, 0.6), new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.4 }));
+    bezel.position.z = 3.55;
+    tvGroup.add(bezel);
+    const screenMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.05, metalness: 0.9, emissive: 0x050505 });
+    const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(11, 7.5), screenMat);
+    tvScreen.position.z = 3.86;
+    tvGroup.add(tvScreen);
+    const cdSlot = new THREE.Mesh(new THREE.BoxGeometry(5, 0.15, 0.4), new THREE.MeshBasicMaterial({ color: 0x2BA648, wireframe: true }));
+    cdSlot.position.set(0, -4.3, 3.6);
+    tvGroup.add(cdSlot);
+    // Antennas
+    const antMat = new THREE.MeshStandardMaterial({ color: 0x666666, metalness: 0.8 });
+    const a1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 4, 8), antMat);
+    a1.position.set(-2, 7, -1); a1.rotation.z = -0.3; tvGroup.add(a1);
+    const a2 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 3.5, 8), antMat);
+    a2.position.set(2, 6.8, -1); a2.rotation.z = 0.25; tvGroup.add(a2);
+    tvGroup.position.set(0, 0, 0);
 
-        for(let i = 0; i < particlesCount * 3; i+=3) {
-            const radius = 8 + (Math.random() - 0.5) * 4;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos(Math.random() * 2 - 1);
+    // Floor
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: 0x080808, roughness: 0.9 }));
+    floor.rotation.x = -Math.PI / 2; floor.position.y = -6; scene.add(floor);
 
-            posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
-            posArray[i+1] = radius * Math.sin(phi) * Math.sin(theta);
-            posArray[i+2] = radius * Math.cos(phi);
+    // --- CURSOR TRACKING ---
+    let mouseNX = 0, mouseNY = 0;
+    window.tvCursorMove = (e) => {
+        const rect = canvasArea.getBoundingClientRect();
+        mouseNX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+        mouseNY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    };
+    canvasArea.addEventListener('mousemove', window.tvCursorMove);
 
-            const mixedColor = color1.clone().lerp(color2, Math.random());
-            colorArray[i] = mixedColor.r;
-            colorArray[i+1] = mixedColor.g;
-            colorArray[i+2] = mixedColor.b;
-        }
-
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
-
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.05,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending
-        });
-
-        const particleMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particleMesh);
-
-        const sphereGeom = new THREE.SphereGeometry(6, 32, 32);
-        const sphereMat = new THREE.MeshBasicMaterial({
-            color: 0x0F3918,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.2
-        });
-        const sphere = new THREE.Mesh(sphereGeom, sphereMat);
-        scene.add(sphere);
-
-        let mouseX = 0;
-        let mouseY = 0;
-        
-        window.introMouseMove = (e) => {
-            mouseX = (e.clientX - window.innerWidth / 2);
-            mouseY = (e.clientY - window.innerHeight / 2);
-        };
-        document.addEventListener('mousemove', window.introMouseMove);
-
-        window.introResize = () => {
-            if (!camera || !renderer) return;
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        };
-        window.addEventListener('resize', window.introResize);
-
-        function animateIntro() {
-            if (!document.getElementById('intro-canvas')) {
-                if (window.introReqId) cancelAnimationFrame(window.introReqId);
-                return;
-            }
-            window.introReqId = requestAnimationFrame(animateIntro);
-
-            let targetX = mouseX * 0.001;
-            let targetY = mouseY * 0.001;
-
-            particleMesh.rotation.y += 0.002;
-            particleMesh.rotation.x += 0.001;
-
-            particleMesh.rotation.y += 0.05 * (targetX - particleMesh.rotation.y);
-            particleMesh.rotation.x += 0.05 * (targetY - particleMesh.rotation.x);
-            
-            sphere.rotation.y -= 0.004;
-            sphere.rotation.z -= 0.002;
-
-            renderer.render(scene, camera);
-        }
-        animateIntro();
-    }
-
-    // Fade in text for Intro
-    gsap.fromTo(".capsule-intro .fade-in-up", 
-        { y: 30, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 1.5, stagger: 0.2, ease: "power3.out", delay: 0.5 }
-    );
-
-    // 3. Render Cards
-    const grid = document.getElementById('brutal-events-grid');
-    if (grid) {
-        grid.innerHTML = '';
-        brutalEventsData.forEach((ev, i) => {
-            const padId = String(ev.id).padStart(2, '0');
-            const padTotal = String(brutalEventsData.length).padStart(2, '0');
-            const cardHtml = `
-                <div class="dossier-card" data-id="${i}">
-                    <div class="card-img-wrap">
-                        <img src="${ev.img}" class="card-img" alt="${ev.title}" loading="lazy">
-                        <div class="card-overlay"></div>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-content-top">
-                            <div class="title-wrap">
-                                <h2 class="card-title">${ev.title}</h2>
-                                <div class="card-date">${ev.date}</div>
-                            </div>
-                            <div class="card-status">${ev.status}</div>
-                        </div>
-                        <div class="card-content-bottom">
-                            <p class="card-desc">${ev.desc}</p>
-                            <div class="card-counter">
-                                <span class="count-current">${padId}</span>
-                                <span class="count-total">/ ${padTotal}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            grid.insertAdjacentHTML('beforeend', cardHtml);
-        });
-    }
-
-    // 4. Hero Marquee Animation (Removed)
-
-    // 5. Scramble Effect
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+=-/\\|<>[]{}()";
-    
-    function scrambleText(element) {
-        if(element.classList.contains('scrambled')) return;
-        element.classList.add('scrambled');
-        const originalText = element.innerText;
-        let iteration = 0;
-        
-        clearInterval(element.scrambleInterval);
-        element.scrambleInterval = setInterval(() => {
-            element.innerText = originalText
-                .split("")
-                .map((letter, index) => {
-                    if (index < iteration) return originalText[index];
-                    if (letter === " ") return " ";
-                    return chars[Math.floor(Math.random() * chars.length)];
-                })
-                .join("");
-            
-            if (iteration >= originalText.length) {
-                clearInterval(element.scrambleInterval);
-            }
-            iteration += 1 / 3;
-        }, 30);
-    }
-
-    // Decode text on load
-    setTimeout(() => {
-        document.querySelectorAll('.decode-text').forEach(el => scrambleText(el));
-    }, 500);
-
-    // 6. Sticky Cols Animation (desktop only — mobile uses stacked layout)
-    const isMobile = window.innerWidth <= 768;
-
-    if (!isMobile) {
-        if (typeof SplitText !== 'undefined') {
-            const textElements = document.querySelectorAll(".col-3 h1, .col-3 p");
-            textElements.forEach((element) => {
-                const split = new SplitText(element, { type: "lines", linesClass: "line" });
-                split.lines.forEach((line) => (line.innerHTML = `<span>${line.textContent}</span>`));
-            });
-            gsap.set(".col-3 .col-content-wrapper .line span", { y: "0%" });
-            gsap.set(".col-3 .col-content-wrapper-2 .line span", { y: "-125%" });
-        }
-
-        let currentPhase = 0;
-
-        ScrollTrigger.create({
-            trigger: ".sticky-cols",
-            start: "top top",
-            end: `+=${window.innerHeight * 4}px`,
-            pin: true,
-            pinSpacing: true,
-
-            onUpdate: (self) => {
-                const progress = self.progress;
-
-                // Phase 1
-                if (progress >= 0.25 && currentPhase === 0) {
-                    currentPhase = 1;
-                    gsap.to(".col-1", { opacity: 0, scale: 0.75, duration: 0.75 });
-                    gsap.to(".col-2", { x: "0%", duration: 0.75 });
-                    gsap.to(".col-3", { y: "0%", duration: 0.75 });
-                    gsap.to(".col-img-1 img", { scale: 1.25, duration: 0.75 });
-                    gsap.to(".col-img-2", { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 0.75 });
-                    gsap.to(".col-img-2 img", { scale: 1, duration: 0.75 });
-                }
-
-                // Phase 2
-                if (progress >= 0.5 && currentPhase === 1) {
-                    currentPhase = 2;
-                    gsap.to(".col-2", { opacity: 0, scale: 0.75, duration: 0.75 });
-                    gsap.to(".col-3", { x: "0%", duration: 0.75 });
-                    gsap.to(".col-4", { y: "0%", duration: 0.75 });
-                    gsap.to(".col-3 .col-content-wrapper .line span", { y: "-125%", duration: 0.75 });
-                    gsap.to(".col-3 .col-content-wrapper-2 .line span", { y: "0%", duration: 0.75, delay: 0.5 });
-                }
-
-                // Reverse Phase 2 → 1
-                if (progress < 0.5 && currentPhase === 2) {
-                    currentPhase = 1;
-                    gsap.to(".col-2", { opacity: 1, scale: 1, duration: 0.75 });
-                    gsap.to(".col-3", { x: "100%", duration: 0.75 });
-                    gsap.to(".col-4", { y: "100%", duration: 0.75 });
-                    gsap.to(".col-3 .col-content-wrapper .line span", { y: "0%", duration: 0.75, delay: 0.5 });
-                    gsap.to(".col-3 .col-content-wrapper-2 .line span", { y: "-125%", duration: 0.75 });
-                }
-
-                // Reverse Phase 1 → 0
-                if (progress < 0.25 && currentPhase === 1) {
-                    currentPhase = 0;
-                    gsap.to(".col-1", { opacity: 1, scale: 1, duration: 0.75 });
-                    gsap.to(".col-2", { x: "100%", duration: 0.75 });
-                    gsap.to(".col-3", { y: "100%", duration: 0.75 });
-                    gsap.to(".col-img-1 img", { scale: 1, duration: 0.75 });
-                    gsap.to(".col-img-2", { clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)", duration: 0.75 });
-                    gsap.to(".col-img-2 img", { scale: 1.25, duration: 0.75 });
-                }
-            },
-        });
-    }
-
-    // Card scroll reveal
-    const cards = document.querySelectorAll('.dossier-card');
-    cards.forEach((card, i) => {
-        gsap.set(card, { y: 80, opacity: 0, scale: 0.95 });
-        ScrollTrigger.create({
-            trigger: card,
-            start: "top 85%",
-            onEnter: () => {
-                gsap.to(card, { y: 0, opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" });
-            }
-        });
-
-        card.addEventListener('click', () => {
-            const dataIndex = card.getAttribute('data-id');
-            const data = brutalEventsData[dataIndex];
-            openDetailView(data, card);
-        });
+    // --- BUILD CDs (hidden, spawned on folder hover) ---
+    const cds = [];
+    brutalEventsData.forEach((ev, i) => {
+        const cdGroup = new THREE.Group();
+        const cdGeo = new THREE.CylinderGeometry(2.2, 2.2, 0.1, 48);
+        const tex = textureLoader.load(ev.img);
+        const matSide = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.9, roughness: 0.15 });
+        const matTop = new THREE.MeshBasicMaterial({ map: tex });
+        const matBot = new THREE.MeshBasicMaterial({ map: tex }); // IMAGE ON BOTH SIDES
+        cdGroup.add(new THREE.Mesh(cdGeo, [matSide, matTop, matBot]));
+        cdGroup.add(new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.12, 16), new THREE.MeshBasicMaterial({ color: 0x000000 })));
+        cdGroup.position.set(0, -15, 8);
+        cdGroup.rotation.x = Math.PI / 2;
+        cdGroup.visible = false;
+        cdGroup.userData = { eventData: ev, index: i, texture: tex };
+        scene.add(cdGroup);
+        cds.push(cdGroup);
     });
+
+    // --- HTML ALBUM COVER FOLDERS ---
+    const folderDock = document.getElementById('folder-dock');
+    let selectedCD = null, hoveredFolderIdx = -1, isTransitioning = false;
+
+    if (folderDock) {
+        folderDock.innerHTML = '';
+        brutalEventsData.forEach((ev, i) => {
+            const f = document.createElement('div');
+            f.setAttribute('data-idx', i);
+            f.style.cssText = 'flex-shrink:0; width:140px; height:180px; background:linear-gradient(145deg,#1a1a1a,#0a0a0a); border:1px solid rgba(43,166,72,0.3); border-radius:6px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding:10px 8px; cursor:pointer; transition:all 0.3s; position:relative; overflow:visible;';
+
+            const thumb = document.createElement('div');
+            thumb.style.cssText = "width:120px; height:110px; background:url('" + ev.img + "') center/cover; border:1px solid rgba(255,255,255,0.1); border-radius:3px; position:absolute; top:8px; left:50%; transform:translateX(-50%);";
+            f.appendChild(thumb);
+
+            const name = document.createElement('div');
+            name.style.cssText = "font-family:'Syncopate',sans-serif; font-size:0.55rem; letter-spacing:1px; color:rgba(255,255,255,0.8); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; margin-top:auto;";
+            name.innerText = ev.title;
+            f.appendChild(name);
+
+            f.addEventListener('mouseenter', () => {
+                if (isTransitioning || selectedCD) return;
+                hoveredFolderIdx = i;
+                f.style.borderColor = '#2BA648';
+                f.style.boxShadow = '0 0 20px rgba(43,166,72,0.3)';
+                f.style.transform = 'translateY(-8px)';
+                const cd = cds[i];
+                cd.visible = true;
+                const rect = f.getBoundingClientRect();
+                const cr = canvasArea.getBoundingClientRect();
+                const nx = ((rect.left + rect.width / 2 - cr.left) / cr.width - 0.5) * 20;
+                cd.position.set(nx, -6, 8);
+                gsap.to(cd.position, { y: 1, duration: 0.6, ease: 'back.out(1.7)' });
+            });
+
+            f.addEventListener('mouseleave', () => {
+                if (selectedCD === cds[i]) return;
+                f.style.borderColor = 'rgba(43,166,72,0.3)';
+                f.style.boxShadow = 'none';
+                f.style.transform = 'translateY(0)';
+                const cd = cds[i];
+                gsap.to(cd.position, { y: -15, duration: 0.4, ease: 'power2.in', onComplete: () => { if (selectedCD !== cd) cd.visible = false; } });
+                hoveredFolderIdx = -1;
+            });
+
+            f.addEventListener('click', () => {
+                if (isTransitioning || selectedCD) return;
+                isTransitioning = true;
+                selectedCD = cds[i];
+                const tl = gsap.timeline();
+                tl.to(selectedCD.position, { x: 0, y: -4.3, z: 6, duration: 0.8, ease: 'power2.inOut' })
+                  .to(selectedCD.rotation, { x: Math.PI / 2, y: 0, z: 0, duration: 0.8 }, '<')
+                  .to(selectedCD.position, { z: 3.6, duration: 0.4, ease: 'power1.in' })
+                  .to(selectedCD.position, { y: -15, duration: 0.1 })
+                  .call(() => {
+                      tvGlow.intensity = 8;
+                      tvScreen.material = new THREE.MeshBasicMaterial({ color: 0xffffff, map: selectedCD.userData.texture });
+                      const btn = document.getElementById('btn-enter-event');
+                      gsap.to(btn, { opacity: 1, pointerEvents: 'auto', duration: 0.5 });
+                      isTransitioning = false;
+                  });
+            });
+
+            folderDock.appendChild(f);
+        });
+    }
+
+    // --- INITIALIZE BUTTON ---
+    const enterBtn = document.getElementById('btn-enter-event');
+    if (enterBtn) {
+        enterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!selectedCD) return;
+            isTransitioning = true;
+            gsap.to(enterBtn, { opacity: 0, pointerEvents: 'none', duration: 0.3 });
+            gsap.to(camera.position, { x: 0, y: 0, z: 4, duration: 1.5, ease: 'expo.in' });
+            gsap.to(document.getElementById('tv-events-container'), { opacity: 0, duration: 0.5, delay: 1.2 });
+            setTimeout(() => { openDetailView(selectedCD.userData.eventData, document.body); }, 1400);
+        });
+    }
+
+    // --- RESET SCENE ---
+    window.tvResetScene = () => {
+        if (!selectedCD) return;
+        gsap.to(camera.position, { x: 0, y: 2, z: 16, duration: 1.5, ease: 'expo.out' });
+        gsap.to(document.getElementById('tv-events-container'), { opacity: 1, duration: 0.5 });
+        tvGlow.intensity = 0;
+        tvScreen.material = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.05, metalness: 0.9, emissive: 0x050505 });
+        selectedCD.visible = false;
+        selectedCD = null;
+        isTransitioning = false;
+    };
+
+    // --- ANIMATION LOOP ---
+    window.tvReqId = null;
+    function animateTV() {
+        if (!document.getElementById('tv-canvas')) { if (window.tvReqId) cancelAnimationFrame(window.tvReqId); return; }
+        window.tvReqId = requestAnimationFrame(animateTV);
+        tvGroup.rotation.y += (mouseNX * 0.15 - tvGroup.rotation.y) * 0.08;
+        tvGroup.rotation.x += (-mouseNY * 0.08 - tvGroup.rotation.x) * 0.08;
+        if (hoveredFolderIdx >= 0 && cds[hoveredFolderIdx] && cds[hoveredFolderIdx].visible && cds[hoveredFolderIdx] !== selectedCD) {
+            cds[hoveredFolderIdx].rotation.z += 0.015;
+        }
+        renderer.render(scene, camera);
+    }
+    animateTV();
+
+    // --- RESIZE ---
+    window.tvResize = () => {
+        if (!camera || !renderer || !canvasArea) return;
+        camera.aspect = canvasArea.clientWidth / canvasArea.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(canvasArea.clientWidth, canvasArea.clientHeight);
+    };
+    window.addEventListener('resize', window.tvResize);
+
+    window.addEventListener('resize', window.tvResize);
 
     // 8. Detail View Logic
     const detailView = document.getElementById('dossier-detail');
@@ -679,8 +603,8 @@ window.initEventsBrutalist = function () {
             const tl = gsap.timeline({
                 onComplete: () => {
                     gsap.set(detailView, { pointerEvents: 'none' });
-                    if(window.eventsLenis) window.eventsLenis.start();
-                    document.body.style.overflow = '';
+                    // Trigger the 3D scene reset
+                    if(window.tvResetScene) window.tvResetScene();
                 }
             });
             
@@ -751,18 +675,35 @@ window.initEventsBrutalist = function () {
         // Days
         for (let i = 1; i <= daysInMonth; i++) {
             const currentDayDate = new Date(year, month, i);
-            const hasEvent = eventDates.some(ed => 
-                ed.getFullYear() === year && 
-                ed.getMonth() === month && 
-                ed.getDate() === i
-            );
+            const eventDataObj = brutalEventsData.find(ed => {
+                const edDate = new Date(ed.date);
+                return edDate.getFullYear() === year && edDate.getMonth() === month && edDate.getDate() === i;
+            });
+            const hasEvent = !!eventDataObj;
+            const dataIndex = brutalEventsData.indexOf(eventDataObj);
             
             const className = hasEvent ? 'cal-day has-event' : 'cal-day';
-            calGrid.insertAdjacentHTML('beforeend', `<div class="${className}" data-cursor-hover>${i}</div>`);
+            const clickEvent = hasEvent ? `onclick="window.openDetailViewForCal(${dataIndex})"` : '';
+            calGrid.insertAdjacentHTML('beforeend', `<div class="${className}" ${clickEvent} data-cursor-hover>${i}</div>`);
         }
         
-        // Re-bind cursor hover for new elements (Removed)
     }
+
+    // Expose openDetailView to global scope so inline onclick can access it
+    window.openDetailViewForCal = function(index) {
+        const calendarModal = document.getElementById('cyber-calendar-modal');
+        if (calendarModal) {
+            calendarModal.classList.remove('active');
+        }
+        setTimeout(() => {
+            const data = brutalEventsData[index];
+            if (data) {
+                // mock origin card for the visual flow
+                const mockObj = document.createElement('div');
+                openDetailView(data, mockObj);
+            }
+        }, 400); // Wait for modal to close
+    };
 
     if (calPrev && calNext) {
         calPrev.addEventListener('click', () => {

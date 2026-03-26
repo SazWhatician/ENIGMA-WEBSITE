@@ -17,6 +17,7 @@
     <script src="https://unpkg.com/@barba/core"></script>
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/SplitText.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -500,13 +501,16 @@
                 }
 
                 .dossier-grid {
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 1rem;
+                    grid-template-columns: 1fr;
+                    place-items: center;
+                    gap: 3rem;
                 }
 
                 .dossier-card {
-                    aspect-ratio: 3/4;
-                    border-radius: 16px;
+                    width: 85%;
+                    max-width: 320px;
+                    aspect-ratio: 4/5;
+                    border-radius: 20px;
                 }
                 
                 .dossier-card:nth-child(even) {
@@ -514,25 +518,29 @@
                 }
 
                 .card-content {
-                    padding: 1rem;
+                    padding: 1.5rem;
                 }
 
                 .card-title {
-                    font-size: 1rem;
+                    font-size: 1.25rem;
                     max-width: 100%;
                 }
 
                 .card-desc {
-                    display: none;
+                    display: block;
+                    font-size: 0.8rem;
+                    margin-bottom: 0.5rem;
+                    line-height: 1.4;
+                    max-width: 90%;
                 }
 
                 .card-date {
-                    font-size: 0.65rem;
+                    font-size: 0.75rem;
                 }
                 
                 .card-status {
-                    font-size: 0.55rem;
-                    padding: 0.2rem 0.6rem;
+                    font-size: 0.65rem;
+                    padding: 0.3rem 0.8rem;
                 }
                 
                 .count-current { font-size: 0.9rem; }
@@ -833,226 +841,130 @@
                 margin: 1.5rem auto 0;
             }
 
-            .sticky-cols {
-                position: relative;
+            .horizontal-scroll-container {
                 width: 100vw;
                 height: 100vh;
-                background-color: var(--b-black);
-                color: var(--b-light);
                 overflow: hidden;
-                padding: 0.5rem;
+                position: relative;
+                background: var(--b-black);
                 z-index: 5;
             }
 
-            .sticky-cols-wrapper {
-                position: relative;
-                width: 100%;
-                height: 100%;
-            }
-
-            .col {
-                position: absolute;
-                width: 50%;
+            .horizontal-scroll-wrap {
+                display: flex;
+                width: 300vw;
                 height: 100%;
                 will-change: transform;
             }
 
-            .col h1 {
-                font-family: 'Syncopate', sans-serif;
-                font-weight: 700;
-                color: var(--b-green);
-                width: 80%;
-                font-size: clamp(2rem, 3.5vw, 3rem);
-                line-height: 1.1;
-                margin-bottom: 1.5rem;
-                text-transform: uppercase;
-            }
-
-            .col p {
-                font-family: 'Host Grotesk', sans-serif;
-                font-weight: 600;
-                color: rgba(255, 255, 255, 0.9);
-                width: 80%;
-                font-size: 1.1rem;
-                line-height: 1.5;
-            }
-
-            .col-2 {
-                transform: translateX(100%);
-            }
-
-            .col-3 {
-                transform: translateX(100%) translateY(100%);
-                padding: 0.5rem;
-            }
-
-            .col-4 {
-                transform: translateX(100%) translateY(100%);
-            }
-
-            .col-content,
-            .col-img {
-                position: relative;
-                width: 100%;
-                height: 100%;
-                padding: 3rem;
-            }
-
-            .col-content-1,
-            .col-content-2 {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-            }
-
-            .col-content-wrapper,
-            .col-content-wrapper-2,
-            .col-img-wrapper {
-                position: relative;
-                width: 100%;
-                height: 100%;
-                background-color: var(--b-gray);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                overflow: hidden;
-                border-radius: 2rem;
-            }
-
-            .col-content-wrapper,
-            .col-content-wrapper-2 {
-                padding: 4rem;
+            .h-slide {
+                width: 100vw;
+                height: 100vh;
                 display: flex;
-                flex-direction: column;
+                align-items: center;
                 justify-content: center;
+                position: relative;
+                padding: 4rem;
             }
 
-            .col-img-1,
-            .col-img-2 {
-                position: absolute;
-                top: 0;
-                left: 0;
+            .h-slide-inner {
                 width: 100%;
+                max-width: 1600px;
+                height: 75vh;
+                background: #0a0a0a;
+                border-radius: 40px;
+                border: 1px solid rgba(43, 166, 72, 0.2);
+                display: flex;
+                overflow: hidden;
+                position: relative;
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            .h-slide-img-wrap {
+                width: 50%;
                 height: 100%;
+                position: relative;
+                overflow: hidden;
             }
 
-            .col-img-2 {
-                clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
-            }
-
-            .col-img-2 img {
-                transform: scale(1.25);
-            }
-
-            .col-img-wrapper img {
+            .h-slide-img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
                 filter: grayscale(80%) contrast(1.2);
-                transition: filter 0.5s;
+                transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), filter 1s;
+                transform: scale(1.2);
             }
 
-            .col-img-wrapper:hover img {
+            .h-slide-inner:hover .h-slide-img {
+                transform: scale(1);
                 filter: grayscale(0%) contrast(1);
             }
 
-            .line {
-                overflow: hidden;
+            .h-slide-content {
+                width: 50%;
+                padding: 5rem 4rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                z-index: 2;
+                background: linear-gradient(90deg, #0a0a0a 0%, rgba(10,10,10,0.8) 100%);
             }
 
-            .line span {
-                display: block;
-                will-change: transform;
+            .h-badge {
+                align-self: flex-start;
+                padding: 0.5rem 1.5rem;
+                border: 1px solid var(--b-green);
+                color: var(--b-green);
+                font-family: 'Syncopate', sans-serif;
+                font-size: 0.7rem;
+                letter-spacing: 2px;
+                border-radius: 30px;
+                margin-bottom: 2rem;
             }
 
-            @media (max-width: 1000px) {
-                .col h1 {
-                    font-size: 1.5rem;
-                    width: 100%;
-                }
+            .h-title {
+                font-family: 'Syncopate', sans-serif;
+                font-size: clamp(2rem, 4vw, 4rem);
+                line-height: 1.1;
+                margin-bottom: 1.5rem;
+                color: #fff;
+            }
 
-                .col p {
-                    font-size: 0.9rem;
-                    width: 100%;
-                }
+            .h-desc {
+                font-family: 'Host Grotesk', sans-serif;
+                font-size: 1.15rem;
+                line-height: 1.6;
+                color: #aaa;
+                max-width: 80%;
+                margin-bottom: 3rem;
+            }
 
-                .col-content-wrapper,
-                .col-content-wrapper-2 {
-                    padding: 2rem;
-                }
-
-                .capsule-outro h1 {
-                    width: 90%;
-                }
+            @media (max-width: 1024px) {
+                .h-slide { padding: 2rem; }
+                .h-slide-inner { flex-direction: column; height: auto; min-height: 75vh; }
+                .h-slide-img-wrap { width: 100%; height: 40%; }
+                .h-slide-content { width: 100%; height: 60%; padding: 3rem 2rem; }
+                .h-title { font-size: 2rem; }
             }
 
             @media (max-width: 768px) {
-                .col-content-wrapper, .col-content-wrapper-2, .col-img-wrapper {
-                     padding: 1.5rem;
-                     border-radius: 1.5rem;
-                }
-                .capsule-intro h1 { font-size: clamp(1.5rem, 6vw, 2.5rem); }
-                .capsule-intro p { font-size: 0.9rem; padding: 0 1rem; }
-                .capsule-outro h1 { font-size: 1.5rem; width: 95%; }
-
-                /* --- MOBILE STICKY-COLS FIX: stack vertically --- */
-                .sticky-cols {
-                    height: auto;
-                    overflow: visible;
-                    padding: 1rem 0.75rem;
-                }
-
-                .sticky-cols-wrapper {
-                    position: relative;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1rem;
-                    height: auto;
-                }
-
-                .col {
-                    position: relative;
-                    width: 100%;
-                    height: auto;
-                    transform: none !important;
-                    opacity: 1 !important;
-                }
-
-                .col-content, .col-img {
-                    position: relative;
-                    height: auto;
-                    padding: 0;
-                }
-
-                .col-content-1 { position: relative; }
-                .col-content-2 { display: none; }
-
-                .col-img-1 { position: relative; }
-                .col-img-2 { display: none; }
-
-                .col-content-wrapper, .col-content-wrapper-2 {
-                    padding: 2rem;
-                }
-
-                .col-img-wrapper {
-                    aspect-ratio: 4/3;
-                    border-radius: 1.5rem;
-                }
-
-                .col h1 {
-                    font-size: 1.3rem;
-                    width: 100%;
-                }
-
-                .col p {
-                    font-size: 0.9rem;
-                    width: 100%;
-                }
+                /* On narrow mobile, we will stack them rather than horizontal scroll for better UX */
+                .horizontal-scroll-container { height: auto; overflow: visible; padding: 2rem 0; }
+                .horizontal-scroll-wrap { flex-direction: column; width: 100vw; gap: 2rem; }
+                .h-slide { width: 100vw; height: auto; padding: 1rem; }
+                .h-slide-inner { height: auto; border-radius: 24px; min-height: 0; }
+                .h-slide-img-wrap { height: 250px; }
+                .h-slide-content { padding: 2rem; }
+                .h-title { font-size: 1.5rem; margin-bottom: 1rem; }
+                .h-desc { font-size: 0.95rem; max-width: 100%; margin-bottom: 2rem; }
+                .h-badge { margin-bottom: 1rem; }
             }
         </style>
 
         <!-- Global Navbar (Blend Mode) -->
-        <nav>
+        <nav style="z-index: 100; position: absolute;">
             <div class="logo"><a href="index.html" data-barba-prevent>ENIGMA.</a></div>
             <div class="nav-items">
                 <a href="events.html" class="text-orbitGreen">Events</a>
@@ -1062,83 +974,31 @@
             </div>
         </nav>
 
-        <!-- Intro Section -->
-        <section class="capsule-intro">
-            <canvas id="intro-canvas"></canvas>
-            <div class="hero-sub fade-in-up" style="margin-bottom: 2rem; position: relative;">
-                SYSTEM LOG: <br>
-                <span>AUTHORIZED ACCESS ONLY</span>
+        <!-- Full Page Events Container -->
+        <div id="tv-events-container" style="position: absolute; top:0; left:0; width:100vw; height:100vh; overflow:hidden; z-index: 1; display: flex; flex-direction: column; background: #000;">
+            
+            <!-- TOP: 3D Canvas with CRT TV (takes ~60% height) -->
+            <div id="tv-canvas-area" style="position: relative; flex: 1; min-height: 0;">
+                <canvas id="tv-canvas" style="width: 100%; height: 100%; outline: none; display: block;"></canvas>
+
+                <!-- ENIGMA Header Overlay -->
+                <div style="position: absolute; top: 80px; left: 2rem; pointer-events: none; z-index: 10;">
+                    <h1 style="font-family: 'Syncopate', sans-serif; font-size: clamp(1.2rem, 3vw, 2.2rem); letter-spacing: 4px; color: #fff;">ENIGMA <span style="color:var(--b-green);">EVENT LIST</span></h1>
+                </div>
+
+                <!-- Initialize Button (pinned to TV screen center) -->
+                <button id="btn-enter-event" style="position: absolute; top: 42%; left: 50%; transform: translate(-50%, -50%); z-index: 15; opacity: 0; pointer-events: none; font-family: 'Syncopate', sans-serif; font-size: 0.85rem; letter-spacing: 3px; color: var(--b-green); background: rgba(0,0,0,0.7); border: 1px solid var(--b-green); padding: 12px 30px; cursor: pointer; backdrop-filter: blur(5px); text-shadow: 0 0 8px rgba(43,166,72,0.5); transition: all 0.3s;">
+                    ▶ INITIALIZE PROTOCOL
+                </button>
             </div>
-            <h1 class="fade-in-up">ENIGMA CLASSIFIED EVENTS</h1>
-            <p class="fade-in-up">Explore our upcoming and archived protocols. System operations involve deep tech
-                stacks and collaborative decryption.</p>
-        </section>
 
-        <!-- Sticky Cols integration -->
-        <section class="sticky-cols">
-            <div class="sticky-cols-wrapper">
-
-                <div class="col col-1">
-                    <div class="col-content">
-                        <div class="col-content-wrapper">
-                            <h1 class="decode-text">DevTalk 2026</h1>
-                            <p>A deep dive into advanced frontend architecture and state management paradigms.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col col-2">
-                    <div class="col-img col-img-1">
-                        <div class="col-img-wrapper">
-                            <img src="image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" alt="DevTalk 2026" />
-                        </div>
-                    </div>
-                    <div class="col-img col-img-2">
-                        <div class="col-img-wrapper">
-                            <img src="image-assets/bd6172951c03813bdf043d30bb63c737.jpg" alt="Induction 2026" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col col-3">
-                    <div class="col-content col-content-1">
-                        <div class="col-content-wrapper">
-                            <h1 class="decode-text">Induction 2026</h1>
-                            <p>Initiation protocol for new recruits. System access levels will be distributed.</p>
-                        </div>
-                    </div>
-
-                    <div class="col-content col-content-2">
-                        <div class="col-content-wrapper-2">
-                            <h1 class="decode-text">AI/ML SUMMIT</h1>
-                            <p>Neural network optimization and predictive modeling workshops with industry leads.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col col-4">
-                    <div class="col-img">
-                        <div class="col-img-wrapper">
-                            <img src="image-assets/aiml.jpg" alt="AI/ML SUMMIT" />
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <section class="outro capsule-outro">
-            <h1 class="decode-text">SYSTEMATIC INTEGRATION COMPLETE. AWAITING FURTHER DIRECTIVES.</h1>
-        </section>
-
-        <!-- Dossier Grid Container -->
-        <div class="dossier-container" id="dossier-grid-container" style="padding-top: 4rem;">
-            <div class="dossier-grid" id="brutal-events-grid">
-                <!-- Cards injected via JS -->
+            <!-- BOTTOM: Album Cover Folder Dock -->
+            <div id="folder-dock" style="height: 220px; min-height: 220px; background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(10,10,10,0.95) 100%); border-top: 1px solid rgba(43,166,72,0.3); display: flex; align-items: center; gap: 1.5rem; padding: 0 2rem; overflow-x: auto; overflow-y: hidden; z-index: 20; position: relative;">
+                <!-- Folder cards injected by JS -->
             </div>
         </div>
 
-        <!-- Detail Expansion View -->
+        <!-- Detail Expansion View (Only shown after camera zooms deeply into TV) -->
         <div class="dossier-detail-view" id="dossier-detail">
             <button class="detail-close" id="btn-close-detail" data-cursor-hover>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
