@@ -461,12 +461,11 @@ window.initEventsBrutalist = function () {
 
         // Hero Parallax (triggered after intro)
         gsap.to('#hero-title-main', {
-            y: 350, opacity: 0.1, scale: 0.95, filter: 'blur(10px)',
+            y: 100, scale: 0.95,
             scrollTrigger: { trigger: '.events-hero-new', start: 'top top', end: 'bottom top', scrub: true }
         });
         gsap.to('#hero-sub-text, #scroll-indicator', {
-            opacity: 0,
-            y: -100,
+            y: -50,
             scrollTrigger: { trigger: '.events-hero-new', start: 'top top', end: 'bottom top', scrub: true }
         });
 
