@@ -365,210 +365,201 @@ const brutalEventsData = [
 
 window.initEventsBrutalist = function () {
     window.cleanupEventsBrutalist();
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'auto'; // allow scrolling now
 
-    const canvasArea = document.getElementById('tv-canvas-area');
-    const canvas = document.getElementById('tv-canvas');
-    if (!canvas || !canvasArea || typeof THREE === 'undefined') return;
+    // 1. Initialize Lenis specific to events if needed
+    if (typeof Lenis !== 'undefined') {
+        window.eventsLenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+        });
+        window.eventsLenis.on('scroll', ScrollTrigger.update);
+        window.eventsLenisTicker = (time) => { window.eventsLenis.raf(time * 1000); };
+        gsap.ticker.add(window.eventsLenisTicker);
+    }
 
-    // --- THREE.JS SCENE ---
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x050505);
+    // 2. Data Splitting
+    const topEvents = brutalEventsData.slice(0, 3);
+    const pastEvents = brutalEventsData.slice(3);
 
-    const camera = new THREE.PerspectiveCamera(50, canvasArea.clientWidth / canvasArea.clientHeight, 0.1, 500);
-    camera.position.set(0, 2, 16);
-    camera.lookAt(0, 0, 0);
-
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setSize(canvasArea.clientWidth, canvasArea.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    // Lighting
-    scene.add(new THREE.AmbientLight(0xffffff, 1.8));
-    const dirLight = new THREE.DirectionalLight(0xffffff, 2.5);
-    dirLight.position.set(3, 8, 10);
-    scene.add(dirLight);
-    const greenGlow = new THREE.PointLight(0x2BA648, 3, 30);
-    greenGlow.position.set(0, 5, 8);
-    scene.add(greenGlow);
-    const tvGlow = new THREE.PointLight(0x2BA648, 0, 20);
-    tvGlow.position.set(0, 0, 6);
-    scene.add(tvGlow);
-
-    const textureLoader = new THREE.TextureLoader();
-
-    // --- CRT TV (centered) ---
-    const tvGroup = new THREE.Group();
-    scene.add(tvGroup);
-    tvGroup.add(new THREE.Mesh(new THREE.BoxGeometry(13, 10, 7), new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: 0.7, metalness: 0.3 })));
-    const bezel = new THREE.Mesh(new THREE.BoxGeometry(11.5, 8.2, 0.6), new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.4 }));
-    bezel.position.z = 3.55;
-    tvGroup.add(bezel);
-    const screenMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.05, metalness: 0.9, emissive: 0x050505 });
-    const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(11, 7.5), screenMat);
-    tvScreen.position.z = 3.86;
-    tvGroup.add(tvScreen);
-    const cdSlot = new THREE.Mesh(new THREE.BoxGeometry(5, 0.15, 0.4), new THREE.MeshBasicMaterial({ color: 0x2BA648, wireframe: true }));
-    cdSlot.position.set(0, -4.3, 3.6);
-    tvGroup.add(cdSlot);
-    // Antennas
-    const antMat = new THREE.MeshStandardMaterial({ color: 0x666666, metalness: 0.8 });
-    const a1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 4, 8), antMat);
-    a1.position.set(-2, 7, -1); a1.rotation.z = -0.3; tvGroup.add(a1);
-    const a2 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 3.5, 8), antMat);
-    a2.position.set(2, 6.8, -1); a2.rotation.z = 0.25; tvGroup.add(a2);
-    tvGroup.position.set(0, 0, 0);
-
-    // Floor
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: 0x080808, roughness: 0.9 }));
-    floor.rotation.x = -Math.PI / 2; floor.position.y = -6; scene.add(floor);
-
-    // --- CURSOR TRACKING ---
-    let mouseNX = 0, mouseNY = 0;
-    window.tvCursorMove = (e) => {
-        const rect = canvasArea.getBoundingClientRect();
-        mouseNX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-        mouseNY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-    };
-    canvasArea.addEventListener('mousemove', window.tvCursorMove);
-
-    // --- BUILD CDs (hidden, spawned on folder hover) ---
-    const cds = [];
-    brutalEventsData.forEach((ev, i) => {
-        const cdGroup = new THREE.Group();
-        const cdGeo = new THREE.CylinderGeometry(2.2, 2.2, 0.1, 48);
-        const tex = textureLoader.load(ev.img);
-        const matSide = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.9, roughness: 0.15 });
-        const matTop = new THREE.MeshBasicMaterial({ map: tex });
-        const matBot = new THREE.MeshBasicMaterial({ map: tex }); // IMAGE ON BOTH SIDES
-        cdGroup.add(new THREE.Mesh(cdGeo, [matSide, matTop, matBot]));
-        cdGroup.add(new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.12, 16), new THREE.MeshBasicMaterial({ color: 0x000000 })));
-        cdGroup.position.set(0, -15, 8);
-        cdGroup.rotation.x = Math.PI / 2;
-        cdGroup.visible = false;
-        cdGroup.userData = { eventData: ev, index: i, texture: tex };
-        scene.add(cdGroup);
-        cds.push(cdGroup);
-    });
-
-    // --- HTML ALBUM COVER FOLDERS ---
-    const folderDock = document.getElementById('folder-dock');
-    let selectedCD = null, hoveredFolderIdx = -1, isTransitioning = false;
-
-    if (folderDock) {
-        folderDock.innerHTML = '';
-        brutalEventsData.forEach((ev, i) => {
-            const f = document.createElement('div');
-            f.setAttribute('data-idx', i);
-            f.style.cssText = 'flex-shrink:0; width:140px; height:180px; background:linear-gradient(145deg,#1a1a1a,#0a0a0a); border:1px solid rgba(43,166,72,0.3); border-radius:6px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding:10px 8px; cursor:pointer; transition:all 0.3s; position:relative; overflow:visible;';
-
-            const thumb = document.createElement('div');
-            thumb.style.cssText = "width:120px; height:110px; background:url('" + ev.img + "') center/cover; border:1px solid rgba(255,255,255,0.1); border-radius:3px; position:absolute; top:8px; left:50%; transform:translateX(-50%);";
-            f.appendChild(thumb);
-
-            const name = document.createElement('div');
-            name.style.cssText = "font-family:'Syncopate',sans-serif; font-size:0.55rem; letter-spacing:1px; color:rgba(255,255,255,0.8); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; margin-top:auto;";
-            name.innerText = ev.title;
-            f.appendChild(name);
-
-            f.addEventListener('mouseenter', () => {
-                if (isTransitioning || selectedCD) return;
-                hoveredFolderIdx = i;
-                f.style.borderColor = '#2BA648';
-                f.style.boxShadow = '0 0 20px rgba(43,166,72,0.3)';
-                f.style.transform = 'translateY(-8px)';
-                const cd = cds[i];
-                cd.visible = true;
-                const rect = f.getBoundingClientRect();
-                const cr = canvasArea.getBoundingClientRect();
-                const nx = ((rect.left + rect.width / 2 - cr.left) / cr.width - 0.5) * 20;
-                cd.position.set(nx, -6, 8);
-                gsap.to(cd.position, { y: 1, duration: 0.6, ease: 'back.out(1.7)' });
-            });
-
-            f.addEventListener('mouseleave', () => {
-                if (selectedCD === cds[i]) return;
-                f.style.borderColor = 'rgba(43,166,72,0.3)';
-                f.style.boxShadow = 'none';
-                f.style.transform = 'translateY(0)';
-                const cd = cds[i];
-                gsap.to(cd.position, { y: -15, duration: 0.4, ease: 'power2.in', onComplete: () => { if (selectedCD !== cd) cd.visible = false; } });
-                hoveredFolderIdx = -1;
-            });
-
-            f.addEventListener('click', () => {
-                if (isTransitioning || selectedCD) return;
-                isTransitioning = true;
-                selectedCD = cds[i];
-                const tl = gsap.timeline();
-                tl.to(selectedCD.position, { x: 0, y: -4.3, z: 6, duration: 0.8, ease: 'power2.inOut' })
-                  .to(selectedCD.rotation, { x: Math.PI / 2, y: 0, z: 0, duration: 0.8 }, '<')
-                  .to(selectedCD.position, { z: 3.6, duration: 0.4, ease: 'power1.in' })
-                  .to(selectedCD.position, { y: -15, duration: 0.1 })
-                  .call(() => {
-                      tvGlow.intensity = 8;
-                      tvScreen.material = new THREE.MeshBasicMaterial({ color: 0xffffff, map: selectedCD.userData.texture });
-                      const btn = document.getElementById('btn-enter-event');
-                      gsap.to(btn, { opacity: 1, pointerEvents: 'auto', duration: 0.5 });
-                      isTransitioning = false;
-                  });
-            });
-
-            folderDock.appendChild(f);
+    // 3. Inject Top 3 Highlights
+    const highlightContainer = document.getElementById('highlight-events');
+    if (highlightContainer) {
+        // clear out anything but the snake svg
+        const existingBlocks = highlightContainer.querySelectorAll('.highlight-block');
+        existingBlocks.forEach(el => el.remove());
+        
+        topEvents.forEach((ev, i) => {
+            const isEven = i % 2 !== 0; // alternate layout
+            const block = document.createElement('div');
+            block.className = `highlight-block w-full py-16 md:min-h-[90vh] flex flex-col ${isEven ? 'md:flex-row-reverse' : 'md:flex-row'} items-center justify-center px-8 md:px-20 relative overflow-hidden gap-10 md:gap-16 z-10`;
+            block.innerHTML = `
+                <div class="h-img-wrap w-full md:w-[45%] h-[40vh] md:h-[60vh] relative overflow-hidden rounded-[20px] md:rounded-[40px] border border-white/10 z-10" data-cursor-hover>
+                    <img src="${ev.img}" class="h-img w-full h-[120%] top-[-10%] left-0 absolute object-cover" alt="${ev.title}">
+                    <div class="absolute inset-0 bg-black/20 transition-colors duration-500 hover:bg-transparent"></div>
+                </div>
+                <div class="h-content-wrap w-full md:w-[45%] flex flex-col justify-center ${isEven ? 'items-end text-right' : 'items-start text-left'} z-20">
+                    <div class="text-orbitGreen font-syncopate text-[10px] md:text-xs tracking-[0.3em] mb-4">${String(i + 1).padStart(2, '0')} // RECORD</div>
+                    <h2 class="h-title font-syncopate text-4xl md:text-[5vw] font-bold text-white uppercase leading-[0.85] tracking-tighter" style="text-shadow: 0 10px 30px rgba(0,0,0,0.8);">${ev.title}</h2>
+                    <div class="h-date text-white/50 font-host text-sm md:text-lg mt-6 tracking-[0.2em] uppercase">${ev.date} / ${ev.status}</div>
+                    <p class="h-desc text-white/80 font-host text-sm md:text-xl mt-6 max-w-lg leading-relaxed">${ev.desc}</p>
+                    <button class="h-btn mt-8 px-6 py-4 md:px-8 border border-white/20 text-white font-syncopate text-[10px] md:text-xs tracking-[0.2em] relative overflow-hidden group hover:border-orbitGreen" onclick="window.openDetailViewStatic(${i})">
+                        <span class="relative z-10 group-hover:text-black transition-colors duration-300">ACTIVATE</span>
+                        <div class="absolute inset-0 bg-orbitGreen translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
+                    </button>
+                </div>
+            `;
+            highlightContainer.appendChild(block);
         });
     }
 
-    // --- INITIALIZE BUTTON ---
-    const enterBtn = document.getElementById('btn-enter-event');
-    if (enterBtn) {
-        enterBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (!selectedCD) return;
-            isTransitioning = true;
-            gsap.to(enterBtn, { opacity: 0, pointerEvents: 'none', duration: 0.3 });
-            gsap.to(camera.position, { x: 0, y: 0, z: 4, duration: 1.5, ease: 'expo.in' });
-            gsap.to(document.getElementById('tv-events-container'), { opacity: 0, duration: 0.5, delay: 1.2 });
-            setTimeout(() => { openDetailView(selectedCD.userData.eventData, document.body); }, 1400);
+    // 4. Inject Past Events
+    const pastTrack = document.getElementById('past-events-track');
+    if (pastTrack) {
+        pastTrack.innerHTML = '';
+        pastEvents.forEach((ev, i) => {
+            const trueIndex = i + 3; // Offset for full array
+            const card = document.createElement('div');
+            card.className = "past-card flex-shrink-0 w-[85vw] md:w-[30vw] h-full bg-[#0a0a0a] border border-white/5 rounded-3xl relative overflow-hidden group cursor-pointer transition-transform duration-500 hover:-translate-y-4";
+            card.onclick = () => window.openDetailViewStatic(trueIndex);
+            card.innerHTML = `
+                <img src="${ev.img}" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 ease-out filter grayscale group-hover:grayscale-0">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 w-full p-6 md:p-8 flex flex-col justify-end pointer-events-none">
+                    <div class="text-white/40 font-syncopate text-[9px] md:text-[10px] tracking-[2px] mb-2">${ev.date} • ${ev.status}</div>
+                    <h3 class="text-white font-syncopate text-xl md:text-3xl uppercase font-bold group-hover:text-orbitGreen transition-colors duration-300">${ev.title}</h3>
+                </div>
+            `;
+            pastTrack.appendChild(card);
         });
     }
 
-    // --- RESET SCENE ---
-    window.tvResetScene = () => {
-        if (!selectedCD) return;
-        gsap.to(camera.position, { x: 0, y: 2, z: 16, duration: 1.5, ease: 'expo.out' });
-        gsap.to(document.getElementById('tv-events-container'), { opacity: 1, duration: 0.5 });
-        tvGlow.intensity = 0;
-        tvScreen.material = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.05, metalness: 0.9, emissive: 0x050505 });
-        selectedCD.visible = false;
-        selectedCD = null;
-        isTransitioning = false;
-    };
+    // --- ANIMATIONS ---
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
 
-    // --- ANIMATION LOOP ---
-    window.tvReqId = null;
-    function animateTV() {
-        if (!document.getElementById('tv-canvas')) { if (window.tvReqId) cancelAnimationFrame(window.tvReqId); return; }
-        window.tvReqId = requestAnimationFrame(animateTV);
-        tvGroup.rotation.y += (mouseNX * 0.15 - tvGroup.rotation.y) * 0.08;
-        tvGroup.rotation.x += (-mouseNY * 0.08 - tvGroup.rotation.x) * 0.08;
-        if (hoveredFolderIdx >= 0 && cds[hoveredFolderIdx] && cds[hoveredFolderIdx].visible && cds[hoveredFolderIdx] !== selectedCD) {
-            cds[hoveredFolderIdx].rotation.z += 0.015;
+        // Intro Animation
+        const tl = gsap.timeline();
+        tl.fromTo('#hero-title-main', 
+            { y: 100, opacity: 0, scale: 0.9, filter: 'blur(10px)' }, 
+            { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.5, ease: 'power4.out', delay: 0.2 }
+        )
+        .fromTo('#hero-sub-text', 
+            { y: 20, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }, '-=1'
+        )
+        .fromTo('#scroll-indicator', 
+            { opacity: 0 }, 
+            { opacity: 1, duration: 1 }, '-=0.5'
+        );
+
+        // Hero Parallax (triggered after intro)
+        gsap.to('#hero-title-main', {
+            y: 350, opacity: 0.1, scale: 0.95, filter: 'blur(10px)',
+            scrollTrigger: { trigger: '.events-hero-new', start: 'top top', end: 'bottom top', scrub: true }
+        });
+        gsap.to('#hero-sub-text, #scroll-indicator', {
+            opacity: 0,
+            y: -100,
+            scrollTrigger: { trigger: '.events-hero-new', start: 'top top', end: 'bottom top', scrub: true }
+        });
+
+        // Highlights Scroll Effects
+        const blocks = gsap.utils.toArray('.highlight-block');
+        blocks.forEach((block, i) => {
+            const imgWrap = block.querySelector('.h-img-wrap');
+            const img = block.querySelector('.h-img');
+            const title = block.querySelector('.h-title');
+            const extras = block.querySelectorAll('.h-date, .h-desc, .h-btn');
+            
+            // Image parallax mapping (-10% to +10%)
+            gsap.to(img, {
+                yPercent: 20,
+                ease: "none",
+                scrollTrigger: { trigger: block, start: "top bottom", end: "bottom top", scrub: true }
+            });
+
+            // Entrance anims
+            gsap.from(imgWrap, {
+                scale: 0.85, opacity: 0,
+                duration: 1, ease: "power3.out",
+                scrollTrigger: { trigger: block, start: "top 85%" }
+            });
+            gsap.from(title, {
+                opacity: 0, y: 50,
+                duration: 1, ease: "power3.out",
+                scrollTrigger: { trigger: block, start: "top 80%" }
+            });
+            gsap.from(extras, {
+                opacity: 0, y: 20, stagger: 0.1,
+                duration: 0.8, ease: "power2.out",
+                scrollTrigger: { trigger: block, start: "top 75%" }
+            });
+        });
+
+        // Snake Path Drawing Anim
+        const snakePath = document.getElementById('snake-path');
+        if (snakePath) {
+            const length = snakePath.getTotalLength();
+            snakePath.style.strokeDasharray = length;
+            snakePath.style.strokeDashoffset = length; // hide initially
+            
+            gsap.to(snakePath, {
+                strokeDashoffset: 0,
+                scrollTrigger: {
+                    trigger: '#highlight-events',
+                    start: 'top center',
+                    end: 'bottom 80%',
+                    scrub: 1
+                }
+            });
         }
-        renderer.render(scene, camera);
+
+        // Past Events Horiz Scroll
+        const track = document.getElementById('past-events-track');
+        if (track && pastEvents.length > 0) {
+            function getScrollAmount() {
+                let trackWidth = track.scrollWidth;
+                return -(trackWidth - window.innerWidth + window.innerWidth * 0.1); 
+            }
+            const tween = gsap.to(track, {
+                x: getScrollAmount,
+                ease: "none"
+            });
+            ScrollTrigger.create({
+                trigger: "#past-events-section",
+                start: "top top",
+                end: () => `+=${getScrollAmount() * -1}`,
+                pin: true,
+                animation: tween,
+                scrub: 1,
+                invalidateOnRefresh: true,
+                onUpdate: self => {
+                    const progress = self.progress;
+                    const cards = track.querySelectorAll('.past-card');
+                    cards.forEach((c, i) => {
+                        const cardPos = i / cards.length;
+                        if(progress > cardPos - 0.2 && progress < cardPos + 0.2) {
+                            gsap.to(c, { scale: 1, filter: 'brightness(1)', duration: 0.5 });
+                        } else {
+                            gsap.to(c, { scale: 0.95, filter: 'brightness(0.5)', duration: 0.5 });
+                        }
+                    });
+                }
+            });
+        }
     }
-    animateTV();
 
-    // --- RESIZE ---
-    window.tvResize = () => {
-        if (!camera || !renderer || !canvasArea) return;
-        camera.aspect = canvasArea.clientWidth / canvasArea.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(canvasArea.clientWidth, canvasArea.clientHeight);
+    window.openDetailViewStatic = function(index) {
+        const data = brutalEventsData[index];
+        if (data) openDetailView(data, null);
     };
-    window.addEventListener('resize', window.tvResize);
-
-    window.addEventListener('resize', window.tvResize);
-
     // 8. Detail View Logic
     const detailView = document.getElementById('dossier-detail');
     const btnCloseDetail = document.getElementById('btn-close-detail');
@@ -603,7 +594,9 @@ window.initEventsBrutalist = function () {
             const tl = gsap.timeline({
                 onComplete: () => {
                     gsap.set(detailView, { pointerEvents: 'none' });
-                    // Trigger the 3D scene reset
+                    document.body.style.overflow = '';
+                    if(window.eventsLenis) window.eventsLenis.start();
+                    // Trigger the 3D scene reset (legacy)
                     if(window.tvResetScene) window.tvResetScene();
                 }
             });
@@ -736,8 +729,13 @@ window.cleanupEventsBrutalist = function () {
     if (typeof ScrollTrigger !== 'undefined') { 
         ScrollTrigger.getAll().forEach(t => { 
             if (t.vars.trigger) {
-                if ((t.vars.trigger.classList && t.vars.trigger.classList.contains('dossier-card')) || t.vars.trigger === '.sticky-cols') {
-                    t.kill(); 
+                const tr = t.vars.trigger;
+                if (typeof tr === 'string') {
+                    if (tr.includes('events') || tr.includes('highlight') || tr.includes('past')) t.kill();
+                } else if (tr.classList && (tr.classList.contains('highlight-block') || tr.classList.contains('events-hero-new'))) {
+                    t.kill();
+                } else if (tr.id && tr.id.includes('events')) {
+                    t.kill();
                 }
             }
         }); 
