@@ -2,19 +2,38 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const admin = require('firebase-admin');
+const fs = require('fs');
+const path = require('path');
 
 // --- BULLETPROOF FIREBASE INITIALIZATION ---
 let serviceAccount;
 try {
-    // 1. Local Dev: Try to use the raw JSON file (Bypasses all .env errors!)
-    serviceAccount = require('../firebase-key.json');
-    console.log("🔐 Using local firebase-key.json for authentication.");
+    // 1. Local Dev: Try to use the raw JSON file using dynamic resolution (Bypasses Vercel build compilation crashes)
+    const keyPath = path.resolve(__dirname, '../firebase-key.json');
+    if (fs.existsSync(keyPath)) {
+        serviceAccount = JSON.parse(fs.readFileSync(keyPath, 'utf8'));
+        console.log("🔐 Using local firebase-key.json for authentication.");
+    } else {
+        throw new Error("Local file not found, checking environment...");
+    }
 } catch (err) {
-    // 2. Production (Vercel/Railway): Decode from Base64 env var
-    const base64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64 || process.env.FIREBASE_SERVICE_ACCOUNT;
-    if (base64) {
-        serviceAccount = JSON.parse(Buffer.from(base64, 'base64').toString('utf8'));
-        console.log("☁️ Using Vercel Edge environment variables for authentication.");
+    // 2. Production (Vercel/Railway): Handle both plain text JSON and Base64 format
+    const envVal = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64 || process.env.FIREBASE_SERVICE_ACCOUNT;
+    if (envVal) {
+        try {
+            // Check if it's base64 (usually lacks curly braces)
+            if (envVal.trim().startsWith('{')) {
+                serviceAccount = JSON.parse(envVal);
+                if (serviceAccount.private_key) {
+                    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n').replace(/\\r/g, '');
+                }
+            } else {
+                serviceAccount = JSON.parse(Buffer.from(envVal, 'base64').toString('utf8'));
+            }
+            console.log("☁️ Using Vercel environment variables for authentication.");
+        } catch (parseError) {
+            console.error("❌ CRITICAL: Failed to parse FIREBASE_SERVICE_ACCOUNT variable.");
+        }
     } else {
         console.error("❌ CRITICAL: No FIREBASE_SERVICE_ACCOUNT found in ENV!");
     }
