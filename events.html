@@ -980,7 +980,9 @@
             <!-- Hero Section -->
             <section class="events-hero-new relative w-full h-[100vh] flex flex-col justify-center items-center overflow-hidden border-b border-white/10" style="background: radial-gradient(circle at center, #111 0%, #000 70%);">
                 <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDIiLz4KPC9zdmc+')] opacity-50 z-0"></div>
-                <h1 id="hero-title-main" class="relative z-10 text-[15vw] leading-[0.8] font-syncopate font-bold text-transparent tracking-tighter" style="-webkit-text-stroke: 1px rgba(255,255,255,0.4); text-transform: uppercase;">EVENTS</h1>
+                <div class="events-hero-parallax-wrap relative z-10 w-full flex justify-center">
+                    <h1 id="hero-title-main" class="text-[15vw] leading-[0.8] font-syncopate font-bold text-transparent tracking-tighter" style="-webkit-text-stroke: 1px rgba(255,255,255,0.4); text-transform: uppercase;">EVENTS</h1>
+                </div>
                 <p id="hero-sub-text" class="absolute bottom-10 left-6 md:left-20 font-host text-white/60 tracking-[0.2em] text-xs uppercase z-20">INITIATING <span class="text-orbitGreen font-bold">PROTOCOLS</span></p>
                 <div id="scroll-indicator" class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-orbitGreen font-syncopate text-[10px] tracking-[0.3em] z-20">
                     <span>SCROLL</span>
@@ -992,16 +994,19 @@
 
             <!-- Top Highlights -->
             <section id="highlight-events" class="w-full relative z-10 bg-black flex flex-col">
-                <svg class="absolute top-0 left-0 w-full h-full z-0 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 1000 1000">
-                    <path id="snake-path" d="M 500,0 C 800,150 200,200 500,333 C 800,450 200,500 500,666 C 800,800 200,850 500,1000" fill="none" stroke="#2BA648" stroke-width="6" style="filter: drop-shadow(0 0 10px #2BA648);" vector-effect="non-scaling-stroke" />
-                </svg>
+                <div id="laser-wrapper" class="absolute top-0 bottom-0 left-0 w-full z-0 pointer-events-none origin-top" style="clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);">
+                    <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+                        <path d="M 50,0 C 90,16 10,33 50,50 C 90,66 10,83 50,100" fill="none" stroke="#2BA648" stroke-width="6" style="filter: drop-shadow(0 0 15px #2BA648);" vector-effect="non-scaling-stroke" stroke-linecap="round" />
+                    </svg>
+                </div>
                 <!-- Dynamic High End Event Cards Injected via JS -->
             </section>
 
             <!-- Past Events Horizontal Strip -->
-            <section id="past-events-section" class="w-full h-[100vh] bg-[#050505] relative overflow-hidden flex items-center pt-20 border-t border-white/5">
+            <section id="past-events-section" class="w-full h-[100vh] bg-[#090909] relative overflow-hidden flex items-center pt-20 border-t border-white/10" style="background: radial-gradient(circle at center, #151515 0%, #050505 100%);">
+                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(43,166,72,0.1),transparent_50%)] pointer-events-none"></div>
                 <div class="absolute top-12 left-6 md:left-20 z-20 pointer-events-none">
-                    <h2 class="font-syncopate text-3xl md:text-6xl text-transparent tracking-widest" style="-webkit-text-stroke: 1px rgba(255,255,255,0.15);">ARCHIVED<br>PROTOCOLS</h2>
+                    <h2 class="font-syncopate text-3xl md:text-6xl text-transparent tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]" style="-webkit-text-stroke: 1px rgba(255,255,255,0.4);">ARCHIVED<br>PROTOCOLS</h2>
                 </div>
                 <!-- Track for horizontal scrolling -->
                 <div id="past-events-track" class="flex gap-12 px-[10vw] pt-[10vh] h-[65vh] items-center relative z-10 will-change-transform">
