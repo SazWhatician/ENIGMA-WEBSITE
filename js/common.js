@@ -429,8 +429,8 @@ window.initEventsBrutalist = function () {
             card.className = "past-card flex-shrink-0 w-[85vw] md:w-[30vw] h-full bg-[#0a0a0a] border border-white/5 rounded-3xl relative overflow-hidden group cursor-pointer transition-transform duration-500 hover:-translate-y-4";
             card.onclick = () => window.openDetailViewStatic(trueIndex);
             card.innerHTML = `
-                <img src="${ev.img}" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 ease-out filter grayscale group-hover:grayscale-0">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent"></div>
+                <img src="${ev.img}" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 ease-out filter grayscale-[50%] group-hover:grayscale-0">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#090909] via-[#090909]/40 to-transparent group-hover:via-[#090909]/20 transition-all duration-500"></div>
                 <div class="absolute bottom-0 left-0 w-full p-6 md:p-8 flex flex-col justify-end pointer-events-none">
                     <div class="text-white/40 font-syncopate text-[9px] md:text-[10px] tracking-[2px] mb-2">${ev.date} • ${ev.status}</div>
                     <h3 class="text-white font-syncopate text-xl md:text-3xl uppercase font-bold group-hover:text-orbitGreen transition-colors duration-300">${ev.title}</h3>
@@ -460,12 +460,12 @@ window.initEventsBrutalist = function () {
         );
 
         // Hero Parallax (triggered after intro)
-        gsap.to('#hero-title-main', {
-            y: 100, scale: 0.95,
+        gsap.to('.events-hero-parallax-wrap', {
+            y: 150, scale: 0.95,
             scrollTrigger: { trigger: '.events-hero-new', start: 'top top', end: 'bottom top', scrub: true }
         });
         gsap.to('#hero-sub-text, #scroll-indicator', {
-            y: -50,
+            y: -75, opacity: 0,
             scrollTrigger: { trigger: '.events-hero-new', start: 'top top', end: 'bottom top', scrub: true }
         });
 
@@ -484,38 +484,46 @@ window.initEventsBrutalist = function () {
                 scrollTrigger: { trigger: block, start: "top bottom", end: "bottom top", scrub: true }
             });
 
-            // Entrance anims
-            gsap.from(imgWrap, {
-                scale: 0.85, opacity: 0,
-                duration: 1, ease: "power3.out",
-                scrollTrigger: { trigger: block, start: "top 85%" }
-            });
-            gsap.from(title, {
-                opacity: 0, y: 50,
-                duration: 1, ease: "power3.out",
-                scrollTrigger: { trigger: block, start: "top 80%" }
-            });
-            gsap.from(extras, {
-                opacity: 0, y: 20, stagger: 0.1,
-                duration: 0.8, ease: "power2.out",
-                scrollTrigger: { trigger: block, start: "top 75%" }
-            });
+            // Scrolldriven Entrance Reveal
+            gsap.fromTo(imgWrap, 
+                { scale: 0.8, opacity: 0, y: 80 },
+                { 
+                    scale: 1, opacity: 1, y: 0,
+                    ease: "none",
+                    scrollTrigger: { trigger: block, start: "top 95%", end: "center 65%", scrub: 1 }
+                }
+            );
+            
+            gsap.fromTo(title, 
+                { opacity: 0, x: i % 2 !== 0 ? 80 : -80 },
+                { 
+                    opacity: 1, x: 0,
+                    ease: "none",
+                    scrollTrigger: { trigger: block, start: "top 85%", end: "center 55%", scrub: 1 }
+                }
+            );
+            
+            gsap.fromTo(extras, 
+                { opacity: 0, y: 40 },
+                { 
+                    opacity: 1, y: 0, stagger: 0.1,
+                    ease: "none",
+                    scrollTrigger: { trigger: block, start: "top 75%", end: "center 45%", scrub: 1 }
+                }
+            );
         });
 
-        // Snake Path Drawing Anim
-        const snakePath = document.getElementById('snake-path');
-        if (snakePath) {
-            const length = snakePath.getTotalLength();
-            snakePath.style.strokeDasharray = length;
-            snakePath.style.strokeDashoffset = length; // hide initially
-            
-            gsap.to(snakePath, {
-                strokeDashoffset: 0,
+        // Laser Beam Drawing Anim
+        const laserWrap = document.getElementById('laser-wrapper');
+        if (laserWrap) {
+            gsap.to(laserWrap, {
+                clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+                ease: 'none',
                 scrollTrigger: {
                     trigger: '#highlight-events',
                     start: 'top center',
-                    end: 'bottom 80%',
-                    scrub: 1
+                    end: 'bottom bottom',
+                    scrub: 0.5
                 }
             });
         }
