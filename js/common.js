@@ -824,10 +824,10 @@ window.initBarba = function () {
                     });
                 },
                 afterEnter() {
-                    window.initFooterCrystal();
+                    if (window.initExpandingFooter) window.initExpandingFooter();
                 },
                 beforeLeave() {
-                    window.cleanupFooterCrystal();
+                    if (window.cleanupExpandingFooter) window.cleanupExpandingFooter();
                 },
                 beforeOnce(data) {
                     document.body.style.overflowY = 'auto';
@@ -851,10 +851,10 @@ window.initBarba = function () {
                     window.initContactPage(delay);
                 },
                 afterEnter() {
-                    window.initFooterCrystal();
+                    if (window.initExpandingFooter) window.initExpandingFooter();
                 },
                 beforeLeave() {
-                    window.cleanupFooterCrystal();
+                    if (window.cleanupExpandingFooter) window.cleanupExpandingFooter();
                 },
                 beforeOnce(data) {
                     document.body.style.overflowY = 'auto';
@@ -862,7 +862,7 @@ window.initBarba = function () {
                     window.initContactPage(0);
                 },
                 afterOnce() {
-                    window.initFooterCrystal();
+                    if (window.initExpandingFooter) window.initExpandingFooter();
                 }
             },
             {
@@ -872,16 +872,23 @@ window.initBarba = function () {
                      document.body.style.touchAction = 'auto';
                      window.initEventsBrutalist();
                  },
-                 afterEnter() { if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); },
+                 afterEnter() { 
+                     if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); 
+                     if (window.initExpandingFooter) window.initExpandingFooter();
+                 },
                  beforeLeave() {
                      window.cleanupEventsBrutalist();
+                     if (window.cleanupExpandingFooter) window.cleanupExpandingFooter();
                  },
                  beforeOnce(data) {
                      document.body.style.overflowY = 'auto';
                      document.body.style.touchAction = 'auto';
                      window.initEventsBrutalist();
                  },
-                 afterOnce() { if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); }
+                 afterOnce() { 
+                     if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); 
+                     if (window.initExpandingFooter) window.initExpandingFooter();
+                 }
             }
         ]
     });
