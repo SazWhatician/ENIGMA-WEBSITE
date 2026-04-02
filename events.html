@@ -57,6 +57,7 @@
         <div class="bp-line-d1"></div>
         <div class="bp-line-d2"></div>
     </div>
+    <!-- /* dgfd */ -->
 
     <main data-barba="container" data-barba-namespace="events">
         <style>
@@ -97,19 +98,113 @@
             }
 
             /* --- EXPANDING 3D FOOTER --- */
-            footer { position: relative; width: 100%; height: 100vh; background-color: var(--b-black); color: #fff; overflow: hidden; z-index: 1; }
-            .footer-container { position: relative; width: 100%; height: 100%; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; will-change: transform; }
-            #footer-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; opacity: 0.5; }
-            .footer-content { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; z-index: 1; padding-top: 100px; }
-            .footer-row { display: flex; justify-content: space-between; width: 100%; }
-            .footer-col { flex: 1; }
-            .footer-col-right { flex: 1; display: flex; gap: 2rem; justify-content: flex-end; }
-            .footer-sub-col { display: flex; flex-direction: column; gap: 0.5rem; text-align: left; }
-            .footer-col h1 { font-family: "Syncopate", sans-serif; font-size: clamp(3rem, 5vw, 6rem); font-weight: 700; line-height: 1; margin: 0; color: #fff; }
-            .footer-sub-col h3 { font-family: "Syncopate", sans-serif; font-size: clamp(1rem, 1.25vw, 1.75rem); color: rgba(255,255,255,0.4); margin: 0; text-transform: uppercase; }
-            .footer-sub-col a { text-decoration: none; color: #fff; font-size: clamp(1rem, 1.5vw, 2rem); font-weight: 300; transition: color 0.3s ease; font-family:"Host Grotesk", sans-serif; }
-            .footer-sub-col a:hover { color: #2BA648; }
-            @media(max-width: 1000px){ .footer-row { flex-direction: column; gap: 4rem; } .footer-col-right { justify-content: flex-start; } }
+            footer {
+                position: relative;
+                width: 100%;
+                height: 100vh;
+                background-color: var(--b-black);
+                color: #fff;
+                overflow: hidden;
+                z-index: 1;
+            }
+
+            .footer-container {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                padding: 2rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                will-change: transform;
+            }
+
+            #footer-canvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: -1;
+                opacity: 0.5;
+            }
+
+            .footer-content {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                z-index: 1;
+                padding-top: 100px;
+            }
+
+            .footer-row {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .footer-col {
+                flex: 1;
+            }
+
+            .footer-col-right {
+                flex: 1;
+                display: flex;
+                gap: 2rem;
+                justify-content: flex-end;
+            }
+
+            .footer-sub-col {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: left;
+            }
+
+            .footer-col h1 {
+                font-family: "Syncopate", sans-serif;
+                font-size: clamp(3rem, 5vw, 6rem);
+                font-weight: 700;
+                line-height: 1;
+                margin: 0;
+                color: #fff;
+            }
+
+            .footer-sub-col h3 {
+                font-family: "Syncopate", sans-serif;
+                font-size: clamp(1rem, 1.25vw, 1.75rem);
+                color: rgba(255, 255, 255, 0.4);
+                margin: 0;
+                text-transform: uppercase;
+            }
+
+            .footer-sub-col a {
+                text-decoration: none;
+                color: #fff;
+                font-size: clamp(1rem, 1.5vw, 2rem);
+                font-weight: 300;
+                transition: color 0.3s ease;
+                font-family: "Host Grotesk", sans-serif;
+            }
+
+            .footer-sub-col a:hover {
+                color: #2BA648;
+            }
+
+            @media(max-width: 1000px) {
+                .footer-row {
+                    flex-direction: column;
+                    gap: 4rem;
+                }
+
+                .footer-col-right {
+                    justify-content: flex-start;
+                }
+            }
 
             ::-webkit-scrollbar {
                 display: none;
@@ -527,7 +622,7 @@
                     aspect-ratio: 4/5;
                     border-radius: 20px;
                 }
-                
+
                 .dossier-card:nth-child(even) {
                     margin-top: 0;
                 }
@@ -552,17 +647,22 @@
                 .card-date {
                     font-size: 0.75rem;
                 }
-                
+
                 .card-status {
                     font-size: 0.65rem;
                     padding: 0.3rem 0.8rem;
                 }
-                
-                .count-current { font-size: 0.9rem; }
-                .count-total { font-size: 0.7rem; }
-                
+
+                .count-current {
+                    font-size: 0.9rem;
+                }
+
+                .count-total {
+                    font-size: 0.7rem;
+                }
+
                 .card-overlay {
-                    background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.95) 100%);
+                    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.95) 100%);
                 }
             }
 
@@ -924,7 +1024,7 @@
                 flex-direction: column;
                 justify-content: center;
                 z-index: 2;
-                background: linear-gradient(90deg, #0a0a0a 0%, rgba(10,10,10,0.8) 100%);
+                background: linear-gradient(90deg, #0a0a0a 0%, rgba(10, 10, 10, 0.8) 100%);
             }
 
             .h-badge {
@@ -957,24 +1057,81 @@
             }
 
             @media (max-width: 1024px) {
-                .h-slide { padding: 2rem; }
-                .h-slide-inner { flex-direction: column; height: auto; min-height: 75vh; }
-                .h-slide-img-wrap { width: 100%; height: 40%; }
-                .h-slide-content { width: 100%; height: 60%; padding: 3rem 2rem; }
-                .h-title { font-size: 2rem; }
+                .h-slide {
+                    padding: 2rem;
+                }
+
+                .h-slide-inner {
+                    flex-direction: column;
+                    height: auto;
+                    min-height: 75vh;
+                }
+
+                .h-slide-img-wrap {
+                    width: 100%;
+                    height: 40%;
+                }
+
+                .h-slide-content {
+                    width: 100%;
+                    height: 60%;
+                    padding: 3rem 2rem;
+                }
+
+                .h-title {
+                    font-size: 2rem;
+                }
             }
 
             @media (max-width: 768px) {
+
                 /* On narrow mobile, we will stack them rather than horizontal scroll for better UX */
-                .horizontal-scroll-container { height: auto; overflow: visible; padding: 2rem 0; }
-                .horizontal-scroll-wrap { flex-direction: column; width: 100vw; gap: 2rem; }
-                .h-slide { width: 100vw; height: auto; padding: 1rem; }
-                .h-slide-inner { height: auto; border-radius: 24px; min-height: 0; }
-                .h-slide-img-wrap { height: 250px; }
-                .h-slide-content { padding: 2rem; }
-                .h-title { font-size: 1.5rem; margin-bottom: 1rem; }
-                .h-desc { font-size: 0.95rem; max-width: 100%; margin-bottom: 2rem; }
-                .h-badge { margin-bottom: 1rem; }
+                .horizontal-scroll-container {
+                    height: auto;
+                    overflow: visible;
+                    padding: 2rem 0;
+                }
+
+                .horizontal-scroll-wrap {
+                    flex-direction: column;
+                    width: 100vw;
+                    gap: 2rem;
+                }
+
+                .h-slide {
+                    width: 100vw;
+                    height: auto;
+                    padding: 1rem;
+                }
+
+                .h-slide-inner {
+                    height: auto;
+                    border-radius: 24px;
+                    min-height: 0;
+                }
+
+                .h-slide-img-wrap {
+                    height: 250px;
+                }
+
+                .h-slide-content {
+                    padding: 2rem;
+                }
+
+                .h-title {
+                    font-size: 1.5rem;
+                    margin-bottom: 1rem;
+                }
+
+                .h-desc {
+                    font-size: 0.95rem;
+                    max-width: 100%;
+                    margin-bottom: 2rem;
+                }
+
+                .h-badge {
+                    margin-bottom: 1rem;
+                }
             }
         </style>
 
@@ -990,16 +1147,26 @@
         </nav>
 
         <!-- New Scroll Container -->
-        <div id="events-scroll-container" style="width: 100vw; background: #000; overflow-x: hidden; position: relative; z-index: 1; min-height: 100vh;">
-            
+        <div id="events-scroll-container"
+            style="width: 100vw; background: #000; overflow-x: hidden; position: relative; z-index: 1; min-height: 100vh;">
+
             <!-- Hero Section -->
-            <section class="events-hero-new relative w-full h-[100vh] flex flex-col justify-center items-center overflow-hidden border-b border-white/10" style="background: radial-gradient(circle at center, #111 0%, #000 70%);">
-                <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDIiLz4KPC9zdmc+')] opacity-50 z-0"></div>
-                <div class="events-hero-parallax-wrap relative z-10 w-full flex justify-center">
-                    <h1 id="hero-title-main" class="text-[15vw] leading-[0.8] font-syncopate font-bold text-transparent tracking-tighter" style="-webkit-text-stroke: 1px rgba(255,255,255,0.4); text-transform: uppercase;">EVENTS</h1>
+            <section
+                class="events-hero-new relative w-full h-[100vh] flex flex-col justify-center items-center overflow-hidden border-b border-white/10"
+                style="background: radial-gradient(circle at center, #111 0%, #000 70%);">
+                <div
+                    class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDIiLz4KPC9zdmc+')] opacity-50 z-0">
                 </div>
-                <p id="hero-sub-text" class="absolute bottom-10 left-6 md:left-20 font-host text-white/60 tracking-[0.2em] text-xs uppercase z-20">INITIATING <span class="text-orbitGreen font-bold">PROTOCOLS</span></p>
-                <div id="scroll-indicator" class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-orbitGreen font-syncopate text-[10px] tracking-[0.3em] z-20">
+                <div class="events-hero-parallax-wrap relative z-10 w-full flex justify-center">
+                    <h1 id="hero-title-main"
+                        class="text-[15vw] leading-[0.8] font-syncopate font-bold text-transparent tracking-tighter"
+                        style="-webkit-text-stroke: 1px rgba(255,255,255,0.4); text-transform: uppercase;">EVENTS</h1>
+                </div>
+                <p id="hero-sub-text"
+                    class="absolute bottom-10 left-6 md:left-20 font-host text-white/60 tracking-[0.2em] text-xs uppercase z-20">
+                    INITIATING <span class="text-orbitGreen font-bold">PROTOCOLS</span></p>
+                <div id="scroll-indicator"
+                    class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-orbitGreen font-syncopate text-[10px] tracking-[0.3em] z-20">
                     <span>SCROLL</span>
                     <div class="w-[1px] h-16 bg-orbitGreen/20 relative overflow-hidden">
                         <div class="w-full h-1/2 bg-orbitGreen absolute top-0 animate-[shimmer_2s_infinite]"></div>
@@ -1009,22 +1176,31 @@
 
             <!-- Top Highlights -->
             <section id="highlight-events" class="w-full relative z-10 bg-black flex flex-col">
-                <div id="laser-wrapper" class="absolute top-0 bottom-0 left-0 w-full z-0 pointer-events-none origin-top" style="clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);">
+                <div id="laser-wrapper" class="absolute top-0 bottom-0 left-0 w-full z-0 pointer-events-none origin-top"
+                    style="clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);">
                     <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-                        <path d="M 50,0 C 90,16 10,33 50,50 C 90,66 10,83 50,100" fill="none" stroke="#2BA648" stroke-width="6" style="filter: drop-shadow(0 0 15px #2BA648);" vector-effect="non-scaling-stroke" stroke-linecap="round" />
+                        <path d="M 50,0 C 90,16 10,33 50,50 C 90,66 10,83 50,100" fill="none" stroke="#2BA648"
+                            stroke-width="6" style="filter: drop-shadow(0 0 15px #2BA648);"
+                            vector-effect="non-scaling-stroke" stroke-linecap="round" />
                     </svg>
                 </div>
                 <!-- Dynamic High End Event Cards Injected via JS -->
             </section>
 
             <!-- Past Events Horizontal Strip -->
-            <section id="past-events-section" class="w-full h-[100vh] bg-[#090909] relative overflow-hidden flex items-center pt-20 border-t border-white/10" style="background: radial-gradient(circle at center, #151515 0%, #050505 100%);">
-                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(43,166,72,0.1),transparent_50%)] pointer-events-none"></div>
+            <section id="past-events-section"
+                class="w-full h-[100vh] bg-[#090909] relative overflow-hidden flex items-center pt-20 border-t border-white/10"
+                style="background: radial-gradient(circle at center, #151515 0%, #050505 100%);">
+                <div
+                    class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(43,166,72,0.1),transparent_50%)] pointer-events-none">
+                </div>
                 <div class="absolute top-12 left-6 md:left-20 z-20 pointer-events-none">
-                    <h2 class="font-syncopate text-3xl md:text-6xl text-transparent tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]" style="-webkit-text-stroke: 1px rgba(255,255,255,0.4);">ARCHIVED<br>PROTOCOLS</h2>
+                    <h2 class="font-syncopate text-3xl md:text-6xl text-transparent tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                        style="-webkit-text-stroke: 1px rgba(255,255,255,0.4);">ARCHIVED<br>PROTOCOLS</h2>
                 </div>
                 <!-- Track for horizontal scrolling -->
-                <div id="past-events-track" class="flex gap-12 px-[10vw] pt-[10vh] h-[65vh] items-center relative z-10 will-change-transform">
+                <div id="past-events-track"
+                    class="flex gap-12 px-[10vw] pt-[10vh] h-[65vh] items-center relative z-10 will-change-transform">
                     <!-- Dynamic Past Cards Injected via JS -->
                 </div>
             </section>
@@ -1034,7 +1210,7 @@
         <footer>
             <div class="footer-container">
                 <div id="footer-canvas"></div>
-    
+
                 <div class="footer-content">
                     <div class="footer-row">
                         <div class="footer-col">
@@ -1080,7 +1256,8 @@
         </div>
 
         <!-- Float Calendar Trigger -->
-        <button id="btn-open-calendar" class="z-btn-cyber fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[100] flex items-center gap-2"
+        <button id="btn-open-calendar"
+            class="z-btn-cyber fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[100] flex items-center gap-2"
             data-cursor-hover>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
