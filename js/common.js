@@ -816,20 +816,6 @@ window.initBarba = function () {
                 beforeEnter(data) {
                     document.body.style.overflowY = 'auto';
                     document.body.style.touchAction = 'auto';
-
-                    if (typeof Lenis !== 'undefined') {
-                        window.teamLenis = new Lenis({
-                            duration: 1.2,
-                            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                            direction: 'vertical',
-                            gestureDirection: 'vertical',
-                            smooth: true,
-                        });
-                        window.teamLenis.on('scroll', ScrollTrigger.update);
-                        window.teamLenisTicker = (time) => { window.teamLenis.raf(time * 1000); };
-                        gsap.ticker.add(window.teamLenisTicker);
-                    }
-
                     const delay = (data.current && data.current.namespace) ? 0.35 : 0;
                     window.animateHero(delay);
                     window.fetchTeam().then(() => {
@@ -838,32 +824,12 @@ window.initBarba = function () {
                     });
                 },
                 afterEnter() {
-                    if (window.initExpandingFooter) window.initExpandingFooter();
                 },
                 beforeLeave() {
-                    if (window.teamLenisTicker) { gsap.ticker.remove(window.teamLenisTicker); window.teamLenisTicker = null; }
-                    if (window.teamLenis) { window.teamLenis.destroy(); window.teamLenis = null; }
-                    if (window.cleanupExpandingFooter) window.cleanupExpandingFooter();
                 },
                 beforeOnce(data) {
                     document.body.style.overflowY = 'auto';
                     document.body.style.touchAction = 'auto';
-
-                    if (typeof Lenis !== 'undefined') {
-                        window.teamLenis = new Lenis({
-                            duration: 1.2,
-                            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                            direction: 'vertical',
-                            gestureDirection: 'vertical',
-                            smooth: true,
-                        });
-                        window.teamLenis.on('scroll', ScrollTrigger.update);
-                        if (!window.teamLenisTicker) {
-                            window.teamLenisTicker = (time) => { window.teamLenis.raf(time * 1000); };
-                            gsap.ticker.add(window.teamLenisTicker);
-                        }
-                    }
-
                     window.animateHero(0);
                     window.fetchTeam().then(() => {
                         window.renderTeam('all', 0.6);
