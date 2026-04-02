@@ -24,11 +24,17 @@ try {
         try {
             if (envVal.trim().startsWith('{')) {
                 serviceAccount = JSON.parse(envVal);
-                if (serviceAccount.private_key) {
-                    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n').replace(/\\r/g, '');
-                }
             } else {
                 serviceAccount = JSON.parse(Buffer.from(envVal, 'base64').toString('utf8'));
+            }
+            // Fix private key: replace literal "\n" strings with real newlines
+            if (serviceAccount && serviceAccount.private_key) {
+                console.log("🔑 Private key first 80 chars (raw):", JSON.stringify(serviceAccount.private_key.substring(0, 80)));
+                serviceAccount.private_key = serviceAccount.private_key
+                    .replace(/\\r\\n/g, '\n')
+                    .replace(/\\r/g, '')
+                    .replace(/\\n/g, '\n');
+                console.log("🔑 Private key first 80 chars (fixed):", JSON.stringify(serviceAccount.private_key.substring(0, 80)));
             }
             console.log("☁️ Using environment variables for authentication.");
         } catch (parseError) {
