@@ -53,7 +53,7 @@ const db = admin.apps.length ? admin.firestore() : null;
 const app = express();
 
 app.use(cors());
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // --- API ENDPOINTS ---
 
