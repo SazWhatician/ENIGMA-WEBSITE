@@ -1,7 +1,10 @@
 {
+  "functions": {
+    "api/*.js": {
+      "runtime": "@vercel/node@3"
+    }
+  },
   "rewrites": [
-    { "source": "/api/projects", "destination": "/api/projects" },
-    { "source": "/api/team", "destination": "/api/team" },
     { "source": "/team", "destination": "/team.html" },
     { "source": "/events", "destination": "/events.html" },
     { "source": "/contact", "destination": "/contact.html" },
