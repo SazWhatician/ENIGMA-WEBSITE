@@ -11,7 +11,7 @@ window.footerReqId = null;
 // --- TEAM LOGIC ---
 window.fetchTeam = async function () {
     try {
-        const response = await fetch('/api/team?t=' + new Date().getTime());
+        const response = await fetch('/api/team.js?t=' + new Date().getTime());
         if (!response.ok) throw new Error("Team API failed.");
         window.teamData = await response.json();
     } catch (e) {
@@ -108,7 +108,7 @@ window.animateHero = function (delay = 0) {
 // --- PROJECTS LOGIC ---
 window.fetchProjects = async function () {
     try {
-        const response = await fetch('/api/projects?t=' + new Date().getTime());
+        const response = await fetch('/api/projects.js?t=' + new Date().getTime());
         if (!response.ok) throw new Error("API not found.");
         window.projectsData = await response.json();
     } catch (e) {
