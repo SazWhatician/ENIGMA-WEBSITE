@@ -1,17 +1,21 @@
 {
-  "framework": null,
-  "installCommand": "npm install",
-  "buildCommand": "",
-  "outputDirectory": "public",
-  "functions": {
-    "api/*.js": {
-      "runtime": "@vercel/node@3"
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
     }
-  },
-  "rewrites": [
-    { "source": "/team", "destination": "/team.html" },
-    { "source": "/events", "destination": "/events.html" },
-    { "source": "/contact", "destination": "/contact.html" },
-    { "source": "/project", "destination": "/project.html" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/team", "dest": "/public/team.html" },
+    { "src": "/events", "dest": "/public/events.html" },
+    { "src": "/contact", "dest": "/public/contact.html" },
+    { "src": "/project", "dest": "/public/project.html" },
+    { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
