@@ -1,0 +1,55 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "image-assets/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "project-assets/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "team-assets/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "js/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "shader2.js",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/team",
+      "dest": "/team.html"
+    },
+    {
+      "src": "/events",
+      "dest": "/events.html"
+    },
+    {
+      "src": "/contact",
+      "dest": "/contact.html"
+    },
+    {
+      "src": "/project",
+      "dest": "/project.html"
+    }
+  ]
+}
