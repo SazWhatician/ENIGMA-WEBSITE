@@ -871,7 +871,11 @@ window.initBarba = function () {
                      window.initEventsBrutalist();
                  },
                  afterEnter() { 
-                     if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); 
+                     if (typeof ScrollTrigger !== 'undefined') {
+                         Promise.all(Array.from(document.images).filter(i => !i.complete).map(i => new Promise(r => { i.onload = i.onerror = r; }))).then(() => {
+                             ScrollTrigger.refresh();
+                         });
+                     }
                      if (window.initExpandingFooter) window.initExpandingFooter();
                  },
                  beforeLeave() {
@@ -884,7 +888,11 @@ window.initBarba = function () {
                      window.initEventsBrutalist();
                  },
                  afterOnce() { 
-                     if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh(); 
+                     if (typeof ScrollTrigger !== 'undefined') {
+                         Promise.all(Array.from(document.images).filter(i => !i.complete).map(i => new Promise(r => { i.onload = i.onerror = r; }))).then(() => {
+                             ScrollTrigger.refresh();
+                         });
+                     }
                      if (window.initExpandingFooter) window.initExpandingFooter();
                  }
             }

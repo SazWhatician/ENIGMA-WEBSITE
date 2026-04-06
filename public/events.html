@@ -97,13 +97,55 @@
                 text-transform: uppercase;
             }
 
-            /* --- EXPANDING 3D FOOTER --- */
+            /* --- FOOTER SECTION --- */
+            :root {
+                --base-orbit: #000000;
+                --accent-glow: #2BA648;
+            }
+
+            .reactor-zone h1 {
+                font-weight: 300;
+                font-size: clamp(3rem, 5vw, 6rem);
+                margin: 0;
+                line-height: 1;
+                letter-spacing: -0.02em;
+                font-family: 'Host Grotesk', sans-serif;
+            }
+
+            .reactor-zone h3 {
+                font-weight: 400;
+                font-size: clamp(1.25rem, 1.75vw, 2.5rem);
+                margin: 0;
+                color: #94a3b8;
+                font-family: 'Host Grotesk', sans-serif;
+            }
+
+            .reactor-zone a {
+                text-decoration: none;
+                color: #fff;
+                display: block;
+                font-size: clamp(1.25rem, 1.75vw, 2.5rem);
+                font-weight: 300;
+                transition: all 0.4s ease;
+                font-family: 'Host Grotesk', sans-serif;
+            }
+
+            .reactor-zone a:hover {
+                color: var(--accent-glow);
+                transform: translateX(10px);
+                text-shadow: 0 0 10px rgba(43, 166, 72, 0.5);
+            }
+
+            .glow-text {
+                text-shadow: 0 0 5px rgba(43, 166, 72, 0.8), 0 0 20px rgba(24, 93, 40, 0.5);
+            }
+
             footer {
                 position: relative;
                 width: 100%;
                 height: 100vh;
-                background-color: var(--b-black);
-                color: #fff;
+                height: 100svh;
+                background-color: var(--base-orbit);
                 overflow: hidden;
                 z-index: 1;
             }
@@ -112,11 +154,10 @@
                 position: relative;
                 width: 100%;
                 height: 100%;
-                padding: 2rem;
+                padding: 3rem;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-                will-change: transform;
             }
 
             #footer-canvas {
@@ -127,18 +168,17 @@
                 height: 100%;
                 pointer-events: none;
                 z-index: -1;
-                opacity: 0.5;
             }
 
             .footer-content {
                 position: relative;
                 width: 100%;
                 height: 100%;
+                z-index: 1;
+                padding-top: 100px;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-                z-index: 1;
-                padding-top: 100px;
             }
 
             .footer-row {
@@ -154,45 +194,15 @@
             .footer-col-right {
                 flex: 1;
                 display: flex;
-                gap: 2rem;
+                gap: 4rem;
                 justify-content: flex-end;
             }
 
             .footer-sub-col {
                 display: flex;
                 flex-direction: column;
-                gap: 0.5rem;
-                text-align: left;
-            }
-
-            .footer-col h1 {
-                font-family: "Syncopate", sans-serif;
-                font-size: clamp(3rem, 5vw, 6rem);
-                font-weight: 700;
-                line-height: 1;
-                margin: 0;
-                color: #fff;
-            }
-
-            .footer-sub-col h3 {
-                font-family: "Syncopate", sans-serif;
-                font-size: clamp(1rem, 1.25vw, 1.75rem);
-                color: rgba(255, 255, 255, 0.4);
-                margin: 0;
-                text-transform: uppercase;
-            }
-
-            .footer-sub-col a {
-                text-decoration: none;
-                color: #fff;
-                font-size: clamp(1rem, 1.5vw, 2rem);
-                font-weight: 300;
-                transition: color 0.3s ease;
-                font-family: "Host Grotesk", sans-serif;
-            }
-
-            .footer-sub-col a:hover {
-                color: #2BA648;
+                gap: 1rem;
+                text-align: right;
             }
 
             @media(max-width: 1000px) {
@@ -203,6 +213,11 @@
 
                 .footer-col-right {
                     justify-content: flex-start;
+                    gap: 2rem;
+                }
+
+                .footer-sub-col {
+                    text-align: left;
                 }
             }
 
@@ -1207,26 +1222,22 @@
 
         </div>
 
-        <footer>
+        <footer class="reactor-zone">
             <div class="footer-container">
                 <div id="footer-canvas"></div>
-
                 <div class="footer-content">
                     <div class="footer-row">
                         <div class="footer-col">
-                            <h1>Let's Connect</h1>
+                            <h1 class="glow-text">Connect<br> with<br> Us</h1>
                         </div>
                         <div class="footer-col footer-col-right">
                             <div class="footer-sub-col">
                                 <h3>Socials</h3>
-                                <a href="#">Instagram</a>
-                                <a href="#">Twitter</a>
+                                <a href="#">Instagram</a><a href="#">X</a><a href="#">LinkedIn</a>
                             </div>
                             <div class="footer-sub-col">
                                 <h3>Menu</h3>
-                                <a href="index.html">Home</a>
-                                <a href="project.html">Work</a>
-                                <a href="contact.html">Contact</a>
+                                <a href="index.html">Home</a><a href="contact.html">Contact</a>
                             </div>
                         </div>
                     </div>
