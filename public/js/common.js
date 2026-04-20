@@ -41,7 +41,8 @@ window.renderTeam = function (filterValue, delay = 0) {
                 <div class="card-front">
                     ${avatarHtml}
                     <h2>${member.name}</h2>
-                    <p>${member.year === 'alumni' ? 'Alumni' : 'Class of ' + member.year}</p>
+                    ${member.role ? `<div class="card-role"><div class="role-dot"></div>${member.role}</div>` : ''}
+                    <p style="margin-top: 0.6rem;">${member.year === 'alumni' ? 'Alumni' : 'Class of ' + member.year}</p>
                 </div>
                 <div class="card-back">
                     <div class="social-links">
