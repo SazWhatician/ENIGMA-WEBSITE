@@ -45,7 +45,6 @@ window.renderTeam = function (filterValue, delay = 0) {
                 </div>
                 <div class="card-back">
                     <div class="social-links">
-                        <a href="${member.insta || '#'}" target="_blank" onclick="event.stopPropagation()">Instagram</a>
                         <a href="${member.linkedin || '#'}" target="_blank" onclick="event.stopPropagation()">LinkedIn</a>
                         <a href="${member.github || '#'}" target="_blank" onclick="event.stopPropagation()">GitHub</a>
                     </div>
