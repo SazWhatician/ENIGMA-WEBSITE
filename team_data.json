@@ -260,6 +260,24 @@
       "img": "./team-assets/2ndyear/Suvam Sabyasachi Parida.jpeg",
       "linkedin": "http://www.linkedin.com/in/suvamsp910",
       "github": "https://github.com/suv4m"
+    },
+    {
+      "id": 30,
+      "name": "Subhashree Sahu",
+      "role": "Web Dev, UI-UX",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Subhashree Sahu.jpg",
+      "linkedin": "http://www.linkedin.com/in/subhashree-sahu-95116b371",
+      "github": "https://github.com/Subhashree-794"
+    },
+    {
+      "id": 30,
+      "name": "Swati Swagatika Rout",
+      "role": "Cyber Security",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/swatiswagatikarout.png",
+      "linkedin": "https://www.linkedin.com/in/swati-swagatika-rout-071b3537b",
+      "github": "https://github.com/swati041"
     }
   ]
 }
