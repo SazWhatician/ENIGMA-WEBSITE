@@ -271,13 +271,22 @@
       "github": "https://github.com/Subhashree-794"
     },
     {
-      "id": 30,
+      "id": 31,
       "name": "Swati Swagatika Rout",
       "role": "Cyber Security",
       "year": "2028",
       "img": "./team-assets/2ndyear/swatiswagatikarout.png",
       "linkedin": "https://www.linkedin.com/in/swati-swagatika-rout-071b3537b",
       "github": "https://github.com/swati041"
+    },
+    {
+      "id": 32,
+      "name": "Priti Prasanna Sethi",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/priti.png",
+      "linkedin": "https://www.linkedin.com/in/priti-sethi18?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      "github": "https://github.com/Priti-Sethi18"
     }
   ]
 }
