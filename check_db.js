@@ -10,14 +10,15 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 async function checkDb() {
-    const snapshot = await db.collection('team_members').where('id', '==', 14).get();
+    const snapshot = await db.collection('team_members').where('id', '==', 31).get();
     if (snapshot.empty) {
         console.log("No matching documents.");
-        return;
+        process.exit(0);
     }
     snapshot.forEach(doc => {
         console.log(doc.id, '=>', doc.data());
     });
+    process.exit(0);
 }
 
 checkDb();
