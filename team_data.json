@@ -28,9 +28,9 @@
       "github": "https://github.com/Abhijeet2923"
     },
     {
-      "id": 7,
-      "name": "Game Dev",
-      "role": "Role Here",
+      "id": 4,
+      "name": "Aman Kumar",
+      "role": "Game Dev",
       "year": "2028",
       "img": "./team-assets/2ndyear/Aman Kumar.jpg",
       "linkedin": "https://www.linkedin.com/in/aman-kumar-aa33b1337",
@@ -64,7 +64,7 @@
       "github": "https://github.com/Aryan-R-18"
     },
     {
-      "id": 9,
+      "id": 8,
       "name": "Aurodeepa Senapati",
       "role": "Web Dev",
       "year": "2028",
@@ -73,7 +73,7 @@
       "github": "https://github.com/Aurodeepa2005"
     },
     {
-      "id": 8,
+      "id": 9,
       "name": "Aayush Kumar Prasad",
       "role": "CP",
       "year": "2028",
@@ -100,7 +100,7 @@
       "github": "https://github.com/..."
     },
     {
-      "id": 4,
+      "id": 7,
       "name": "Jashosna Kar",
       "role": "Cyber Security",
       "year": "2028",
@@ -123,8 +123,8 @@
       "role": "Web Dev",
       "year": "2028",
       "img": "./team-assets/2ndyear/Madhu Sailesh Sasamal.png",
-      "linkedin": "https://linkedin.com/...",
-      "github": "https://github.com/..."
+      "linkedin": "https://www.linkedin.com/in/madhu-sailesh-sasamal-6918912a4/",
+      "github": "https://github.com/madhusailesh"
     },
     {
       "id": 15,
@@ -194,7 +194,7 @@
       "name": "Satyajit Swain",
       "role": "Web Dev",
       "year": "2028",
-      "img": "./team-assets/2ndyear/SatyajitSwain.png",
+      "img": "./team-assets/2ndyear/Satyajit Swain.heic",
       "linkedin": "https://www.linkedin.com/in/satyajit-swain-4a8017263",
       "github": "https://github.com/Satyajit-tech2006"
     },
