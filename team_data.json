@@ -1,0 +1,265 @@
+{
+  "team_members": [
+    {
+      "id": 21,
+      "name": "Rohit Kumar Sahoo",
+      "role": "APP DEV",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/1000162000 - Rohit Kumar Sahoo.jpg",
+      "linkedin": "https://www.linkedin.com/in/rohit-kumar-sahoo-a68a452b0",
+      "github": "https://github.com/RohitKSahoo"
+    },
+    {
+      "id": 12,
+      "name": "Abhijit Sahu",
+      "role": "CP",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/abhijit.png",
+      "linkedin": "https://www.linkedin.com/in/abhijitsahu276/",
+      "github": "https://github.com/abhijit-sahu-276"
+    },
+    {
+      "id": 3,
+      "name": "Ch Abhijeet Achary",
+      "role": "Outreach",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/abhijitch.png",
+      "linkedin": "https://www.linkedin.com/in/ch-abhijeet-achary-27421836b",
+      "github": "https://github.com/Abhijeet2923"
+    },
+    {
+      "id": 4,
+      "name": "Game Dev",
+      "role": "Role Here",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Aman Kumar.jpg",
+      "linkedin": "https://www.linkedin.com/in/aman-kumar-aa33b1337",
+      "github": "https://github.com/amankr-07"
+    },
+    {
+      "id": 5,
+      "name": "Ankita Naik",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Ankita Naik.jpg",
+      "linkedin": "https://www.linkedin.com/in/ankita-naik-90541a330",
+      "github": "https://github.com/anku-byte"
+    },
+    {
+      "id": 6,
+      "name": "Anushree Mohanty",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/anushree.png",
+      "linkedin": "https://www.linkedin.com/in/anu-mohanty/",
+      "github": "https://github.com/Anushree-Mohanty"
+    },
+    {
+      "id": 2,
+      "name": "Aryan Rajguru",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/aryan.png",
+      "linkedin": "https://www.linkedin.com/in/aryan-rajguru-a1333230a",
+      "github": "https://github.com/Aryan-R-18"
+    },
+    {
+      "id": 8,
+      "name": "Aurodeepa Senapati",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/aurodeepa.jpeg",
+      "linkedin": "https://www.linkedin.com/in/aurodeepasenapati/",
+      "github": "https://github.com/Aurodeepa2005"
+    },
+    {
+      "id": 9,
+      "name": "Aayush Kumar Prasad",
+      "role": "CP",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/ayushprasad.png",
+      "linkedin": "https://linkedin.com/...",
+      "github": "https://github.com/..."
+    },
+    {
+      "id": 10,
+      "name": "Bhumik Desai",
+      "role": "AI/ML",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/bhumik.png",
+      "linkedin": "https://www.linkedin.com/in/bhumik-desai-48096b311",
+      "github": "https://github.com/BhumikDesai"
+    },
+    {
+      "id": 11,
+      "name": "Bikash Ranjan Sahoo",
+      "role": "Cyber Security",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Bikash Ranjan.jpg",
+      "linkedin": "https://www.linkedin.com/in/bikash-ranjan-sahoo-a06655330",
+      "github": "https://github.com/..."
+    },
+    {
+      "id": 7,
+      "name": "Jashosna Kar",
+      "role": "Cyber Security",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Jashosna Kar.jpg",
+      "linkedin": "https://www.linkedin.com/in/jashosna-kar-164b0a337",
+      "github": "https://github.com/"
+    },
+    {
+      "id": 13,
+      "name": "Kajal Mohapatra",
+      "role": "AI/ML",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/kajal.png",
+      "linkedin": "https://www.linkedin.com/in/kajal-mohapatra-286554308",
+      "github": "https://github.com/Kajal-0311"
+    },
+    {
+      "id": 14,
+      "name": "Madhu Sailesh Sasamal",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Madhu Sailesh Sasamal.png",
+      "linkedin": "https://linkedin.com/...",
+      "github": "https://github.com/..."
+    },
+    {
+      "id": 15,
+      "name": "Piyush Mishra",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Piyush Mishra.jpg",
+      "linkedin": "https://www.linkedin.com/in/piyush-mishra-778540268",
+      "github": "https://github.com/piyushmishra0620"
+    },
+    {
+      "id": 16,
+      "name": "Prateek Kumar Hota",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/prateekhota.png",
+      "linkedin": "https://www.linkedin.com/in/prateek-kumar-hota-124857332",
+      "github": "https://github.com/hotaprateek06"
+    },
+    {
+      "id": 17,
+      "name": "Pratik Kumar Behera",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/pratik.png",
+      "linkedin": "https://www.linkedin.com/in/pratikkumarbehera3046",
+      "github": "https://github.com/pratik3046"
+    },
+    {
+      "id": 18,
+      "name": "Remit Kumar Patra",
+      "role": "AI/ML",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/remit.png",
+      "linkedin": "https://www.linkedin.com/in/remit-patra",
+      "github": "https://github.com/NotRemit"
+    },
+    {
+      "id": 19,
+      "name": "Snehanshu Kar",
+      "role": "Cloud Computing",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/S K.jpg",
+      "linkedin": "https://www.linkedin.com/in/snehanshu-kar-6b734b34a",
+      "github": "https://github.com/asentrix510"
+    },
+    {
+      "id": 20,
+      "name": "Sambhav Shadangi",
+      "role": "AI/ML",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/sambhav.png",
+      "linkedin": "https://www.linkedin.com/in/sambhav-shadangi-9b35b2338",
+      "github": "https://github.com/SamTech28"
+    },
+    {
+      "id": 1,
+      "name": "Saswat Mohanty",
+      "role": "AI/ML,Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/saswatt.jpeg",
+      "linkedin": "https://www.linkedin.com/in/saswat-mohanty-0a4549331/",
+      "github": "https://github.com/SazWhatician"
+    },
+    {
+      "id": 22,
+      "name": "Satyajit Swain",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Satyajit Swain.heic",
+      "linkedin": "https://www.linkedin.com/in/satyajit-swain-4a8017263",
+      "github": "https://github.com/Satyajit-tech2006"
+    },
+    {
+      "id": 23,
+      "name": "Somya Tridarsini Dash ",
+      "role": "AI/ML",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/somya.png",
+      "linkedin": "https://www.linkedin.com/in/somyatridarsinidash/",
+      "github": "https://github.com/SomyaTDash"
+    },
+    {
+      "id": 24,
+      "name": "Subhankar Sahu",
+      "role": "CP",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Subhankar Sahu.jpeg",
+      "linkedin": "https://www.linkedin.com/in/subhankar-sahu-soobin/",
+      "github": "https://github.com/Soobin1102"
+    },
+    {
+      "id": 25,
+      "name": "Suman Dash",
+      "role": "CP",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Suman Dash.jpeg",
+      "linkedin": "https://www.linkedin.com/in/suman-dash-219163319",
+      "github": "https://github.com/sumandashw16"
+    },
+    {
+      "id": 26,
+      "name": "Swagatika Bhairab Sahu",
+      "role": "CP",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/swagatika.png",
+      "linkedin": "https://www.linkedin.com/in/swagatikabhairabsahu",
+      "github": "https://github.com/akitgwa"
+    },
+    {
+      "id": 27,
+      "name": "Vysyaraju Hansuja",
+      "role": "AI/ML",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Vysyaraju Hansuja.jpg",
+      "linkedin": "https://www.linkedin.com/in/vysyaraju-hansuja-76a616349/",
+      "github": "https://github.com/VysyarajuHansuja"
+    },
+    {
+      "id": 28,
+      "name": "Zeeshan Firoz",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Zeeshan Firoz.png",
+      "linkedin": "https://www.linkedin.com/in/zeeshan-firoz-855641253",
+      "github": "https://github.com/Zeeshanfiroz"
+    },
+    {
+      "id": 29,
+      "name": "Suvam Sabyasachi Parida",
+      "role": "AI/ML",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Suvam Sabyasachi Parida.jpeg",
+      "linkedin": "http://www.linkedin.com/in/suvamsp910",
+      "github": "https://github.com/suv4m"
+    }
+  ]
+}
