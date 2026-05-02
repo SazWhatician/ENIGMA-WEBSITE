@@ -314,6 +314,15 @@
       "img": "./team-assets/2ndyear/Yograj Patel.jpeg",
       "linkedin": "https://www.linkedin.com/in/yograj-patel-84714934a/",
       "github": "https://github.com/yograj06"
+    },
+    {
+      "id": 36,
+      "name": "Sudeepa Badatya",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Sudeepa Badatya.jpg",
+      "linkedin": "https://www.linkedin.com/in/sudeepa-badatya-479773360/",
+      "github": "https://github.com/sudeepabadatya"
     }
   ]
 }
