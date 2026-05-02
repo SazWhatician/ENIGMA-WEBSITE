@@ -323,6 +323,114 @@
       "img": "./team-assets/2ndyear/Sudeepa Badatya.jpg",
       "linkedin": "https://www.linkedin.com/in/sudeepa-badatya-479773360/",
       "github": "https://github.com/sudeepabadatya"
+    },
+    {
+      "id": 37,
+      "name": "Ritesh Kumar Panda",
+      "role": "CP, AI/ML, Web Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Ritesh Kumar Panda.jpg",
+      "linkedin": "https://www.linkedin.com/in/ritesh-kumar-panda-7b423b231",
+      "github": "https://github.com/ritpa2005"
+    },
+    {
+      "id": 38,
+      "name": "Ananya Pati",
+      "role": "Web Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/ANANYA PATI.jpg",
+      "linkedin": "https://www.linkedin.com/in/ananya-pati-b25027263/",
+      "github": "https://github.com/ananyapati26"
+    },
+    {
+      "id": 39,
+      "name": "Suraj Panda",
+      "role": "App Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Suraj Panda.JPG",
+      "linkedin": "https://www.linkedin.com/in/thesurajpanda",
+      "github": "https://github.com/surajsanu"
+    },
+    {
+      "id": 40,
+      "name": "Aumshuman Mohapatra",
+      "role": "Web Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Aumshuman Mohapatra.jpeg",
+      "linkedin": "https://www.linkedin.com/in/aumshuman-mohapatra-5ab731263/",
+      "github": "https://github.com/Rapid-merc"
+    },
+    {
+      "id": 41,
+      "name": "Ashish Kumar Mohapatra",
+      "role": "Web Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Ashish Kumar Mohapatra.jpg",
+      "linkedin": "https://www.linkedin.com/in/ashish-kumar-mohapatra-767879247?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      "github": "https://github.com/ashish095-EE"
+    },
+    {
+      "id": 42,
+      "name": "Swayamjeet Padhi",
+      "role": "Cyber Security",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Swayamjeet Padhi.jpg",
+      "linkedin": "http://www.linkedin.com/in/swayamjeet-padhi-380825257",
+      "github": "https://github.com/Swayamjeet7"
+    },
+    {
+      "id": 43,
+      "name": "Hardeep Mohanty",
+      "role": "Web Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Hardeep Mohanty.jpg",
+      "linkedin": "https://www.linkedin.com/in/hardeep-mohanty-9a0a33253",
+      "github": "https://github.com/hardeepmty"
+    },
+    {
+      "id": 44,
+      "name": "Priyadarshini Muduli",
+      "role": "UI-UX",
+      "year": "2026",
+      "img": "./team-assets/4thyear/priyadarshini.png",
+      "linkedin": "https://www.linkedin.com/in/priyadarshini-muduli-8a7ab0258?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      "github": "https://github.com/priyadarshini004"
+    },
+    {
+      "id": 45,
+      "name": "Debasish Dey",
+      "role": "App Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Debasish Dey.jpg",
+      "linkedin": "https://www.linkedin.com/in/debasish-dey-58647226b/",
+      "github": "https://github.com/Debasish-Dey"
+    },
+    {
+      "id": 46,
+      "name": "Nitesh Kumar Yadav ",
+      "role": "Outreach",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Nitesh Yadav.jpeg",
+      "linkedin": "https://www.linkedin.com/in/niteshhyadav/",
+      "github": "https://github.com/nitessy"
+    },
+    {
+      "id": 47,
+      "name": "Khitish Kumar Pradhan ",
+      "role": "Web Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/khitish.png",
+      "linkedin": "https://www.linkedin.com/in/khitish-kumar-pradhan-05704a263/",
+      "github": "https://github.com/Khitishgithub"
+    },
+    {
+      "id": 48,
+      "name": "Kritika Sureka",
+      "role": "UI-UX",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Kritika Sureka.jpg",
+      "linkedin": "https://www.linkedin.com/in/kritika-sureka-29269a267/",
+      "github": "https://github.com/kritika909"
     }
   ]
 }
