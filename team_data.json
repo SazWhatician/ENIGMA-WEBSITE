@@ -78,8 +78,8 @@
       "role": "CP",
       "year": "2028",
       "img": "./team-assets/2ndyear/ayushprasad.png",
-      "linkedin": "https://linkedin.com/...",
-      "github": "https://github.com/..."
+      "linkedin": "https://www.linkedin.com/in/aayush-prasad-78672a329/",
+      "github": "https://github.com/AayushP06"
     },
     {
       "id": 10,
@@ -287,6 +287,33 @@
       "img": "./team-assets/2ndyear/priti.png",
       "linkedin": "https://www.linkedin.com/in/priti-sethi18?utm_source=share_via&utm_content=profile&utm_medium=member_android",
       "github": "https://github.com/Priti-Sethi18"
+    },
+    {
+      "id": 33,
+      "name": "Sandeep Kumar Sahu",
+      "role": "Cyber Security",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Sandeep Kumar Sahu.jpg",
+      "linkedin": "https://www.linkedin.com/in/sandeep-kumar-sahu-99135734a?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      "github": "https://github.com/sandeep0431"
+    },
+    {
+      "id": 34,
+      "name": "Saswat Kumar Sahu",
+      "role": "Cyber Security",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Saswat Kumar Sahu.jpg",
+      "linkedin": "https://www.linkedin.com/in/saswat-kumar-sahu-419530351/",
+      "github": "https://github.com/Saswat132004"
+    },
+    {
+      "id": 35,
+      "name": "Yograj Patel",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Yograj Patel.jpeg",
+      "linkedin": "https://www.linkedin.com/in/yograj-patel-84714934a/",
+      "github": "https://github.com/yograj06"
     }
   ]
 }
