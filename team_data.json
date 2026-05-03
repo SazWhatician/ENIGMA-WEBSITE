@@ -1,79 +1,250 @@
 {
   "team_members": [
     {
-      "id": 21,
-      "name": "Rohit Kumar Sahoo",
-      "role": "APP DEV",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/1000162000 - Rohit Kumar Sahoo.jpg",
-      "linkedin": "https://www.linkedin.com/in/rohit-kumar-sahoo-a68a452b0",
-      "github": "https://github.com/RohitKSahoo"
+      "id": 1,
+      "name": "Ananya Pati",
+      "role": "Web Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/ANANYA PATI.jpg",
+      "linkedin": "https://www.linkedin.com/in/ananya-pati-b25027263/",
+      "github": "https://github.com/ananyapati26"
     },
     {
-      "id": 12,
-      "name": "Abhijit Sahu",
-      "role": "CP",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/abhijit.png",
-      "linkedin": "https://www.linkedin.com/in/abhijitsahu276/",
-      "github": "https://github.com/abhijit-sahu-276"
+      "id": 10,
+      "name": "Ashish Kumar Mohapatra",
+      "role": "Web Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Ashish Kumar Mohapatra.jpg",
+      "linkedin": "https://www.linkedin.com/in/ashish-kumar-mohapatra-767879247?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      "github": "https://github.com/ashish095-EE"
     },
     {
       "id": 3,
-      "name": "Ch Abhijeet Achary",
-      "role": "Outreach",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/abhijitch.png",
-      "linkedin": "https://www.linkedin.com/in/ch-abhijeet-achary-27421836b",
-      "github": "https://github.com/Abhijeet2923"
+      "name": "Aumshuman Mohapatra",
+      "role": "Web Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Aumshuman Mohapatra.jpeg",
+      "linkedin": "https://www.linkedin.com/in/aumshuman-mohapatra-5ab731263/",
+      "github": "https://github.com/Rapid-merc"
     },
     {
-      "id": 7,
-      "name": "Aman Kumar",
-      "role": "Game Dev",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/Aman Kumar.jpg",
-      "linkedin": "https://www.linkedin.com/in/aman-kumar-aa33b1337",
-      "github": "https://github.com/amankr-07"
+      "id": 4,
+      "name": "Debasish Dey",
+      "role": "App Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Debasish Dey.jpg",
+      "linkedin": "https://www.linkedin.com/in/debasish-dey-58647226b/",
+      "github": "https://github.com/Debasish-Dey"
     },
     {
       "id": 5,
-      "name": "Ankita Naik",
+      "name": "Hardeep Mohanty",
       "role": "Web Dev",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/Ankita Naik.jpg",
-      "linkedin": "https://www.linkedin.com/in/ankita-naik-90541a330",
-      "github": "https://github.com/anku-byte"
+      "year": "2026",
+      "img": "./team-assets/4thyear/Hardeep Mohanty.jpg",
+      "linkedin": "https://www.linkedin.com/in/hardeep-mohanty-9a0a33253",
+      "github": "https://github.com/hardeepmty"
     },
     {
       "id": 6,
-      "name": "Anushree Mohanty",
+      "name": "Khitish Kumar Pradhan ",
       "role": "Web Dev",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/anushree.png",
-      "linkedin": "https://www.linkedin.com/in/anu-mohanty/",
-      "github": "https://github.com/Anushree-Mohanty"
+      "year": "2026",
+      "img": "./team-assets/4thyear/khitish.png",
+      "linkedin": "https://www.linkedin.com/in/khitish-kumar-pradhan-05704a263/",
+      "github": "https://github.com/Khitishgithub"
     },
     {
-      "id": 2,
-      "name": "Aryan Rajguru",
-      "role": "Web Dev",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/aryan.png",
-      "linkedin": "https://www.linkedin.com/in/aryan-rajguru-a1333230a",
-      "github": "https://github.com/Aryan-R-18"
+      "id": 7,
+      "name": "Kritika Sureka",
+      "role": "UI-UX",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Kritika Sureka.jpg",
+      "linkedin": "https://www.linkedin.com/in/kritika-sureka-29269a267/",
+      "github": "https://github.com/kritika909"
     },
     {
       "id": 8,
-      "name": "Aurodeepa Senapati",
-      "role": "Web Dev",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/aurodeepa.jpeg",
-      "linkedin": "https://www.linkedin.com/in/aurodeepasenapati/",
-      "github": "https://github.com/Aurodeepa2005"
+      "name": "Nitesh Kumar Yadav ",
+      "role": "Outreach",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Nitesh Yadav.jpeg",
+      "linkedin": "https://www.linkedin.com/in/niteshhyadav/",
+      "github": "https://github.com/nitessy"
     },
     {
       "id": 9,
+      "name": "Priyadarshini Muduli",
+      "role": "UI-UX",
+      "year": "2026",
+      "img": "./team-assets/4thyear/priyadarshini.png",
+      "linkedin": "https://www.linkedin.com/in/priyadarshini-muduli-8a7ab0258?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      "github": "https://github.com/priyadarshini004"
+    },
+    {
+      "id": 2,
+      "name": "Ritesh Kumar Panda",
+      "role": "CP, AI/ML, Web Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Ritesh Kumar Panda.jpg",
+      "linkedin": "https://www.linkedin.com/in/ritesh-kumar-panda-7b423b231",
+      "github": "https://github.com/ritpa2005"
+    },
+    {
+      "id": 11,
+      "name": "Suraj Panda",
+      "role": "App Dev",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Suraj Panda.JPG",
+      "linkedin": "https://www.linkedin.com/in/thesurajpanda",
+      "github": "https://github.com/surajsanu"
+    },
+    {
+      "id": 12,
+      "name": "Swayamjeet Padhi",
+      "role": "Cyber Security",
+      "year": "2026",
+      "img": "./team-assets/4thyear/Swayamjeet Padhi.jpg",
+      "linkedin": "http://www.linkedin.com/in/swayamjeet-padhi-380825257",
+      "github": "https://github.com/Swayamjeet7"
+    },
+    {
+      "id": 13,
+      "name": "Ansuman Jena",
+      "role": "AI/ML",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Ansuman Jena.jpeg",
+      "linkedin": "https://www.linkedin.com/in/ansuman-jena-aj09?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      "github": "https://github.com/TheAnsumanAJ"
+    },
+    {
+      "id": 14,
+      "name": "Anurag Mahapatra",
+      "role": "Cloud Computing",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Anurag Mahapatra.jpg",
+      "linkedin": "https://www.linkedin.com/in/anurag-mahapatra-7336892b0/",
+      "github": "https://www.github.com/IAnuragMahapatra"
+    },
+    {
+      "id": 15,
+      "name": "Archit Kumar Panigrahi",
+      "role": "AI/ML",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Archit Kumar Panigrahi.jpeg",
+      "linkedin": "http://www.linkedin.com/in/archit-kumar-panigrahi",
+      "github": "https://github.com/op-architkumar"
+    },
+    {
+      "id": 16,
+      "name": "Ayush Kishan",
+      "role": "Cyber Security",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Ayush Kishan.jpg",
+      "linkedin": "https://www.linkedin.com/in/ayush-kishan",
+      "github": "http://github.com/ayuhzkishan"
+    },
+    {
+      "id": 17,
+      "name": "Dharmendra Mahanta",
+      "role": "Web Dev",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Dharmendra Mahanta.jpeg",
+      "linkedin": "https://www.linkedin.com/in/dharmendram007/",
+      "github": "https://github.com/dharmendra-007"
+    },
+    {
+      "id": 18,
+      "name": "Gyana Ranjan Patra",
+      "role": "Web Dev",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Gyana Ranjan patra.jpg",
+      "linkedin": "https://www.linkedin.com/in/higyan",
+      "github": "https://github.com/Gyannnnn"
+    },
+    {
+      "id": 19,
+      "name": "K Suman Patra",
+      "role": "Web Dev",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/K Suman Patra.jpg",
+      "linkedin": "https://www.linkedin.com/in/ksumanpatra",
+      "github": "https://github.com/sumanpatra006"
+    },
+    {
+      "id": 20,
+      "name": "Krishna Bansal",
+      "role": "Game Dev",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Krishna Bansal.jpeg",
+      "linkedin": "https://in.linkedin.com/in/krishnabansal2004",
+      "github": "https://github.com/krishna-bansal"
+    },
+    {
+      "id": 21,
+      "name": "Narayan Agarwal",
+      "role": "Outreach",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Narayan Agarwal.jpg",
+      "linkedin": "https://www.linkedin.com/in/narayanagarwal2327",
+      "github": "https://github.com/Narayan-Agarwal"
+    },
+    {
+      "id": 22,
+      "name": "Neev Sanghai",
+      "role": "AI/ML",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Neev Sanghai.jpg",
+      "linkedin": "https://www.linkedin.com/in/neev-sanghai?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      "github": "https://github.com/neevsan043"
+    },
+    {
+      "id": 23,
+      "name": "Nirujay Soren",
+      "role": "Cyber Security",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Nirujay Soren.jpeg",
+      "linkedin": "https://www.linkedin.com/in/nirujay688?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
+      "github": "https://github.com/nirujay2004"
+    },
+    {
+      "id": 24,
+      "name": "Prajnamayee Sahu",
+      "role": "Web Dev",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Prajnamayee Sahu.jpg",
+      "linkedin": "https://www.linkedin.com/in/prajnamayee-sahu/",
+      "github": "https://github.com/prajnamayeesahu"
+    },
+    {
+      "id": 25,
+      "name": "Pritipadma Das",
+      "role": "Web Dev",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Pritipadma Das.jpeg",
+      "linkedin": "https://www.linkedin.com/in/pritipadma-das-0271b92b3/",
+      "github": "https://github.com/Pritip-das"
+    },
+    {
+      "id": 26,
+      "name": "Shivangi Sahu",
+      "role": "AI/ML",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Shivangi Sahu.jpeg",
+      "linkedin": "http://www.linkedin.com/in/shivangi-sahu-55594128b",
+      "github": "https://github.com/Er-shivangisahu2030"
+    },
+    {
+      "id": 27,
+      "name": "Subhankar Patra",
+      "role": "Web Dev",
+      "year": "2027",
+      "img": "./team-assets/3rdyear/Subhankar Patra.jpg",
+      "linkedin": "https://www.linkedin.com/in/subhankar-patra-400519291?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      "github": "https://github.com/subhankar2004"
+    },
+    {
+      "id": 52,
       "name": "Aayush Kumar Prasad",
       "role": "CP",
       "year": "2028",
@@ -82,7 +253,70 @@
       "github": "https://github.com/AayushP06"
     },
     {
-      "id": 10,
+      "id": 33,
+      "name": "Abhijit Sahu",
+      "role": "CP",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/abhijit.png",
+      "linkedin": "https://www.linkedin.com/in/abhijitsahu276/",
+      "github": "https://github.com/abhijit-sahu-276"
+    },
+    {
+      "id": 57,
+      "name": "Aman Kumar",
+      "role": "Game Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Aman Kumar.jpg",
+      "linkedin": "https://www.linkedin.com/in/aman-kumar-aa33b1337",
+      "github": "https://github.com/amankr-07"
+    },
+    {
+      "id": 31,
+      "name": "Ankita Naik",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Ankita Naik.jpg",
+      "linkedin": "https://www.linkedin.com/in/ankita-naik-90541a330",
+      "github": "https://github.com/anku-byte"
+    },
+    {
+      "id": 32,
+      "name": "Anushree Mohanty",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/anushree.png",
+      "linkedin": "https://www.linkedin.com/in/anu-mohanty/",
+      "github": "https://github.com/Anushree-Mohanty"
+    },
+    {
+      "id": 29,
+      "name": "Aryan Rajguru",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/aryan.png",
+      "linkedin": "https://www.linkedin.com/in/aryan-rajguru-a1333230a",
+      "github": "https://github.com/Aryan-R-18"
+    },
+    {
+      "id": 34,
+      "name": "Aurodeepa Senapati",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/aurodeepa.jpeg",
+      "linkedin": "https://www.linkedin.com/in/aurodeepasenapati/",
+      "github": "https://github.com/Aurodeepa2005"
+    },
+    {
+      "id": 35,
+      "name": "Bhagabati Rout",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/bhagabati.png",
+      "linkedin": "https://www.linkedin.com/in/bhagabati-rout-2b72762b5",
+      "github": "https://github.com/Bhagabati-R"
+    },
+    {
+      "id": 36,
       "name": "Bhumik Desai",
       "role": "AI/ML",
       "year": "2028",
@@ -91,7 +325,7 @@
       "github": "https://github.com/BhumikDesai"
     },
     {
-      "id": 11,
+      "id": 37,
       "name": "Bikash Ranjan Sahoo",
       "role": "Cyber Security",
       "year": "2028",
@@ -100,7 +334,16 @@
       "github": "https://github.com/..."
     },
     {
-      "id": 4,
+      "id": 38,
+      "name": "Ch Abhijeet Achary",
+      "role": "Outreach",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/abhijitch.png",
+      "linkedin": "https://www.linkedin.com/in/ch-abhijeet-achary-27421836b",
+      "github": "https://github.com/Abhijeet2923"
+    },
+    {
+      "id": 39,
       "name": "Jashosna Kar",
       "role": "Cyber Security",
       "year": "2028",
@@ -109,7 +352,7 @@
       "github": "https://github.com/"
     },
     {
-      "id": 13,
+      "id": 40,
       "name": "Kajal Mohapatra",
       "role": "AI/ML",
       "year": "2028",
@@ -118,7 +361,7 @@
       "github": "https://github.com/Kajal-0311"
     },
     {
-      "id": 14,
+      "id": 41,
       "name": "Madhu Sailesh Sasamal",
       "role": "Web Dev",
       "year": "2028",
@@ -127,7 +370,7 @@
       "github": "https://github.com/madhusailesh"
     },
     {
-      "id": 15,
+      "id": 42,
       "name": "Piyush Mishra",
       "role": "Web Dev",
       "year": "2028",
@@ -136,7 +379,7 @@
       "github": "https://github.com/piyushmishra0620"
     },
     {
-      "id": 16,
+      "id": 43,
       "name": "Prateek Kumar Hota",
       "role": "Web Dev",
       "year": "2028",
@@ -145,7 +388,7 @@
       "github": "https://github.com/hotaprateek06"
     },
     {
-      "id": 17,
+      "id": 44,
       "name": "Pratik Kumar Behera",
       "role": "Web Dev",
       "year": "2028",
@@ -154,7 +397,16 @@
       "github": "https://github.com/pratik3046"
     },
     {
-      "id": 18,
+      "id": 45,
+      "name": "Priti Prasanna Sethi",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/priti.png",
+      "linkedin": "https://www.linkedin.com/in/priti-sethi18?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      "github": "https://github.com/Priti-Sethi18"
+    },
+    {
+      "id": 46,
       "name": "Remit Kumar Patra",
       "role": "AI/ML",
       "year": "2028",
@@ -163,16 +415,16 @@
       "github": "https://github.com/NotRemit"
     },
     {
-      "id": 19,
-      "name": "Snehanshu Kar",
-      "role": "Cloud Computing",
+      "id": 47,
+      "name": "Rohit Kumar Sahoo",
+      "role": "APP DEV",
       "year": "2028",
-      "img": "./team-assets/2ndyear/S K.jpg",
-      "linkedin": "https://www.linkedin.com/in/snehanshu-kar-6b734b34a",
-      "github": "https://github.com/asentrix510"
+      "img": "./team-assets/2ndyear/1000162000 - Rohit Kumar Sahoo.jpg",
+      "linkedin": "https://www.linkedin.com/in/rohit-kumar-sahoo-a68a452b0",
+      "github": "https://github.com/RohitKSahoo"
     },
     {
-      "id": 20,
+      "id": 48,
       "name": "Sambhav Shadangi",
       "role": "AI/ML",
       "year": "2028",
@@ -181,7 +433,34 @@
       "github": "https://github.com/Sammy-2808"
     },
     {
-      "id": 1,
+      "id": 49,
+      "name": "Samitesh Panda",
+      "role": "CP",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Samitesh Panda.jpg",
+      "linkedin": "https://www.linkedin.com/in/samitesh-panda-2b129a3a3",
+      "github": "https://github.com/samiop18"
+    },
+    {
+      "id": 50,
+      "name": "Sandeep Kumar Sahu",
+      "role": "Cyber Security",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Sandeep Kumar Sahu.jpg",
+      "linkedin": "https://www.linkedin.com/in/sandeep-kumar-sahu-99135734a?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      "github": "https://github.com/sandeep0431"
+    },
+    {
+      "id": 51,
+      "name": "Saswat Kumar Sahu",
+      "role": "Cyber Security",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Saswat Kumar Sahu.jpg",
+      "linkedin": "https://www.linkedin.com/in/saswat-kumar-sahu-419530351/",
+      "github": "https://github.com/Saswat132004"
+    },
+    {
+      "id": 28,
       "name": "Saswat Mohanty",
       "role": "AI/ML,Web Dev",
       "year": "2028",
@@ -190,7 +469,7 @@
       "github": "https://github.com/SazWhatician"
     },
     {
-      "id": 22,
+      "id": 53,
       "name": "Satyajit Swain",
       "role": "Web Dev",
       "year": "2028",
@@ -199,7 +478,16 @@
       "github": "https://github.com/Satyajit-tech2006"
     },
     {
-      "id": 23,
+      "id": 54,
+      "name": "Snehanshu Kar",
+      "role": "Cloud Computing",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/S K.jpg",
+      "linkedin": "https://www.linkedin.com/in/snehanshu-kar-6b734b34a",
+      "github": "https://github.com/asentrix510"
+    },
+    {
+      "id": 55,
       "name": "Somya Tridarsini Dash ",
       "role": "AI/ML",
       "year": "2028",
@@ -208,58 +496,13 @@
       "github": "https://github.com/SomyaTDash"
     },
     {
-      "id": 24,
+      "id": 56,
       "name": "Subhankar Sahu",
       "role": "CP",
       "year": "2028",
       "img": "./team-assets/2ndyear/Subhankar Sahu.jpeg",
       "linkedin": "https://www.linkedin.com/in/subhankar-sahu-soobin/",
       "github": "https://github.com/Soobin1102"
-    },
-    {
-      "id": 25,
-      "name": "Suman Dash",
-      "role": "CP",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/Suman Dash.jpeg",
-      "linkedin": "https://www.linkedin.com/in/suman-dash-219163319",
-      "github": "https://github.com/sumandashw16"
-    },
-    {
-      "id": 26,
-      "name": "Swagatika Bhairab Sahu",
-      "role": "CP",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/swagatika.png",
-      "linkedin": "https://www.linkedin.com/in/swagatikabhairabsahu",
-      "github": "https://github.com/akitgwa"
-    },
-    {
-      "id": 27,
-      "name": "Vysyaraju Hansuja",
-      "role": "AI/ML",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/Vysyaraju Hansuja.jpg",
-      "linkedin": "https://www.linkedin.com/in/vysyaraju-hansuja-76a616349/",
-      "github": "https://github.com/VysyarajuHansuja"
-    },
-    {
-      "id": 28,
-      "name": "Zeeshan Firoz",
-      "role": "Web Dev",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/Zeeshan Firoz.png",
-      "linkedin": "https://www.linkedin.com/in/zeeshan-firoz-855641253",
-      "github": "https://github.com/Zeeshanfiroz"
-    },
-    {
-      "id": 29,
-      "name": "Suvam Sabyasachi Parida",
-      "role": "AI/ML",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/Suvam Sabyasachi Parida.jpeg",
-      "linkedin": "http://www.linkedin.com/in/suvamsp910",
-      "github": "https://github.com/suv4m"
     },
     {
       "id": 30,
@@ -271,52 +514,7 @@
       "github": "https://github.com/Subhashree-794"
     },
     {
-      "id": 31,
-      "name": "Swati Swagatika Rout",
-      "role": "Cyber Security",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/Swati Swagatika Rout.jpg",
-      "linkedin": "https://www.linkedin.com/in/swati-swagatika-rout-071b3537b",
-      "github": "https://github.com/swati041"
-    },
-    {
-      "id": 32,
-      "name": "Priti Prasanna Sethi",
-      "role": "Web Dev",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/priti.png",
-      "linkedin": "https://www.linkedin.com/in/priti-sethi18?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-      "github": "https://github.com/Priti-Sethi18"
-    },
-    {
-      "id": 33,
-      "name": "Sandeep Kumar Sahu",
-      "role": "Cyber Security",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/Sandeep Kumar Sahu.jpg",
-      "linkedin": "https://www.linkedin.com/in/sandeep-kumar-sahu-99135734a?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-      "github": "https://github.com/sandeep0431"
-    },
-    {
-      "id": 34,
-      "name": "Saswat Kumar Sahu",
-      "role": "Cyber Security",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/Saswat Kumar Sahu.jpg",
-      "linkedin": "https://www.linkedin.com/in/saswat-kumar-sahu-419530351/",
-      "github": "https://github.com/Saswat132004"
-    },
-    {
-      "id": 35,
-      "name": "Yograj Patel",
-      "role": "Web Dev",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/Yograj Patel.jpeg",
-      "linkedin": "https://www.linkedin.com/in/yograj-patel-84714934a/",
-      "github": "https://github.com/yograj06"
-    },
-    {
-      "id": 36,
+      "id": 58,
       "name": "Sudeepa Badatya",
       "role": "Web Dev",
       "year": "2028",
@@ -325,265 +523,67 @@
       "github": "https://github.com/sudeepabadatya"
     },
     {
-      "id": 37,
-      "name": "Ritesh Kumar Panda",
-      "role": "CP, AI/ML, Web Dev",
-      "year": "2026",
-      "img": "./team-assets/4thyear/Ritesh Kumar Panda.jpg",
-      "linkedin": "https://www.linkedin.com/in/ritesh-kumar-panda-7b423b231",
-      "github": "https://github.com/ritpa2005"
-    },
-    {
-      "id": 38,
-      "name": "Ananya Pati",
-      "role": "Web Dev",
-      "year": "2026",
-      "img": "./team-assets/4thyear/ANANYA PATI.jpg",
-      "linkedin": "https://www.linkedin.com/in/ananya-pati-b25027263/",
-      "github": "https://github.com/ananyapati26"
-    },
-    {
-      "id": 39,
-      "name": "Suraj Panda",
-      "role": "App Dev",
-      "year": "2026",
-      "img": "./team-assets/4thyear/Suraj Panda.JPG",
-      "linkedin": "https://www.linkedin.com/in/thesurajpanda",
-      "github": "https://github.com/surajsanu"
-    },
-    {
-      "id": 40,
-      "name": "Aumshuman Mohapatra",
-      "role": "Web Dev",
-      "year": "2026",
-      "img": "./team-assets/4thyear/Aumshuman Mohapatra.jpeg",
-      "linkedin": "https://www.linkedin.com/in/aumshuman-mohapatra-5ab731263/",
-      "github": "https://github.com/Rapid-merc"
-    },
-    {
-      "id": 41,
-      "name": "Ashish Kumar Mohapatra",
-      "role": "Web Dev",
-      "year": "2026",
-      "img": "./team-assets/4thyear/Ashish Kumar Mohapatra.jpg",
-      "linkedin": "https://www.linkedin.com/in/ashish-kumar-mohapatra-767879247?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-      "github": "https://github.com/ashish095-EE"
-    },
-    {
-      "id": 42,
-      "name": "Swayamjeet Padhi",
-      "role": "Cyber Security",
-      "year": "2026",
-      "img": "./team-assets/4thyear/Swayamjeet Padhi.jpg",
-      "linkedin": "http://www.linkedin.com/in/swayamjeet-padhi-380825257",
-      "github": "https://github.com/Swayamjeet7"
-    },
-    {
-      "id": 43,
-      "name": "Hardeep Mohanty",
-      "role": "Web Dev",
-      "year": "2026",
-      "img": "./team-assets/4thyear/Hardeep Mohanty.jpg",
-      "linkedin": "https://www.linkedin.com/in/hardeep-mohanty-9a0a33253",
-      "github": "https://github.com/hardeepmty"
-    },
-    {
-      "id": 44,
-      "name": "Priyadarshini Muduli",
-      "role": "UI-UX",
-      "year": "2026",
-      "img": "./team-assets/4thyear/priyadarshini.png",
-      "linkedin": "https://www.linkedin.com/in/priyadarshini-muduli-8a7ab0258?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-      "github": "https://github.com/priyadarshini004"
-    },
-    {
-      "id": 45,
-      "name": "Debasish Dey",
-      "role": "App Dev",
-      "year": "2026",
-      "img": "./team-assets/4thyear/Debasish Dey.jpg",
-      "linkedin": "https://www.linkedin.com/in/debasish-dey-58647226b/",
-      "github": "https://github.com/Debasish-Dey"
-    },
-    {
-      "id": 46,
-      "name": "Nitesh Kumar Yadav ",
-      "role": "Outreach",
-      "year": "2026",
-      "img": "./team-assets/4thyear/Nitesh Yadav.jpeg",
-      "linkedin": "https://www.linkedin.com/in/niteshhyadav/",
-      "github": "https://github.com/nitessy"
-    },
-    {
-      "id": 47,
-      "name": "Khitish Kumar Pradhan ",
-      "role": "Web Dev",
-      "year": "2026",
-      "img": "./team-assets/4thyear/khitish.png",
-      "linkedin": "https://www.linkedin.com/in/khitish-kumar-pradhan-05704a263/",
-      "github": "https://github.com/Khitishgithub"
-    },
-    {
-      "id": 48,
-      "name": "Kritika Sureka",
-      "role": "UI-UX",
-      "year": "2026",
-      "img": "./team-assets/4thyear/Kritika Sureka.jpg",
-      "linkedin": "https://www.linkedin.com/in/kritika-sureka-29269a267/",
-      "github": "https://github.com/kritika909"
-    },
-    {
-      "id": 49,
-      "name": "Bhagabati Rout",
-      "role": "Web Dev",
-      "year": "2028",
-      "img": "./team-assets/2ndyear/bhagabati.png",
-      "linkedin": "https://www.linkedin.com/in/bhagabati-rout-2b72762b5",
-      "github": "https://github.com/Bhagabati-R"
-    },
-    {
-      "id": 50,
-      "name": "Samitesh Panda",
+      "id": 59,
+      "name": "Suman Dash",
       "role": "CP",
       "year": "2028",
-      "img": "./team-assets/2ndyear/Samitesh Panda.jpg",
-      "linkedin": "https://www.linkedin.com/in/samitesh-panda-2b129a3a3",
-      "github": "https://github.com/samiop18"
-    },
-    {
-      "id": 51,
-      "name": "Shivangi Sahu",
-      "role": "AI/ML",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Shivangi Sahu.jpeg",
-      "linkedin": "http://www.linkedin.com/in/shivangi-sahu-55594128b",
-      "github": "https://github.com/Er-shivangisahu2030"
-    },
-    {
-      "id": 52,
-      "name": "Narayan Agarwal",
-      "role": "Outreach",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Narayan Agarwal.jpg",
-      "linkedin": "https://www.linkedin.com/in/narayanagarwal2327",
-      "github": "https://github.com/Narayan-Agarwal"
-    },
-    {
-      "id": 53,
-      "name": "Nirujay Soren",
-      "role": "Cyber Security",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Nirujay Soren.jpeg",
-      "linkedin": "https://www.linkedin.com/in/nirujay688?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
-      "github": "https://github.com/nirujay2004"
-    },
-    {
-      "id": 65,
-      "name": "Krishna Bansal",
-      "role": "Game Dev",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Krishna Bansal.jpeg",
-      "linkedin": "https://in.linkedin.com/in/krishnabansal2004",
-      "github": "https://github.com/krishna-bansal"
-    },
-    {
-      "id": 55,
-      "name": "Prajnamayee Sahu",
-      "role": "Web Dev",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Prajnamayee Sahu.jpg",
-      "linkedin": "https://www.linkedin.com/in/prajnamayee-sahu/",
-      "github": "https://github.com/prajnamayeesahu"
-    },
-    {
-      "id": 56,
-      "name": "Ansuman Jena",
-      "role": "AI/ML",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Ansuman Jena.jpeg",
-      "linkedin": "https://www.linkedin.com/in/ansuman-jena-aj09?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-      "github": "https://github.com/TheAnsumanAJ"
-    },
-    {
-      "id": 57,
-      "name": "Dharmendra Mahanta",
-      "role": "Web Dev",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Dharmendra Mahanta.jpeg",
-      "linkedin": "https://www.linkedin.com/in/dharmendram007/",
-      "github": "https://github.com/dharmendra-007"
-    },
-    {
-      "id": 58,
-      "name": "Subhankar Patra",
-      "role": "Web Dev",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Subhankar Patra.jpg",
-      "linkedin": "https://www.linkedin.com/in/subhankar-patra-400519291?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-      "github": "https://github.com/subhankar2004"
-    },
-    {
-      "id": 59,
-      "name": "Pritipadma Das",
-      "role": "Web Dev",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Pritipadma Das.jpeg",
-      "linkedin": "https://www.linkedin.com/in/pritipadma-das-0271b92b3/",
-      "github": "https://github.com/Pritip-das"
+      "img": "./team-assets/2ndyear/Suman Dash.jpeg",
+      "linkedin": "https://www.linkedin.com/in/suman-dash-219163319",
+      "github": "https://github.com/sumandashw16"
     },
     {
       "id": 60,
-      "name": "Ayush Kishan",
-      "role": "Cyber Security",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Ayush Kishan.jpg",
-      "linkedin": "https://www.linkedin.com/in/ayush-kishan",
-      "github": "http://github.com/ayuhzkishan"
+      "name": "Suvam Sabyasachi Parida",
+      "role": "AI/ML",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Suvam Sabyasachi Parida.jpeg",
+      "linkedin": "http://www.linkedin.com/in/suvamsp910",
+      "github": "https://github.com/suv4m"
     },
     {
       "id": 61,
-      "name": "K Suman Patra",
-      "role": "Web Dev",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/K Suman Patra.jpg",
-      "linkedin": "https://www.linkedin.com/in/ksumanpatra",
-      "github": "https://github.com/sumanpatra006"
+      "name": "Swagatika Bhairab Sahu",
+      "role": "CP",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/swagatika.png",
+      "linkedin": "https://www.linkedin.com/in/swagatikabhairabsahu",
+      "github": "https://github.com/akitgwa"
     },
     {
       "id": 62,
-      "name": "Archit Kumar Panigrahi",
-      "role": "AI/ML",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Archit Kumar Panigrahi.jpeg",
-      "linkedin": "http://www.linkedin.com/in/archit-kumar-panigrahi",
-      "github": "https://github.com/op-architkumar"
+      "name": "Swati Swagatika Rout",
+      "role": "Cyber Security",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Swati Swagatika Rout.jpg",
+      "linkedin": "https://www.linkedin.com/in/swati-swagatika-rout-071b3537b",
+      "github": "https://github.com/swati041"
     },
     {
       "id": 63,
-      "name": "Anurag Mahapatra",
-      "role": "Cloud Computing",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Anurag Mahapatra.jpg",
-      "linkedin": "https://www.linkedin.com/in/anurag-mahapatra-7336892b0/",
-      "github": "https://www.github.com/IAnuragMahapatra"
+      "name": "Vysyaraju Hansuja",
+      "role": "AI/ML",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Vysyaraju Hansuja.jpg",
+      "linkedin": "https://www.linkedin.com/in/vysyaraju-hansuja-76a616349/",
+      "github": "https://github.com/VysyarajuHansuja"
     },
     {
       "id": 64,
-      "name": "Neev Sanghai",
-      "role": "AI/ML",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Neev Sanghai.jpg",
-      "linkedin": "https://www.linkedin.com/in/neev-sanghai?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-      "github": "https://github.com/neevsan043"
+      "name": "Yograj Patel",
+      "role": "Web Dev",
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Yograj Patel.jpeg",
+      "linkedin": "https://www.linkedin.com/in/yograj-patel-84714934a/",
+      "github": "https://github.com/yograj06"
     },
     {
-      "id": 54,
-      "name": "Gyana Ranjan Patra",
+      "id": 65,
+      "name": "Zeeshan Firoz",
       "role": "Web Dev",
-      "year": "2027",
-      "img": "./team-assets/3rdyear/Gyana Ranjan patra.jpg",
-      "linkedin": "https://www.linkedin.com/in/higyan",
-      "github": "https://github.com/Gyannnnn"
+      "year": "2028",
+      "img": "./team-assets/2ndyear/Zeeshan Firoz.png",
+      "linkedin": "https://www.linkedin.com/in/zeeshan-firoz-855641253",
+      "github": "https://github.com/Zeeshanfiroz"
     }
   ]
 }
