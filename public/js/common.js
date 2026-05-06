@@ -397,20 +397,20 @@ window.initEventsBrutalist = function () {
             const isEven = i % 2 !== 0; // alternate layout
             const shortDesc = ev.desc.split('\n\n')[0]; // first paragraph only for cards
             const block = document.createElement('div');
-            block.className = `highlight-block w-full py-16 md:min-h-[90vh] flex flex-col ${isEven ? 'md:flex-row-reverse' : 'md:flex-row'} items-center justify-center px-8 md:px-20 relative overflow-hidden gap-10 md:gap-16 z-10`;
+            block.className = `highlight-block w-full py-10 md:py-16 md:min-h-[90vh] flex flex-col ${isEven ? 'md:flex-row-reverse' : 'md:flex-row'} items-center justify-center px-4 sm:px-8 md:px-20 relative overflow-hidden gap-6 sm:gap-10 md:gap-16 z-10`;
             block.innerHTML = `
-                <div class="h-img-wrap w-full md:w-[45%] h-[40vh] md:h-[60vh] relative overflow-hidden rounded-[20px] md:rounded-[40px] border border-white/10 z-10" data-cursor-hover>
+                <div class="h-img-wrap w-full md:w-[45%] h-[30vh] sm:h-[40vh] md:h-[60vh] relative overflow-hidden rounded-[16px] sm:rounded-[20px] md:rounded-[40px] border border-white/10 z-10" data-cursor-hover>
                     <img src="${ev.img}" class="h-img w-full h-[120%] top-[-10%] left-0 absolute object-cover" alt="${ev.title}">
                     <div class="absolute inset-0 bg-black/20 transition-colors duration-500 hover:bg-transparent"></div>
                 </div>
-                <div class="h-content-wrap w-full md:w-[45%] flex flex-col justify-center ${isEven ? 'items-end text-right' : 'items-start text-left'} z-20">
-                    <div class="text-orbitGreen font-syncopate text-[10px] md:text-xs tracking-[0.3em] mb-4">${String(i + 1).padStart(2, '0')} // RECORD</div>
-                    <h2 class="h-title font-syncopate text-4xl md:text-[5vw] font-bold text-white uppercase leading-[0.85] tracking-tighter" style="text-shadow: 0 10px 30px rgba(0,0,0,0.8);">${ev.title}</h2>
-                    <div class="h-date text-white/50 font-host text-sm md:text-lg mt-6 tracking-[0.2em] uppercase">${ev.date} / ${ev.status}</div>
-                    <p class="h-desc text-white/80 font-host text-sm md:text-xl mt-6 max-w-lg leading-relaxed">${shortDesc}</p>
-                    <button class="h-btn mt-8 px-6 py-4 md:px-8 border border-white/20 text-white font-syncopate text-[10px] md:text-xs tracking-[0.2em] relative overflow-hidden group hover:border-orbitGreen" onclick="window.openDetailViewStatic(${i})">
+                <div class="h-content-wrap w-full md:w-[45%] flex flex-col justify-center items-center text-center ${isEven ? 'md:items-end md:text-right' : 'md:items-start md:text-left'} z-20">
+                    <div class="text-orbitGreen font-syncopate text-[10px] md:text-xs tracking-[0.3em] mb-2 sm:mb-4">${String(i + 1).padStart(2, '0')} // RECORD</div>
+                    <h2 class="h-title font-syncopate text-2xl sm:text-4xl md:text-[5vw] font-bold text-white uppercase leading-[0.85] tracking-tighter" style="text-shadow: 0 10px 30px rgba(0,0,0,0.8);">${ev.title}</h2>
+                    <div class="h-date text-white/50 font-host text-xs sm:text-sm md:text-lg mt-3 sm:mt-6 tracking-[0.2em] uppercase">${ev.date} / ${ev.status}</div>
+                    <p class="h-desc text-white/80 font-host text-xs sm:text-sm md:text-xl mt-3 sm:mt-6 max-w-lg leading-relaxed">${shortDesc}</p>
+                    <button class="h-btn mt-5 sm:mt-8 px-5 py-3 sm:px-6 sm:py-4 md:px-8 border border-white/20 text-white font-syncopate text-[10px] md:text-xs tracking-[0.2em] relative overflow-hidden group hover:border-orbitGreen active:border-orbitGreen" onclick="window.openDetailViewStatic(${i})">
                         <span class="relative z-10 group-hover:text-black transition-colors duration-300">ACTIVATE</span>
-                        <div class="absolute inset-0 bg-orbitGreen translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
+                        <div class="absolute inset-0 bg-orbitGreen translate-y-[100%] group-hover:translate-y-0 group-active:translate-y-0 transition-transform duration-300 ease-in-out"></div>
                     </button>
                 </div>
             `;
@@ -578,6 +578,10 @@ window.initEventsBrutalist = function () {
         if(window.eventsLenis) window.eventsLenis.stop();
         document.body.style.overflow = 'hidden';
         
+        // Push a history state so mobile back button closes modal
+        window._detailModalOpen = true;
+        history.pushState({ modal: 'detail' }, '');
+        
         detailImg.src = data.img;
         detailTitle.innerText = data.title;
         detailDate.innerText = data.date;
@@ -618,23 +622,55 @@ window.initEventsBrutalist = function () {
           .call(() => { if(typeof scrambleText === 'function') scrambleText(detailTitle); }, null, "-=0.6");
     }
 
+    // Shared close function for detail modal
+    function closeDetailView() {
+        if (!window._detailModalOpen) return;
+        window._detailModalOpen = false;
+        
+        const tl = gsap.timeline({
+            onComplete: () => {
+                gsap.set(detailView, { pointerEvents: 'none' });
+                document.body.style.overflow = '';
+                if(window.eventsLenis) window.eventsLenis.start();
+                // Trigger the 3D scene reset (legacy)
+                if(window.tvResetScene) window.tvResetScene();
+            }
+        });
+        
+        tl.to('.detail-content > *', { y: -20, opacity: 0, duration: 0.3, stagger: -0.05, ease: "power2.in" })
+          .to(detailImg, { scale: 1.1, filter: 'grayscale(100%)', duration: 0.4, ease: "power2.inOut" }, 0)
+          .to(detailView, { opacity: 0, duration: 0.4, ease: "power2.inOut" }, 0.2);
+    }
+
     if (btnCloseDetail) {
         btnCloseDetail.addEventListener('click', () => {
-            const tl = gsap.timeline({
-                onComplete: () => {
-                    gsap.set(detailView, { pointerEvents: 'none' });
-                    document.body.style.overflow = '';
-                    if(window.eventsLenis) window.eventsLenis.start();
-                    // Trigger the 3D scene reset (legacy)
-                    if(window.tvResetScene) window.tvResetScene();
-                }
-            });
-            
-            tl.to('.detail-content > *', { y: -20, opacity: 0, duration: 0.3, stagger: -0.05, ease: "power2.in" })
-              .to(detailImg, { scale: 1.1, filter: 'grayscale(100%)', duration: 0.4, ease: "power2.inOut" }, 0)
-              .to(detailView, { opacity: 0, duration: 0.4, ease: "power2.inOut" }, 0.2);
+            // Pop the history state we pushed when opening
+            if (window._detailModalOpen) {
+                window._detailModalOpen = false; // prevent double-close from popstate
+                history.back();
+            }
+            closeDetailView();
         });
     }
+
+    // Handle browser back button to close modals
+    window._eventsPopstateHandler = function(e) {
+        if (window._detailModalOpen) {
+            closeDetailView();
+            return;
+        }
+        if (window._calendarModalOpen) {
+            const calendarModal = document.getElementById('cyber-calendar-modal');
+            if (calendarModal) {
+                calendarModal.classList.remove('active');
+                if(window.eventsLenis) window.eventsLenis.start();
+                document.body.style.overflow = '';
+            }
+            window._calendarModalOpen = false;
+            return;
+        }
+    };
+    window.addEventListener('popstate', window._eventsPopstateHandler);
 
     // 9. Calendar Logic
     const btnOpenCalendar = document.getElementById('btn-open-calendar');
@@ -646,21 +682,34 @@ window.initEventsBrutalist = function () {
             calendarModal.classList.add('active');
             if(window.eventsLenis) window.eventsLenis.stop();
             document.body.style.overflow = 'hidden';
+            window._calendarModalOpen = true;
+            history.pushState({ modal: 'calendar' }, '');
             renderCalendar(currentDate);
         });
 
-        btnCloseCalendar.addEventListener('click', () => {
+        function closeCalendarModal() {
             calendarModal.classList.remove('active');
             if(window.eventsLenis) window.eventsLenis.start();
             document.body.style.overflow = '';
+            window._calendarModalOpen = false;
+        }
+
+        btnCloseCalendar.addEventListener('click', () => {
+            if (window._calendarModalOpen) {
+                window._calendarModalOpen = false;
+                history.back();
+            }
+            closeCalendarModal();
         });
 
         // Close on background click
         calendarModal.addEventListener('click', (e) => {
             if (e.target === calendarModal) {
-                calendarModal.classList.remove('active');
-                if(window.eventsLenis) window.eventsLenis.start();
-                document.body.style.overflow = '';
+                if (window._calendarModalOpen) {
+                    window._calendarModalOpen = false;
+                    history.back();
+                }
+                closeCalendarModal();
             }
         });
     }
@@ -741,6 +790,14 @@ window.initEventsBrutalist = function () {
 };
 
 window.cleanupEventsBrutalist = function () {
+    // Clean up popstate handler for modal back button
+    if (window._eventsPopstateHandler) {
+        window.removeEventListener('popstate', window._eventsPopstateHandler);
+        window._eventsPopstateHandler = null;
+    }
+    window._detailModalOpen = false;
+    window._calendarModalOpen = false;
+    
     if (window.eventsLenisTicker) { gsap.ticker.remove(window.eventsLenisTicker); window.eventsLenisTicker = null; }
     if (window.eventsLenis) { window.eventsLenis.destroy(); window.eventsLenis = null; }
     if (window.marqueeTl) { window.marqueeTl.kill(); window.marqueeTl = null; }
