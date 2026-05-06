@@ -717,6 +717,7 @@
                 flex-direction: column;
                 justify-content: center;
                 border-left: 1px solid rgba(255, 255, 255, 0.1);
+                overflow-y: auto;
             }
 
             .detail-close {
@@ -762,6 +763,7 @@
                 color: #aaa;
                 max-width: 600px;
                 margin-bottom: 3rem;
+                white-space: pre-line;
             }
 
             .btn-brutal {
@@ -1069,6 +1071,7 @@
                 color: #aaa;
                 max-width: 80%;
                 margin-bottom: 3rem;
+                white-space: pre-line;
             }
 
             @media (max-width: 1024px) {
@@ -1259,10 +1262,8 @@
             <div class="detail-content">
                 <div class="detail-date" id="detail-date-node"></div>
                 <h2 class="detail-title decode-text" id="detail-title-node"></h2>
-                <p class="detail-desc" id="detail-desc-node">Comprehensive overview of the scheduled protocols.
-                    Operations include deep dives into designated tech stacks, collaborative cipher solving, and
-                    systemic architecture rendering. Clearance granted.</p>
-                <button class="btn-brutal" data-cursor-hover>REGISTER NOW</button>
+                <p class="detail-desc" id="detail-desc-node"></p>
+                <button class="btn-brutal" id="detail-register-btn" data-cursor-hover>REGISTER NOW</button>
             </div>
         </div>
 

@@ -353,14 +353,12 @@ window.initFooterCrystal = function () {
 
 // --- BRUTALIST EVENTS JS ENGINE ---
 const brutalEventsData = [
-    { id: '01', title: "DevTalk 2026", date: "MAR 10, 2026", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg", status: "ONLINE", desc: "A deep dive into advanced frontend architecture and state management paradigms." },
-    { id: '02', title: "Induction 2026", date: "FEB 22, 2026", img: "image-assets/bd6172951c03813bdf043d30bb63c737.jpg", status: "ACCESS GRANTED", desc: "Initiation protocol for new recruits. System access levels will be distributed." },
-    { id: '03', title: "AI/ML SUMMIT", date: "JAN 15, 2026", img: "image-assets/aiml.jpg", status: "COMPUTING", desc: "Neural network optimization and predictive modeling workshops with industry leads." },
-    { id: '04', title: "Hackathon", date: "DEC 05, 2025", img: "image-assets/cubers.jpg", status: "LIVE", desc: "48-hour continuous coding sprint. Create solutions. Break systems. Build them better." },
-    { id: '05', title: "Fifa Tournament", date: "NOV 20, 2025", img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670", status: "OFFLINE", desc: "Tactical simulation engine testing via competitive electronic sports." },
-    { id: '06', title: "CP CONTEST", date: "OCT 12, 2025", img: "image-assets/cp.jpg", status: "ARCHIVED", desc: "Algorithmic optimization and competitive problem solving under extreme time constraints." },
-    { id: '07', title: "APP DEV WEEK", date: "SEP 08, 2025", img: "./image-assets/59e1b74783bbaf6b4ea5b0058a0c51dd.jpg", status: "ARCHIVED", desc: "Cross-platform mobile application development using cutting-edge frameworks." },
-    { id: '08', title: "UI/UX WORKSHOP", date: "AUG 14, 2025", img: "image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg", status: "ARCHIVED", desc: "Human-computer interaction design principles and brutalist aesthetic theory." }
+    { id: '01', title: "DevTalk 2026", date: "JAN 24-25, 2026", img: "events-assets/DevTalk2026.png", status: "UPCOMING", desc: "We are excited to announce our upcoming Dev Talk, jointly organised by CSE Society, VSSUT, Burla and Enigma, Web and Coding cell of VSSUT, Burla, where real-world development meets real experiences. From building at scale to navigating the tech ecosystem, this session brings perspectives shaped by practice, not theory.\n\nJoin us as our speakers share insights, journeys, and lessons that matter to anyone serious about technology and growth.\n\nDate: 24th - 25th January, 2026\nVenue: E-learning center, VSSUT Burla\n\nRegistrations starting soon!!", link: "https://devtalk.enigmavssut.in/", closed: false },
+    { id: '02', title: "Algowars", date: "JAN 17, 2026", img: "events-assets/Algowars.png", status: "CLOSED", desc: "Beneath a silent sky, two challengers face each other in stillness. One problem lies between them, sharp and unforgiving. Each choice cuts deep, each line written shifts fate. When the answer is found, one rises forward while the other fades. Only resolve endures.\n\nEvent Details\nDate: 17th January 2026\nTime: 3:00 - 5:00 p.m.\nVenue: E-learning centre\n\nStep into the challenge and prove your skill where discipline and clarity define victory.", link: null, closed: true },
+    { id: '03', title: "Scribe Sigil", date: "JAN 18, 2026", img: "events-assets/Scribe sigil.png", status: "CLOSED", desc: "Tokyo never sleeps, and neither do its secrets!\nEvery shadow hides a cipher.\nEvery sound hums with a clue.\nEvery frame, page, and pixel dares you to look closer.\n\nThis isn\u2019t a race; it\u2019s a game.\n\nDecode the unseen, hear what silence hides, and read what the ink lingers to say, because Tokyo is testing you.\n\nEvent details\nDate - 18th January, 2026\nTime - 10:00 a.m. - 1:00 p.m.\nVenue - E-learning center\n\nWelcome to the hunt!", link: null, closed: true },
+    { id: '04', title: "Codebid", date: "JAN 16, 2026", img: "events-assets/Codebid.png", status: "CLOSED", desc: "Under the flickering neon haze of Tokyo\u2019s midnight skyline, there is an arena where logic shines brighter than Kinka and Kobana and victories are forged over bids and bytes.\n\nStep into the glow to build your dominion or vanish in Tokyo\u2019s endless dark.\n\nEvent details\nDate - 16th January, 2026\nTime - 2:00 - 5:00 p.m.\nVenue - E-learning centre\n\nThe arena calls, will your logic cut through?", link: null, closed: true },
+    { id: '05', title: "Hack The Bot", date: "JAN 17, 2026", img: "events-assets/Hack the Bot.png", status: "CLOSED", desc: "Neon rain drips through a sleepless city. Beneath the concrete and cables, something ancient and artificial is awake, holding a truth that could rewrite everything. This is not a game of speed, but of choice. Every word you type shapes the path you walk. By the time the sun rises, the city will no longer be the same.\n\nEvent details\nDate \u2014 17th January 2026\nTime \u2014 10 am \u2013 12 pm\nVenue \u2014 E-learning Centre\n\nFollow what calls you beyond control. Discover what waits in the dark.", link: null, closed: true },
+    { id: '06', title: "Intra-Club Hackathon", date: "JAN 2026", img: "events-assets/intrahack.jpg", status: "CLOSED", desc: "A 5-6 hour coding marathon where innovators from our club collaborated to build impactful projects. It fosters teamwork, creativity, and cross-domain learning.", link: null, closed: true }
 ];
 
 window.initEventsBrutalist = function () {
@@ -397,6 +395,7 @@ window.initEventsBrutalist = function () {
         
         topEvents.forEach((ev, i) => {
             const isEven = i % 2 !== 0; // alternate layout
+            const shortDesc = ev.desc.split('\n\n')[0]; // first paragraph only for cards
             const block = document.createElement('div');
             block.className = `highlight-block w-full py-16 md:min-h-[90vh] flex flex-col ${isEven ? 'md:flex-row-reverse' : 'md:flex-row'} items-center justify-center px-8 md:px-20 relative overflow-hidden gap-10 md:gap-16 z-10`;
             block.innerHTML = `
@@ -408,7 +407,7 @@ window.initEventsBrutalist = function () {
                     <div class="text-orbitGreen font-syncopate text-[10px] md:text-xs tracking-[0.3em] mb-4">${String(i + 1).padStart(2, '0')} // RECORD</div>
                     <h2 class="h-title font-syncopate text-4xl md:text-[5vw] font-bold text-white uppercase leading-[0.85] tracking-tighter" style="text-shadow: 0 10px 30px rgba(0,0,0,0.8);">${ev.title}</h2>
                     <div class="h-date text-white/50 font-host text-sm md:text-lg mt-6 tracking-[0.2em] uppercase">${ev.date} / ${ev.status}</div>
-                    <p class="h-desc text-white/80 font-host text-sm md:text-xl mt-6 max-w-lg leading-relaxed">${ev.desc}</p>
+                    <p class="h-desc text-white/80 font-host text-sm md:text-xl mt-6 max-w-lg leading-relaxed">${shortDesc}</p>
                     <button class="h-btn mt-8 px-6 py-4 md:px-8 border border-white/20 text-white font-syncopate text-[10px] md:text-xs tracking-[0.2em] relative overflow-hidden group hover:border-orbitGreen" onclick="window.openDetailViewStatic(${i})">
                         <span class="relative z-10 group-hover:text-black transition-colors duration-300">ACTIVATE</span>
                         <div class="absolute inset-0 bg-orbitGreen translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
@@ -585,6 +584,29 @@ window.initEventsBrutalist = function () {
         detailDesc.innerText = data.desc;
         detailTitle.classList.remove('scrambled');
 
+        // Update register button based on event status
+        const registerBtn = document.getElementById('detail-register-btn');
+        if (registerBtn) {
+            const newBtn = registerBtn.cloneNode(true);
+            registerBtn.parentNode.replaceChild(newBtn, registerBtn);
+            if (data.closed) {
+                newBtn.innerText = 'REGISTRATION CLOSED';
+                newBtn.style.borderColor = 'rgba(255,255,255,0.15)';
+                newBtn.style.color = 'rgba(255,255,255,0.4)';
+                newBtn.style.cursor = 'not-allowed';
+                newBtn.onclick = (e) => {
+                    e.preventDefault();
+                    gsap.to(newBtn, { x: -5, duration: 0.05, yoyo: true, repeat: 5, ease: 'power2.inOut', onComplete: () => gsap.set(newBtn, { x: 0 }) });
+                };
+            } else if (data.link) {
+                newBtn.innerText = 'REGISTER NOW';
+                newBtn.style.borderColor = '';
+                newBtn.style.color = '';
+                newBtn.style.cursor = 'pointer';
+                newBtn.onclick = () => window.open(data.link, '_blank');
+            }
+        }
+
         gsap.set(detailView, { opacity: 0, pointerEvents: 'auto' });
         gsap.set(detailImg, { scale: 1.2, filter: 'grayscale(100%)' });
         gsap.set('.detail-content > *', { y: 30, opacity: 0 });
@@ -593,7 +615,7 @@ window.initEventsBrutalist = function () {
         tl.to(detailView, { opacity: 1, duration: 0.4, ease: "power2.inOut" })
           .to(detailImg, { scale: 1, filter: 'grayscale(0%)', duration: 1, ease: "expo.out" }, "-=0.2")
           .to('.detail-content > *', { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "expo.out" }, "-=0.8")
-          .call(() => scrambleText(detailTitle), null, "-=0.6");
+          .call(() => { if(typeof scrambleText === 'function') scrambleText(detailTitle); }, null, "-=0.6");
     }
 
     if (btnCloseDetail) {
@@ -651,7 +673,7 @@ window.initEventsBrutalist = function () {
 
     // Dates for events to highlight
     const eventDates = brutalEventsData.map(ev => new Date(ev.date));
-    let currentDate = new Date(2026, 2, 1); // March 2026
+    let currentDate = new Date(2026, 0, 1); // January 2026
 
     function renderCalendar(date) {
         if (!calGrid || !calMonthYear) return;
