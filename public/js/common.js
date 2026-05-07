@@ -986,6 +986,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loading-screen');
     if (loader) { gsap.to(loader, { opacity: 0, duration: 0.5, delay: 0.2, onComplete: () => loader.style.display = 'none' }); }
     window.initBarba();
+
+    // --- SECRET EASTER EGG: type "enigma" anywhere to invert colors ---
+    const enigmaStyle = document.createElement('style');
+    enigmaStyle.textContent = `
+        html.enigma-inverted { filter: invert(1) hue-rotate(180deg); transition: filter 0.5s ease; }
+        html.enigma-inverted img, html.enigma-inverted video, html.enigma-inverted canvas { filter: invert(1) hue-rotate(180deg); }
+    `;
+    document.head.appendChild(enigmaStyle);
+
+    let keyBuffer = '';
+    const SECRET_WORD = 'enigma';
+    document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        keyBuffer += e.key.toLowerCase();
+        if (keyBuffer.length > SECRET_WORD.length) {
+            keyBuffer = keyBuffer.slice(-SECRET_WORD.length);
+        }
+        if (keyBuffer === SECRET_WORD) {
+            keyBuffer = '';
+            document.documentElement.classList.toggle('enigma-inverted');
+        }
+    });
 });
 
 // --- EXPANDING 3D FOOTER LOGIC ---
