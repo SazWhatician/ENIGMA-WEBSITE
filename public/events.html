@@ -822,6 +822,8 @@
                     flex-direction: column;
                     overflow-y: auto;
                     -webkit-overflow-scrolling: touch;
+                    overscroll-behavior: contain;
+                    touch-action: pan-y;
                 }
 
                 .detail-img-container {
@@ -834,12 +836,11 @@
                 .detail-content {
                     width: 100%;
                     height: auto;
-                    min-height: 65vh;
                     padding: 1.5rem 1.25rem 2rem;
                     border-left: none;
                     border-top: 1px solid rgba(255, 255, 255, 0.1);
-                    overflow-y: auto;
-                    -webkit-overflow-scrolling: touch;
+                    overflow-y: visible;
+                    flex-shrink: 0;
                 }
 
                 .detail-close {

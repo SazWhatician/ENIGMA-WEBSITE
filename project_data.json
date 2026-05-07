@@ -1,0 +1,25 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "title": "VeerPreps",
+      "desc": "All your notes and PYQs, stacked in one place so you can stop hunting and start surviving sems.",
+      "img": "./project-assets/veerpreps.png",
+      "link": "https://www.veerpreps.com/"
+    },
+    {
+      "id": 2,
+      "title": "DevTalk 2026",
+      "desc": "Official DevTalk 2026 Registration website",
+      "img": "./project-assets/devtalkpro.jpg",
+      "link": "https://devtalk.enigmavssut.in/"
+    },
+    {
+      "id": 3,
+      "title": "Samavesh X Vassaunt",
+      "desc": "SXV is the digital fest HQ where every event, schedule drop, and campus vibe lives in one chaotic-good timeline.",
+      "img": "./project-assets/samaveshxvassaunt.png",
+      "link": "https://www.festvssut.in/"
+    }
+  ]
+}

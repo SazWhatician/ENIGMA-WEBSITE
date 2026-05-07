@@ -643,13 +643,15 @@ window.initEventsBrutalist = function () {
     }
 
     if (btnCloseDetail) {
-        btnCloseDetail.addEventListener('click', () => {
-            // Pop the history state we pushed when opening
+        btnCloseDetail.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             if (window._detailModalOpen) {
-                window._detailModalOpen = false; // prevent double-close from popstate
+                // closeDetailView will set the flag to false
+                closeDetailView();
+                // Pop the history state we pushed when opening
                 history.back();
             }
-            closeDetailView();
         });
     }
 
@@ -657,6 +659,7 @@ window.initEventsBrutalist = function () {
     window._eventsPopstateHandler = function(e) {
         if (window._detailModalOpen) {
             closeDetailView();
+            // Prevent default navigation — the popstate already consumed the history entry
             return;
         }
         if (window._calendarModalOpen) {
