@@ -365,6 +365,10 @@ window.initEventsBrutalist = function () {
     window.cleanupEventsBrutalist();
     document.body.style.overflow = 'auto'; // allow scrolling now
 
+    if (window.globalLenis) {
+        window.globalLenis.destroy();
+        window.globalLenis = null;
+    }
     // 1. Initialize Lenis specific to events if needed
     if (typeof Lenis !== 'undefined') {
         window.eventsLenis = new Lenis({
@@ -516,7 +520,7 @@ window.initEventsBrutalist = function () {
         const laserWrap = document.getElementById('laser-wrapper');
         if (laserWrap) {
             gsap.to(laserWrap, {
-                clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+                scaleY: 1,
                 ease: 'none',
                 scrollTrigger: {
                     trigger: '#highlight-events',
