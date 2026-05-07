@@ -55,13 +55,6 @@ const app = express();
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- CACHE SETUP ---
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-const cache = {
-    projects: { data: null, timestamp: 0 },
-    team: { data: null, timestamp: 0 }
-};
-
 // --- API ENDPOINTS ---
 
 // Projects Endpoint
@@ -71,20 +64,9 @@ app.get('/api/projects', async (req, res) => {
     }
 
     try {
-        const now = Date.now();
-        if (cache.projects.data && (now - cache.projects.timestamp < CACHE_TTL)) {
-            console.log("⚡ Serving project data from CACHE...");
-            return res.json(cache.projects.data);
-        }
-
         console.log("📦 Fetching project data from Firestore...");
         const snapshot = await db.collection('projects').orderBy('id', 'asc').get();
         const projects = snapshot.docs.map(doc => doc.data());
-        
-        // Update cache
-        cache.projects.data = projects;
-        cache.projects.timestamp = now;
-        
         res.json(projects);
     } catch (err) {
         console.error("Firestore Error:", err);
@@ -99,20 +81,9 @@ app.get('/api/team', async (req, res) => {
     }
 
     try {
-        const now = Date.now();
-        if (cache.team.data && (now - cache.team.timestamp < CACHE_TTL)) {
-            console.log("⚡ Serving team data from CACHE...");
-            return res.json(cache.team.data);
-        }
-
         console.log("👥 Fetching team data from Firestore...");
         const snapshot = await db.collection('team_members').orderBy('id', 'asc').get();
         const team = snapshot.docs.map(doc => doc.data());
-        
-        // Update cache
-        cache.team.data = team;
-        cache.team.timestamp = now;
-
         res.json(team);
     } catch (err) {
         console.error("Firestore Error:", err);
