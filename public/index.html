@@ -744,13 +744,13 @@
         // A. SMOOTH SCROLLING (Lenis & GSAP)
         // ==========================================
         gsap.registerPlugin(ScrollTrigger);
-        window.globalLenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-        window.globalLenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((time) => window.globalLenis.raf(time * 1000));
+        const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => lenis.raf(time * 1000));
         gsap.ticker.lagSmoothing(0);
 
         // --- FAST SEAMLESS TRANSFORM LOADER ANIMATION ---
-        window.globalLenis.stop();
+        lenis.stop();
         gsap.set(["nav", ".hero-footer"], { opacity: 0, y: 15 });
         gsap.set(".hero-logo", {
             opacity: 0,
@@ -762,7 +762,7 @@
             onComplete: () => {
                 document.getElementById('loader-wrapper').remove();
                 gsap.set(".hero-logo", { clearProps: "zIndex" });
-                window.globalLenis.start();
+                lenis.start();
             }
         });
 
