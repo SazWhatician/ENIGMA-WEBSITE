@@ -41,6 +41,7 @@ window.renderTeam = function (filterValue, delay = 0) {
                 <div class="card-front">
                     ${avatarHtml}
                     <h2>${member.name}</h2>
+                    ${member.tag ? `<div class="member-tag ${member.tag === 'coordinator' ? 'tag-golden' : 'tag-silver'}">${member.tag === 'coordinator' ? 'Coordinator' : 'Asst. Coordinator'}</div>` : ''}
                     ${member.role ? `<div class="card-role"><div class="role-dot"></div>${member.role}</div>` : ''}
                     <p style="margin-top: 0.6rem;">${member.year === 'alumni' ? 'Alumni' : 'Class of ' + member.year}</p>
                 </div>
