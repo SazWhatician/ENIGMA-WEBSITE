@@ -4,3 +4,4 @@ firebase-key.json
 .DS_Store
 server.log
 .vercel
+scratch/
