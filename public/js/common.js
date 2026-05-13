@@ -990,11 +990,19 @@ window.initBarba = function () {
     });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+function runBarbaInit() {
     const loader = document.getElementById('loading-screen');
-    if (loader) { gsap.to(loader, { opacity: 0, duration: 0.5, delay: 0.2, onComplete: () => loader.style.display = 'none' }); }
+    if (loader) { 
+        gsap.to(loader, { opacity: 0, duration: 0.5, delay: 0.2, onComplete: () => loader.style.display = 'none' }); 
+    }
     window.initBarba();
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runBarbaInit);
+} else {
+    runBarbaInit();
+}
 
 // --- EXPANDING 3D FOOTER LOGIC ---
 window.footerExpandingReqId = null;
