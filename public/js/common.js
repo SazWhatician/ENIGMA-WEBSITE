@@ -11,10 +11,14 @@ window.footerReqId = null;
 // --- TEAM LOGIC ---
 window.fetchTeam = async function () {
     try {
-        const response = await fetch('/api/team.js?t=' + new Date().getTime());
-        if (!response.ok) throw new Error("Team API failed.");
+        const response = await fetch('/api/team?t=' + new Date().getTime());
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `Team API failed with status ${response.status}`);
+        }
         window.teamData = await response.json();
     } catch (e) {
+        console.error("Fetch Team Error:", e.message);
         console.error("Using fallback team data");
         window.teamData = [{ name: "Saswat Mohanty", role: "Apex", year: "2028", img: "" }];
     }
@@ -109,8 +113,11 @@ window.animateHero = function (delay = 0) {
 // --- PROJECTS LOGIC ---
 window.fetchProjects = async function () {
     try {
-        const response = await fetch('/api/projects.js?t=' + new Date().getTime());
-        if (!response.ok) throw new Error("API not found.");
+        const response = await fetch('/api/projects?t=' + new Date().getTime());
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `Projects API failed with status ${response.status}`);
+        }
         window.projectsData = await response.json();
     } catch (e) {
         window.projectsData = [{ title: "eNIGGmA", desc: "No data found", img: "", link: "#" }];

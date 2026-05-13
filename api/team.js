@@ -19,10 +19,21 @@ module.exports = async (req, res) => {
     try {
         console.log("👥 Fetching team data from Firestore...");
         const snapshot = await db.collection('team_members').orderBy('id', 'asc').get();
+        
+        if (snapshot.empty) {
+            console.warn("⚠️ No team members found in Firestore.");
+            return res.json([]);
+        }
+
         const team = snapshot.docs.map(doc => doc.data());
+        console.log(`✅ Successfully fetched ${team.length} team members.`);
         res.json(team);
     } catch (err) {
-        console.error("Firestore Error:", err);
-        res.status(500).json({ error: "Failed to fetch from database." });
+        console.error("❌ Firestore Team Fetch Error:", err);
+        res.status(500).json({ 
+            error: "Failed to fetch from database.", 
+            details: err.message,
+            code: err.code 
+        });
     }
 };

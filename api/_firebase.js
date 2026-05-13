@@ -6,7 +6,7 @@ const admin = require('firebase-admin');
 let initialized = false;
 
 function initFirebase() {
-    if (initialized || admin.apps.length) {
+    if (admin.apps.length > 0) {
         initialized = true;
         return;
     }
@@ -14,44 +14,67 @@ function initFirebase() {
     let serviceAccount;
 
     try {
-        const keyPath = path.resolve(__dirname, '..', 'firebase-key.json');
+        const keyPath = path.resolve(process.cwd(), 'firebase-key.json');
         if (fs.existsSync(keyPath)) {
             serviceAccount = JSON.parse(fs.readFileSync(keyPath, 'utf8'));
             console.log("🔐 Using local firebase-key.json for authentication.");
         } else {
-            throw new Error("Local file not found, checking environment...");
+            console.log("ℹ️ Local firebase-key.json not found, checking environment variables.");
         }
     } catch (err) {
+        console.warn("⚠️ Error checking for local key file:", err.message);
+    }
+
+    if (!serviceAccount) {
         // Production (Vercel): Handle both plain text JSON and Base64 format
-        const envVal = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64 || process.env.FIREBASE_SERVICE_ACCOUNT;
+        let envVal = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64 || process.env.FIREBASE_SERVICE_ACCOUNT;
+        
         if (envVal) {
             try {
-                if (envVal.trim().startsWith('{')) {
+                envVal = envVal.trim();
+                // Check if it's double-quoted (sometimes happens with Vercel env vars)
+                if (envVal.startsWith('"') && envVal.endsWith('"')) {
+                    envVal = envVal.substring(1, envVal.length - 1);
+                }
+
+                if (envVal.startsWith('{')) {
                     serviceAccount = JSON.parse(envVal);
                 } else {
-                    serviceAccount = JSON.parse(Buffer.from(envVal, 'base64').toString('utf8'));
+                    // Try Base64
+                    const decoded = Buffer.from(envVal, 'base64').toString('utf8');
+                    if (decoded.startsWith('{')) {
+                        serviceAccount = JSON.parse(decoded);
+                    } else {
+                        throw new Error("Decoded string is not a valid JSON object.");
+                    }
                 }
+
                 // Fix private key: replace literal "\n" strings with real newlines
                 if (serviceAccount && serviceAccount.private_key) {
                     serviceAccount.private_key = serviceAccount.private_key
-                        .replace(/\\r\\n/g, '\n')
-                        .replace(/\\r/g, '')
-                        .replace(/\\n/g, '\n');
+                        .replace(/\\n/g, '\n')
+                        .replace(/\\r/g, '');
                 }
-                console.log("☁️ Using environment variables for authentication.");
+                console.log("☁️ Successfully initialized Firebase using environment variables.");
             } catch (parseError) {
-                console.error("❌ CRITICAL: Failed to parse FIREBASE_SERVICE_ACCOUNT variable.");
+                console.error("❌ CRITICAL: Failed to parse FIREBASE_SERVICE_ACCOUNT variable:", parseError.message);
             }
         } else {
-            console.error("❌ CRITICAL: No FIREBASE_SERVICE_ACCOUNT found in ENV!");
+            console.error("❌ CRITICAL: No FIREBASE_SERVICE_ACCOUNT found in environment variables!");
         }
     }
 
     if (serviceAccount) {
-        admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount)
-        });
-        initialized = true;
+        try {
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount)
+            });
+            initialized = true;
+        } catch (initErr) {
+            console.error("❌ CRITICAL: firebase-admin initializeApp failed:", initErr.message);
+        }
+    } else {
+        console.error("❌ CRITICAL: Service account object is missing, cannot initialize Firebase.");
     }
 }
 

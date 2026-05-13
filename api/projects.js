@@ -19,10 +19,21 @@ module.exports = async (req, res) => {
     try {
         console.log("📦 Fetching project data from Firestore...");
         const snapshot = await db.collection('projects').orderBy('id', 'asc').get();
+        
+        if (snapshot.empty) {
+            console.warn("⚠️ No projects found in Firestore.");
+            return res.json([]);
+        }
+
         const projects = snapshot.docs.map(doc => doc.data());
+        console.log(`✅ Successfully fetched ${projects.length} projects.`);
         res.json(projects);
     } catch (err) {
-        console.error("Firestore Error:", err);
-        res.status(500).json({ error: "Failed to fetch from database." });
+        console.error("❌ Firestore Projects Fetch Error:", err);
+        res.status(500).json({ 
+            error: "Failed to fetch from database.", 
+            details: err.message,
+            code: err.code 
+        });
     }
 };
