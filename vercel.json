@@ -1,21 +1,10 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
+  "cleanUrls": true,
+  "rewrites": [
     { "src": "/team", "dest": "/public/team.html" },
     { "src": "/events", "dest": "/public/events.html" },
     { "src": "/contact", "dest": "/public/contact.html" },
     { "src": "/project", "dest": "/public/project.html" },
-    { "src": "/(.*)", "dest": "/public/$1" }
+    { "src": "/(?!api/|public/)(.*)", "dest": "/public/$1" }
   ]
 }

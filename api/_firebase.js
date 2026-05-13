@@ -37,23 +37,44 @@ function initFirebase() {
                     envVal = envVal.substring(1, envVal.length - 1);
                 }
 
+                let rawJsonStr = null;
                 if (envVal.startsWith('{')) {
-                    serviceAccount = JSON.parse(envVal);
+                    rawJsonStr = envVal;
                 } else {
                     // Try Base64
                     const decoded = Buffer.from(envVal, 'base64').toString('utf8');
-                    if (decoded.startsWith('{')) {
-                        serviceAccount = JSON.parse(decoded);
+                    if (decoded.trim().startsWith('{')) {
+                        rawJsonStr = decoded.trim();
                     } else {
                         throw new Error("Decoded string is not a valid JSON object.");
                     }
                 }
 
-                // Fix private key: replace literal "\n" strings with real newlines
+                try {
+                    serviceAccount = JSON.parse(rawJsonStr);
+                } catch (parseEx) {
+                    console.warn("⚠️ Standard JSON.parse failed, attempting robust fallback regex extraction for multiline unescaped environment variables...");
+                    const projectIdMatch = rawJsonStr.match(/"project_id"\s*:\s*"([^"]+)"/);
+                    const clientEmailMatch = rawJsonStr.match(/"client_email"\s*:\s*"([^"]+)"/);
+                    const privateKeyMatch = rawJsonStr.match(/"private_key"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/s);
+
+                    if (projectIdMatch && clientEmailMatch && privateKeyMatch) {
+                        serviceAccount = {
+                            project_id: projectIdMatch[1],
+                            client_email: clientEmailMatch[1],
+                            private_key: privateKeyMatch[1]
+                        };
+                    } else {
+                        throw parseEx; // rethrow if regex extraction also fails
+                    }
+                }
+
+                // Fix private key: replace literal "\n" strings and escaped sequences with real newlines
                 if (serviceAccount && serviceAccount.private_key) {
                     serviceAccount.private_key = serviceAccount.private_key
-                        .replace(/\\n/g, '\n')
-                        .replace(/\\r/g, '');
+                        .replace(/\\r\\n/g, '\n')
+                        .replace(/\\r/g, '')
+                        .replace(/\\n/g, '\n');
                 }
                 console.log("☁️ Successfully initialized Firebase using environment variables.");
             } catch (parseError) {
