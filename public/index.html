@@ -4,12 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ENIGMA - The Official Coding Club of VSSUT Burla. Explore our events, projects, team, and connect with us.">
-    <meta name="keywords" content="ENIGMA, Coding Club, VSSUT, Burla, Programming, Tech, Events, Projects">
-    <meta property="og:title" content="ENIGMA | Coding Club VSSUT">
-    <meta property="og:description" content="The Official Coding Club of VSSUT Burla. Explore our events, projects, and team.">
-    <meta property="og:image" content="/logo-bg.png">
-    <link rel="icon" href="/logo-bg.png" type="image/png">
     <title>ENIGMA</title>
 
     <link
@@ -120,23 +114,18 @@
             top: 0;
             left: 0;
             width: 100vw;
-            padding: 1.5rem 2rem;
+            padding: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 1000;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 100;
+            mix-blend-mode: difference;
         }
 
-        .logo a {
+        nav,
+        .logo p {
             font-weight: 700;
-            font-size: 1.2rem;
-            text-decoration: none;
-            color: #fff;
-            letter-spacing: 2px;
+            font-size: 0.9rem;
         }
 
         .nav-items {
@@ -152,8 +141,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
-            text-decoration: none;
-            color: #fff;
         }
 
         .nav-items a:hover,
@@ -163,85 +150,17 @@
             transform: scale(1.05);
         }
 
-        .hamburger {
-            display: none;
-            cursor: pointer;
-            flex-direction: column;
-            gap: 6px;
-            z-index: 2000;
-        }
-
-        .hamburger span {
-            width: 30px;
-            height: 2px;
-            background-color: #fff;
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.3s ease;
-            border-radius: 2px;
-        }
-
-        .mobile-menu {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 3rem;
-            z-index: 1500;
-            transition: right 0.6s cubic-bezier(0.77, 0, 0.175, 1);
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .mobile-menu.active {
-            right: 0;
-        }
-
-        .mobile-menu a {
-            font-size: 2.5rem;
-            font-family: 'Syncopate', sans-serif;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.6);
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0;
-            transform: translateY(30px) scale(0.95);
-            transition: color 0.4s ease, text-shadow 0.4s ease;
-        }
-
-        .mobile-menu a:hover {
-            color: #2BA648;
-            text-shadow: 0 0 20px rgba(43, 166, 72, 0.6), 0 0 40px rgba(43, 166, 72, 0.3);
-            transform: scale(1.05);
-        }
-
-        /* Hamburger Animation */
-        .hamburger.active span:nth-child(1) {
-            transform: translateY(8px) rotate(45deg);
-        }
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-            transform: scaleX(0);
-        }
-        .hamburger.active span:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg);
-        }
-
         @media(max-width: 768px) {
             nav {
-                padding: 1.5rem;
+                padding: 1.2rem;
+                flex-direction: column;
+                gap: 0.8rem;
             }
             .nav-items {
-                display: none;
-            }
-            .hamburger {
-                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+                font-size: 0.8rem;
             }
         }
 
@@ -654,7 +573,7 @@
 
     <nav>
         <div class="logo">
-            <a href="index.html">ENIGMA.</a>
+            <p>ENIGMA.</p>
         </div>
         <div class="nav-items">
             <p><a href="events.html">Events</a></p>
@@ -662,19 +581,7 @@
             <p><a href="team.html">Team</a></p>
             <p><a href="contact.html">Contact</a></p>
         </div>
-        <div class="hamburger" id="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
     </nav>
-
-    <div class="mobile-menu" id="mobile-menu">
-        <a href="events.html">Events</a>
-        <a href="project.html">Projects</a>
-        <a href="team.html">Team</a>
-        <a href="contact.html">Contact</a>
-    </div>
 
     <section class="hero-section">
         <div class="gradient-canvas"></div>
@@ -1188,27 +1095,6 @@
         Developed by: Saswat Kumar Mohanty <span style="color: #2BA648; text-shadow: 0 0 8px rgba(43, 166, 72, 0.8), 0 0 12px rgba(43, 166, 72, 0.5);">@enigma</span>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburger = document.getElementById('hamburger');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const menuLinks = document.querySelectorAll('.mobile-menu a');
-
-            if(hamburger && mobileMenu) {
-                hamburger.addEventListener('click', () => {
-                    hamburger.classList.toggle('active');
-                    mobileMenu.classList.toggle('active');
-                    
-                    if (mobileMenu.classList.contains('active')) {
-                        gsap.fromTo(menuLinks, 
-                            { opacity: 0, y: 30, scale: 0.95 }, 
-                            { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.1, ease: "back.out(1.7)", delay: 0.3 }
-                        );
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 
 </html>
