@@ -11,7 +11,8 @@
     <meta property="og:title" content="ENIGMA | Coding Club VSSUT">
     <meta property="og:description" content="The Official Coding Club of VSSUT Burla. Explore our events, projects, and team.">
     <meta property="og:image" content="https://www.enigmavssut.in/logo-bg.png">
-    <link rel="icon" href="/logo-bg.png" type="image/png">\n    <title>ENIGMA | Events</title>
+    <link rel="icon" href="/logo-bg.png" type="image/png">
+    <title>ENIGMA | Events</title>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Syncopate:wght@400;700&display=swap"
@@ -39,6 +40,39 @@
             }
         }
     </script>
+
+<style>
+    /* MASTER OVERRIDES FOR HAMBURGER & NAV */
+    .hamburger { 
+        display: none !important; 
+        z-index: 3000 !important;
+    }
+    nav {
+        z-index: 2000 !important;
+    }
+    .mobile-menu {
+        z-index: 1500 !important;
+    }
+    @media (max-width: 768px) {
+        .hamburger { 
+            display: flex !important; 
+        }
+        .nav-items { 
+            display: none !important; 
+        }
+        nav {
+            background: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border-bottom: none !important;
+            padding: 1.5rem !important;
+            flex-direction: row !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+    }
+</style>
+
 </head>
 
 <body data-barba="wrapper"
@@ -312,7 +346,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                z-index: 100;
+                z-index: 2000;
                 mix-blend-mode: difference;
             }
 
@@ -1340,17 +1374,17 @@
                 padding: 1.5rem !important;
             }
             .nav-items { display: none !important; }
-            .hamburger { display: flex !important; }
+            
         }
     
-            .hamburger { display: flex !important; }
+            
         }
 
     </style>
 
         <!-- Global Navbar -->
         
-    <nav style="z-index: 1000; position: fixed; width: 100%; top: 0; left: 0; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+    <nav style="z-index: 2000; position: fixed; width: 100%; top: 0; left: 0; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
         <div class="logo">
             <a href="index.html" style="font-weight: 700; font-size: 1.2rem; text-decoration: none; color: #fff; letter-spacing: 2px; font-family: 'Host Grotesk', sans-serif;">ENIGMA.</a>
         </div>
@@ -1540,7 +1574,7 @@
         </div>
 
     <!-- FOOTER TEXT -->
-    <div style="width: 100%; text-align: center; padding: 20px 0; font-family: 'Syncopate', sans-serif; font-size: 11px; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; letter-spacing: 2px; position: relative; z-index: 1000; bottom: 0; background: transparent; pointer-events: none;">
+    <div style="width: 100%; text-align: center; padding: 20px 0; font-family: 'Syncopate', sans-serif; font-size: 11px; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; letter-spacing: 2px; position: relative; z-index: 2000; bottom: 0; background: transparent; pointer-events: none;">
         Developed by: Saswat Kumar Mohanty <span style="color: #2BA648; text-shadow: 0 0 8px rgba(43, 166, 72, 0.8), 0 0 12px rgba(43, 166, 72, 0.5);">@enigma</span>
     </div>
 
