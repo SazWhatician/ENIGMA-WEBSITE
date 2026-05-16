@@ -4,6 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="description" content="ENIGMA - The Official Coding Club of VSSUT Burla. Explore our events, projects, team, and connect with us.">
+    <meta name="keywords" content="ENIGMA, Coding Club, VSSUT, Burla, Programming, Tech, Events, Projects">
+    <meta property="og:title" content="ENIGMA | Coding Club VSSUT">
+    <meta property="og:description" content="The Official Coding Club of VSSUT Burla. Explore our events, projects, and team.">
+    <meta property="og:image" content="https://www.enigmavssut.in/logo-bg.png">
+    <link rel="icon" href="/logo-bg.png" type="image/png">
     <title>ENIGMA</title>
 
     <link
@@ -152,16 +159,17 @@
 
         @media(max-width: 768px) {
             nav {
-                padding: 1.2rem;
-                flex-direction: column;
-                gap: 0.8rem;
+                background: transparent !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                border-bottom: none !important;
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                padding: 1.5rem !important;
             }
-            .nav-items {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 1rem;
-                font-size: 0.8rem;
-            }
+            .nav-items { display: none !important; }
+            .hamburger { display: flex !important; }
         }
 
         /* Page Transitions */
@@ -560,6 +568,106 @@
                 text-align: left;
             }
         }
+    
+        .hamburger {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 2000;
+        }
+        .hamburger-lines {
+            width: 24px;
+            height: 12px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .hamburger-lines span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: #fff;
+            border-radius: 2px;
+            transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.5s ease;
+            transform-origin: center;
+        }
+        .hamburger.active .hamburger-lines span:nth-child(1) {
+            transform: translateY(5px) rotate(45deg);
+        }
+        .hamburger.active .hamburger-lines span:nth-child(2) {
+            transform: scaleX(0);
+            opacity: 0;
+        }
+        .hamburger.active .hamburger-lines span:nth-child(3) {
+            transform: translateY(-5px) rotate(-45deg);
+        }
+        
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            z-index: 1500;
+            clip-path: circle(0% at 100% 0%);
+            transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .mobile-menu.active {
+            clip-path: circle(150% at 100% 0%);
+        }
+        .mobile-menu-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: #fff;
+            opacity: 0;
+            transform: rotate(-90deg);
+            transition: opacity 0.5s ease 0.4s, transform 0.8s cubic-bezier(0.77, 0, 0.175, 1) 0.2s;
+        }
+        .mobile-menu.active .mobile-menu-close {
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+        .mobile-menu-close svg {
+            width: 28px;
+            height: 28px;
+        }
+        .mobile-menu a {
+            font-size: 2.5rem;
+            font-family: 'Syncopate', sans-serif;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+        }
+        .mobile-menu a:hover {
+            color: #2BA648;
+            text-shadow: 0 0 20px rgba(43, 166, 72, 0.6), 0 0 40px rgba(43, 166, 72, 0.3);
+            transform: scale(1.05);
+        }
     </style>
 </head>
 
@@ -581,13 +689,30 @@
             <p><a href="team.html">Team</a></p>
             <p><a href="contact.html">Contact</a></p>
         </div>
+      <div class="hamburger" id="hamburger">
+            <div class="hamburger-lines">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
     </nav>
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-close" id="mobile-menu-close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+        </div>
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="project.html">Projects</a>
+        <a href="team.html">Team</a>
+        <a href="contact.html">Contact</a>
+    </div>
 
     <section class="hero-section">
         <div class="gradient-canvas"></div>
         <div class="hero-fade-bottom"></div>
         <div class="hero-logo">
-            <div><img src="/image-assets/white-no bg.png" alt="Logo" /></div>
+            <div><img src="/image-assets/white-no bg.png" alt="Logo" / loading="lazy" title="ENIGMA Image"></div>
         </div>
         <div class="hero-footer">
             <p>Coding Club</p>
@@ -601,7 +726,7 @@
 
         <div class="slide">
             <div class="slide-inner">
-                <img src="image-assets/bd6172951c03813bdf043d30bb63c737.jpg" alt="Web Dev">
+                <img src="image-assets/bd6172951c03813bdf043d30bb63c737.jpg" alt="Web Dev" loading="lazy" title="ENIGMA Image">
                 <div class="glass-panel">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4">
@@ -615,7 +740,7 @@
 
         <div class="slide">
             <div class="slide-inner">
-                <img src="image-assets/aiml.jpg" alt="AI/ML">
+                <img src="image-assets/aiml.jpg" alt="AI/ML" loading="lazy" title="ENIGMA Image">
                 <div class="glass-panel">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -639,7 +764,7 @@
 
         <div class="slide">
             <div class="slide-inner">
-                <img src="./image-assets/59e1b74783bbaf6b4ea5b0058a0c51dd.jpg" alt="App Dev">
+                <img src="./image-assets/59e1b74783bbaf6b4ea5b0058a0c51dd.jpg" alt="App Dev" loading="lazy" title="ENIGMA Image">
                 <div class="glass-panel">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -653,7 +778,7 @@
 
         <div class="slide">
             <div class="slide-inner">
-                <img src="image-assets/cubers.jpg" alt="Cybersecurity">
+                <img src="image-assets/cubers.jpg" alt="Cybersecurity" loading="lazy" title="ENIGMA Image">
                 <div class="glass-panel">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -668,7 +793,7 @@
 
         <div class="slide">
             <div class="slide-inner">
-                <img src="image-assets/cp.jpg" alt="Comp Programming">
+                <img src="image-assets/cp.jpg" alt="Comp Programming" loading="lazy" title="ENIGMA Image">
                 <div class="glass-panel">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 17l6-6-6-6M12 19h8"></path>
@@ -682,7 +807,7 @@
         <div class="slide">
             <div class="slide-inner">
                 <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2670&auto=format&fit=crop"
-                    alt="Game Dev">
+                    alt="Game Dev" loading="lazy" title="ENIGMA Image">
                 <div class="glass-panel">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect>
@@ -699,7 +824,7 @@
 
         <div class="slide">
             <div class="slide-inner">
-                <img src="image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" alt="UI/UX">
+                <img src="image-assets/1b7c273b460fa68f0e4e9476f1fdfa8b.jpg" alt="UI/UX" loading="lazy" title="ENIGMA Image">
                 <div class="glass-panel">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -1095,6 +1220,58 @@
         Developed by: Saswat Kumar Mohanty <span style="color: #2BA648; text-shadow: 0 0 8px rgba(43, 166, 72, 0.8), 0 0 12px rgba(43, 166, 72, 0.5);">@enigma</span>
     </div>
 
+  <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+            const menuLinks = document.querySelectorAll('.mobile-menu a');
+
+            let menuIsOpen = false;
+
+            function openMenu() {
+                menuIsOpen = true;
+                hamburger.classList.add('active');
+                mobileMenu.classList.add('active');
+                history.pushState({ menuOpen: true }, '');
+                
+                if (window.gsap) {
+                    gsap.fromTo(menuLinks, 
+                        { opacity: 0, y: 30, scale: 0.95 }, 
+                        { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.1, ease: "back.out(1.7)", delay: 0.3 }
+                    );
+                } else {
+                    menuLinks.forEach(l => { l.style.opacity = 1; l.style.transform = 'none'; });
+                }
+            }
+
+            function closeMenu() {
+                menuIsOpen = false;
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            }
+
+            if(hamburger && mobileMenu) {
+                hamburger.addEventListener('click', () => {
+                    if (menuIsOpen) {
+                        history.back();
+                    } else {
+                        openMenu();
+                    }
+                });
+            }
+
+            if(mobileMenuClose) {
+                mobileMenuClose.addEventListener('click', () => {
+                    if (menuIsOpen) history.back();
+                });
+            }
+
+            window.addEventListener('popstate', (e) => {
+                if (menuIsOpen) closeMenu();
+            });
+        });
+    </script>
 </body>
 
 </html>
