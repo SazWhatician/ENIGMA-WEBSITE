@@ -47,6 +47,10 @@
     }
     nav {
         z-index: 2000 !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border-bottom: none !important;
     }
     .mobile-menu {
         z-index: 1500 !important;
@@ -59,16 +63,13 @@
             display: none !important; 
         }
         nav {
-            background: transparent !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            border-bottom: none !important;
             padding: 1.5rem !important;
             flex-direction: row !important;
             justify-content: space-between !important;
             align-items: center !important;
         }
-    </style>
+    }
+</style>
 
 </head>
 
@@ -1313,21 +1314,24 @@
     <script src="./js/common.js"></script>
 
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburger = document.getElementById('hamburger');
+        <script>
+        // Use event delegation for Barba.js compatibility
+        document.addEventListener('click', (e) => {
+            const hamburgerBtn = e.target.closest('#hamburger');
+            const closeBtn = e.target.closest('#mobile-menu-close');
+            const menuLink = e.target.closest('.mobile-menu a');
+            
             const mobileMenu = document.getElementById('mobile-menu');
-            const mobileMenuClose = document.getElementById('mobile-menu-close');
-            const menuLinks = document.querySelectorAll('.mobile-menu a');
+            const realHamburger = document.getElementById('hamburger');
 
-            let menuIsOpen = false;
+            if (!mobileMenu || !realHamburger) return;
 
             function openMenu() {
-                menuIsOpen = true;
-                hamburger.classList.add('active');
+                realHamburger.classList.add('active');
                 mobileMenu.classList.add('active');
                 history.pushState({ menuOpen: true }, '');
                 
+                const menuLinks = document.querySelectorAll('.mobile-menu a');
                 if (window.gsap) {
                     gsap.fromTo(menuLinks, 
                         { opacity: 0, y: 30, scale: 0.95 }, 
@@ -1339,30 +1343,32 @@
             }
 
             function closeMenu() {
-                menuIsOpen = false;
-                hamburger.classList.remove('active');
+                realHamburger.classList.remove('active');
                 mobileMenu.classList.remove('active');
             }
 
-            if(hamburger && mobileMenu) {
-                hamburger.addEventListener('click', () => {
-                    if (menuIsOpen) {
-                        history.back();
-                    } else {
-                        openMenu();
-                    }
-                });
+            if (hamburgerBtn) {
+                if (mobileMenu.classList.contains('active')) {
+                    history.back();
+                } else {
+                    openMenu();
+                }
+            } else if (closeBtn) {
+                if (mobileMenu.classList.contains('active')) history.back();
+            } else if (menuLink) {
+                // Remove active class immediately without history.back() 
+                // because clicking a link will trigger Barba navigation
+                closeMenu();
             }
+        });
 
-            if(mobileMenuClose) {
-                mobileMenuClose.addEventListener('click', () => {
-                    if (menuIsOpen) history.back();
-                });
+        window.addEventListener('popstate', (e) => {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const realHamburger = document.getElementById('hamburger');
+            if (mobileMenu && mobileMenu.classList.contains('active')) {
+                mobileMenu.classList.remove('active');
+                if (realHamburger) realHamburger.classList.remove('active');
             }
-
-            window.addEventListener('popstate', (e) => {
-                if (menuIsOpen) closeMenu();
-            });
         });
     </script>
 </body>
