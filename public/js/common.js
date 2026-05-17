@@ -213,9 +213,14 @@ window.initContactPage = function (delay = 0) {
         btn.disabled = true;
 
         const formData = new FormData(this);
+        const object = Object.fromEntries(formData);
         fetch("https://formsubmit.co/ajax/enigma.vssut@gmail.com", {
             method: "POST",
-            body: formData
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(object)
         })
         .then(res => {
             if (!res.ok) throw new Error("Server transmission error");
