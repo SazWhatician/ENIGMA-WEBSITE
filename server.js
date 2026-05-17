@@ -53,9 +53,12 @@ const db = admin.apps.length ? admin.firestore() : null;
 const app = express();
 
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- API ENDPOINTS ---
+app.post('/api/contact', require('./api/contact'));
 
 // Projects Endpoint
 app.get('/api/projects', async (req, res) => {

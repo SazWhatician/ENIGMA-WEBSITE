@@ -214,7 +214,7 @@ window.initContactPage = function (delay = 0) {
 
         const formData = new FormData(this);
         const object = Object.fromEntries(formData);
-        fetch("https://formsubmit.co/ajax/enigma.vssut@gmail.com", {
+        fetch("/api/contact", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
