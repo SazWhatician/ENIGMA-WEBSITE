@@ -24,7 +24,7 @@
     <script src="https://unpkg.com/@barba/core"></script>
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
 
     <script>
         tailwind.config = {
@@ -528,11 +528,16 @@
                         hi? Send us a transmission.</p>
                     <div class="space-y-4 text-sm font-bold uppercase tracking-widest">
                         <p class="text-orbitGreen">Secure Frequency</p>
-                        <p>hello@enigma.vision</p>
+                        <p>enigma.vssut@gmail.com</p>
                     </div>
                 </div>
 
                 <form id="contact-form" class="space-y-8 opacity-0 translate-y-10">
+                    <!-- FormSubmit Configuration -->
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_subject" value="New ENIGMA Contact Transmission!">
+                    <input type="hidden" name="_template" value="table">
+
                     <div class="grid grid-cols-1 gap-4">
 
                         <div class="input-wrapper">
@@ -573,13 +578,7 @@
 
     </main>
 
-    <script>
-            // --- EMAILJS CONFIG ---
-            // Replace with your actual Public Key from EmailJS Dashboard
-            (function () {
-                emailjs.init("YOUR_PUBLIC_KEY");
-            })();
-    </script>
+
     <script src="./js/common.js"></script>
 
 

@@ -212,27 +212,34 @@ window.initContactPage = function (delay = 0) {
         btn.classList.add('animate-pulse');
         btn.disabled = true;
 
-        if (typeof emailjs !== 'undefined') {
-            emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
-                .then(() => {
-                    btn.classList.remove('animate-pulse');
-                    let tl = gsap.timeline();
-                    tl.to(btn, { opacity: 0, duration: 0.2 })
-                        .call(() => {
-                            btn.innerText = "TRANSMISSION SUCCESSFUL";
-                            btn.style.background = "#2BA648";
-                            btn.style.color = "#000";
-                            form.reset();
-                        })
-                        .to(btn, { opacity: 1, duration: 0.4, ease: "power2.out" })
-                        .to(status, { opacity: 1, text: "Data received by ENIGMA mainframe.", color: "#2BA648", duration: 0.5 });
-                }, (error) => {
-                    btn.classList.remove('animate-pulse');
-                    btn.innerText = "SYSTEM FAILURE - RETRY";
-                    btn.disabled = false;
-                    gsap.to(status, { opacity: 1, text: "Error: Connection lost.", color: "red", duration: 0.5 });
-                });
-        }
+        const formData = new FormData(this);
+        fetch("https://formsubmit.co/ajax/enigma.vssut@gmail.com", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Server transmission error");
+            return res.json();
+        })
+        .then(() => {
+            btn.classList.remove('animate-pulse');
+            let tl = gsap.timeline();
+            tl.to(btn, { opacity: 0, duration: 0.2 })
+                .call(() => {
+                    btn.innerText = "TRANSMISSION SUCCESSFUL";
+                    btn.style.background = "#2BA648";
+                    btn.style.color = "#000";
+                    form.reset();
+                })
+                .to(btn, { opacity: 1, duration: 0.4, ease: "power2.out" })
+                .to(status, { opacity: 1, text: "Data received by ENIGMA mainframe.", color: "#2BA648", duration: 0.5 });
+        })
+        .catch((error) => {
+            btn.classList.remove('animate-pulse');
+            btn.innerText = "SYSTEM FAILURE - RETRY";
+            btn.disabled = false;
+            gsap.to(status, { opacity: 1, text: "Transmission failed. Connection lost.", color: "red", duration: 0.5 });
+        });
     };
 };
 
