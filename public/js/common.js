@@ -373,12 +373,13 @@ window.initFooterCrystal = function () {
 
 // --- BRUTALIST EVENTS JS ENGINE ---
 const brutalEventsData = [
-    { id: '01', title: "DevTalk 2026", date: "JAN 24-25, 2026", img: "events-assets/DevTalk2026.webp", status: "UPCOMING", desc: "We are excited to announce our upcoming Dev Talk, jointly organised by CSE Society, VSSUT, Burla and Enigma, Web and Coding cell of VSSUT, Burla, where real-world development meets real experiences. From building at scale to navigating the tech ecosystem, this session brings perspectives shaped by practice, not theory.\n\nJoin us as our speakers share insights, journeys, and lessons that matter to anyone serious about technology and growth.\n\nDate: 24th - 25th January, 2026\nVenue: E-learning center, VSSUT Burla\n\nRegistrations starting soon!!", link: "https://devtalk.enigmavssut.in/", closed: false },
+    { id: '01', title: "DevTalk 2026", date: "JAN 24-25, 2026", img: "events-assets/DevTalk2026.webp", status: "CLOSED", desc: "We are excited to announce our upcoming Dev Talk, jointly organised by CSE Society, VSSUT, Burla and Enigma, Web and Coding cell of VSSUT, Burla, where real-world development meets real experiences. From building at scale to navigating the tech ecosystem, this session brings perspectives shaped by practice, not theory.\n\nJoin us as our speakers share insights, journeys, and lessons that matter to anyone serious about technology and growth.\n\nDate: 24th - 25th January, 2026\nVenue: E-learning center, VSSUT Burla\n\nRegistrations starting soon!!", link: "https://devtalk.enigmavssut.in/", closed: true },
     { id: '02', title: "Algowars", date: "JAN 17, 2026", img: "events-assets/Algowars.webp", status: "CLOSED", desc: "Beneath a silent sky, two challengers face each other in stillness. One problem lies between them, sharp and unforgiving. Each choice cuts deep, each line written shifts fate. When the answer is found, one rises forward while the other fades. Only resolve endures.\n\nEvent Details\nDate: 17th January 2026\nTime: 3:00 - 5:00 p.m.\nVenue: E-learning centre\n\nStep into the challenge and prove your skill where discipline and clarity define victory.", link: null, closed: true },
     { id: '03', title: "Scribe Sigil", date: "JAN 18, 2026", img: "events-assets/Scribe sigil.webp", status: "CLOSED", desc: "Tokyo never sleeps, and neither do its secrets!\nEvery shadow hides a cipher.\nEvery sound hums with a clue.\nEvery frame, page, and pixel dares you to look closer.\n\nThis isn\u2019t a race; it\u2019s a game.\n\nDecode the unseen, hear what silence hides, and read what the ink lingers to say, because Tokyo is testing you.\n\nEvent details\nDate - 18th January, 2026\nTime - 10:00 a.m. - 1:00 p.m.\nVenue - E-learning center\n\nWelcome to the hunt!", link: null, closed: true },
     { id: '04', title: "Codebid", date: "JAN 16, 2026", img: "events-assets/Codebid.webp", status: "CLOSED", desc: "Under the flickering neon haze of Tokyo\u2019s midnight skyline, there is an arena where logic shines brighter than Kinka and Kobana and victories are forged over bids and bytes.\n\nStep into the glow to build your dominion or vanish in Tokyo\u2019s endless dark.\n\nEvent details\nDate - 16th January, 2026\nTime - 2:00 - 5:00 p.m.\nVenue - E-learning centre\n\nThe arena calls, will your logic cut through?", link: null, closed: true },
     { id: '05', title: "Hack The Bot", date: "JAN 17, 2026", img: "events-assets/Hack the Bot.webp", status: "CLOSED", desc: "Neon rain drips through a sleepless city. Beneath the concrete and cables, something ancient and artificial is awake, holding a truth that could rewrite everything. This is not a game of speed, but of choice. Every word you type shapes the path you walk. By the time the sun rises, the city will no longer be the same.\n\nEvent details\nDate \u2014 17th January 2026\nTime \u2014 10 am \u2013 12 pm\nVenue \u2014 E-learning Centre\n\nFollow what calls you beyond control. Discover what waits in the dark.", link: null, closed: true },
-    { id: '06', title: "Intra-Club Hackathon", date: "JAN 2026", img: "events-assets/intrahack.webp", status: "CLOSED", desc: "A 5-6 hour coding marathon where innovators from our club collaborated to build impactful projects. It fosters teamwork, creativity, and cross-domain learning.", link: null, closed: true }
+    { id: '06', title: "Intra-Club Hackathon", date: "JAN 2026", img: "events-assets/intrahack.webp", status: "CLOSED", desc: "A 5-6 hour coding marathon where innovators from our club collaborated to build impactful projects. It fosters teamwork, creativity, and cross-domain learning.", link: null, closed: true },
+    { id: '07', title: "8 Bit Prompt", date: "NOV 22, 2025", img: "events-assets/8bitprompt.webp", status: "CLOSED", desc: "At *8 Bit Prompt*, creativity meets technology as young minds step into a world where ideas become creations. Through the power of prompting, participants will think, imagine, and build, discovering how the right words can transform simple thoughts into something extraordinary. Every prompt opens a new level, every idea sparks innovation, and every creator begins with a single thought.", link: null, closed: true }
 ];
 
 
@@ -430,7 +431,7 @@ window.initEventsBrutalist = function () {
                     <div class="h-date text-white/50 font-host text-xs sm:text-sm md:text-lg mt-3 sm:mt-6 tracking-[0.2em] uppercase">${ev.date} / ${ev.status}</div>
                     <p class="h-desc text-white/80 font-host text-xs sm:text-sm md:text-xl mt-3 sm:mt-6 max-w-lg leading-relaxed">${shortDesc}</p>
                     <button class="h-btn mt-5 sm:mt-8 px-5 py-3 sm:px-6 sm:py-4 md:px-8 border border-white/20 text-white font-syncopate text-[10px] md:text-xs tracking-[0.2em] relative overflow-hidden group hover:border-orbitGreen active:border-orbitGreen" onclick="window.openDetailViewStatic(${i})">
-                        <span class="relative z-10 group-hover:text-black transition-colors duration-300">ACTIVATE</span>
+                        <span class="relative z-10 group-hover:text-black transition-colors duration-300">ENTER</span>
                         <div class="absolute inset-0 bg-orbitGreen translate-y-[100%] group-hover:translate-y-0 group-active:translate-y-0 transition-transform duration-300 ease-in-out"></div>
                     </button>
                 </div>
@@ -615,14 +616,22 @@ window.initEventsBrutalist = function () {
             const newBtn = registerBtn.cloneNode(true);
             registerBtn.parentNode.replaceChild(newBtn, registerBtn);
             if (data.closed) {
-                newBtn.innerText = 'REGISTRATION CLOSED';
-                newBtn.style.borderColor = 'rgba(255,255,255,0.15)';
-                newBtn.style.color = 'rgba(255,255,255,0.4)';
-                newBtn.style.cursor = 'not-allowed';
-                newBtn.onclick = (e) => {
-                    e.preventDefault();
-                    gsap.to(newBtn, { x: -5, duration: 0.05, yoyo: true, repeat: 5, ease: 'power2.inOut', onComplete: () => gsap.set(newBtn, { x: 0 }) });
-                };
+                if (data.link) {
+                    newBtn.innerText = 'VISIT SITE';
+                    newBtn.style.borderColor = '';
+                    newBtn.style.color = '';
+                    newBtn.style.cursor = 'pointer';
+                    newBtn.onclick = () => window.open(data.link, '_blank');
+                } else {
+                    newBtn.innerText = 'REGISTRATION CLOSED';
+                    newBtn.style.borderColor = 'rgba(255,255,255,0.15)';
+                    newBtn.style.color = 'rgba(255,255,255,0.4)';
+                    newBtn.style.cursor = 'not-allowed';
+                    newBtn.onclick = (e) => {
+                        e.preventDefault();
+                        gsap.to(newBtn, { x: -5, duration: 0.05, yoyo: true, repeat: 5, ease: 'power2.inOut', onComplete: () => gsap.set(newBtn, { x: 0 }) });
+                    };
+                }
             } else if (data.link) {
                 newBtn.innerText = 'REGISTER NOW';
                 newBtn.style.borderColor = '';
