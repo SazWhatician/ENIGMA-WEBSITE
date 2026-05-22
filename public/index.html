@@ -86,6 +86,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
+            height: 100dvh;
             z-index: 9999;
             display: flex;
             justify-content: center;
@@ -200,7 +201,7 @@
             position: relative;
             width: 100vw;
             height: 100vh;
-            height: 100svh;
+            height: 100dvh;
             overflow: hidden;
         }
 
@@ -910,6 +911,8 @@
         gsap.ticker.lagSmoothing(0);
 
         // --- FAST SEAMLESS TRANSFORM LOADER ANIMATION ---
+        window.scrollTo(0, 0);
+        document.body.style.overflow = 'hidden';
         lenis.stop();
         gsap.set(["nav", ".hero-footer"], { opacity: 0, y: 15 });
         gsap.set(".hero-logo", {
@@ -922,6 +925,7 @@
             onComplete: () => {
                 document.getElementById('loader-wrapper').remove();
                 gsap.set(".hero-logo", { clearProps: "zIndex" });
+                document.body.style.overflow = '';
                 lenis.start();
             }
         });
