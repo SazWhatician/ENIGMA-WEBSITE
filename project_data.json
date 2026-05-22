@@ -30,17 +30,17 @@
     },
     {
       "id": 5,
-      "title": "Proxy Project: Honda",
-      "desc": "Upload a 16:9 ratio image for better results.",
-      "img": "./project-assets/proxy1.jpg",
-      "link": "https://firebase.google.com/?utm_source=google&utm_medium=cpc&utm_campaign=Cloud-SS-DR-Firebase-FY26-global-gsem-1713590&utm_content=text-ad&utm_term=KW_firebase&gclsrc=aw.ds&gad_source=1&gad_campaignid=23417478209&gbraid=0AAAAADpUDOh8Lll9IJ8khkbyThcJeZ4Dc&gclid=Cj0KCQjw8PDPBhCeARIsAOJwmWUBSemtNrnYnzFg4r1-gagRKwg2yBMKfNiNmaEZF7Yvt3_8YN12HF4aAkG1EALw_wcB"
+      "title": "MediScan AI",
+      "desc": "AI diagnostic system using ensemble learning to detect multiple diseases",
+      "img": "./project-assets/mediscan.png",
+      "link": "https://med-scan-ai-1p2n.vercel.app/"
     },
     {
       "id": 6,
-      "title": "Proxy Project: tyler",
-      "desc": "Okay Okay Okay Okay.",
-      "img": "./project-assets/tyler.jpg",
-      "link": "https://open.spotify.com/artist/4V8LLVI7PbaPR0K2TGSxFF"
+      "title": "Ascent",
+      "desc": "Ascent is a club activity management system designed to streamline daily operations and communication.",
+      "img": "./project-assets/Ascent.jpeg",
+      "link": "https://ascent-eosin.vercel.app"
     }
   ]
 }
