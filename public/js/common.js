@@ -371,6 +371,137 @@ window.initFooterCrystal = function () {
     animateFooter();
 };
 
+// --- TEAM 3D FOOTER (DODECAHEDRON + TORUS SYSTEM) ---
+window.cleanupTeamFooter = function () {
+    if (window.teamFooterReqId) {
+        cancelAnimationFrame(window.teamFooterReqId);
+        window.teamFooterReqId = null;
+    }
+};
+
+window.initTeamFooter = function () {
+    window.cleanupTeamFooter();
+    const footerContainerEl = document.getElementById('footer-canvas');
+    if (!footerContainerEl || typeof THREE === 'undefined') return;
+
+    if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+    }
+
+    const footerScene = new THREE.Scene();
+    footerScene.fog = new THREE.FogExp2(0x000000, 0.1);
+
+    const footerCamera = new THREE.PerspectiveCamera(75, footerContainerEl.offsetWidth / footerContainerEl.offsetHeight, 0.1, 1000);
+    footerCamera.position.set(0, 0, 5);
+    const footerRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    footerRenderer.setSize(footerContainerEl.offsetWidth, footerContainerEl.offsetHeight);
+    footerRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    footerRenderer.toneMapping = THREE.ReinhardToneMapping;
+    footerContainerEl.innerHTML = '';
+    footerContainerEl.appendChild(footerRenderer.domElement);
+
+    footerScene.add(new THREE.AmbientLight(0x000000));
+
+    const pointLight = new THREE.PointLight(0x2BA648, 6, 50);
+    pointLight.position.set(0, 0, 0);
+    footerScene.add(pointLight);
+
+    const rimLight = new THREE.DirectionalLight(0x185D28, 4);
+    rimLight.position.set(5, 5, 5);
+    footerScene.add(rimLight);
+
+    const teamFooterGroup = new THREE.Group();
+    footerScene.add(teamFooterGroup);
+
+    // Inner Dodecahedron (glowing cyber core)
+    const innerGeo = new THREE.DodecahedronGeometry(1.0, 0);
+    const innerMat = new THREE.MeshStandardMaterial({
+        color: 0x2BA648,
+        emissive: 0x0A2B12,
+        emissiveIntensity: 1.2,
+        roughness: 0.1,
+        metalness: 0.9
+    });
+    const innerMesh = new THREE.Mesh(innerGeo, innerMat);
+    teamFooterGroup.add(innerMesh);
+
+    // Outer Cage Dodecahedron
+    const outerGeo = new THREE.DodecahedronGeometry(1.35, 0);
+    const outerMat = new THREE.MeshStandardMaterial({
+        color: 0x2BA648,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.3
+    });
+    const outerMesh = new THREE.Mesh(outerGeo, outerMat);
+    teamFooterGroup.add(outerMesh);
+
+    // Orbiting Torus Ring
+    const torusGeo = new THREE.TorusGeometry(1.8, 0.02, 8, 64);
+    const torusMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.25
+    });
+    const torusMesh = new THREE.Mesh(torusGeo, torusMat);
+    torusMesh.rotation.x = Math.PI / 3;
+    teamFooterGroup.add(torusMesh);
+
+    // Floating Particles
+    const particlesGeo = new THREE.BufferGeometry();
+    const posArray = new Float32Array(600 * 3);
+    for (let i = 0; i < 600 * 3; i++) posArray[i] = (Math.random() - 0.5) * 12;
+    particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particles = new THREE.Points(
+        particlesGeo,
+        new THREE.PointsMaterial({ size: 0.015, color: 0x2BA648, transparent: true, opacity: 0.5 })
+    );
+    teamFooterGroup.add(particles);
+
+    const footerMouse = { x: 0, y: 0 };
+    const footerEl = document.querySelector('footer');
+    if (footerEl) {
+        footerEl.addEventListener('mousemove', (e) => {
+            footerMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            footerMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+    }
+
+    const resizeHandler = () => {
+        if (!document.getElementById('footer-canvas')) return;
+        footerCamera.aspect = footerContainerEl.offsetWidth / footerContainerEl.offsetHeight;
+        footerCamera.updateProjectionMatrix();
+        footerRenderer.setSize(footerContainerEl.offsetWidth, footerContainerEl.offsetHeight);
+    };
+    window.addEventListener('resize', resizeHandler);
+
+    function animateTeamFooter() {
+        if (!document.getElementById('footer-canvas')) {
+            window.cleanupTeamFooter();
+            window.removeEventListener('resize', resizeHandler);
+            return;
+        }
+        window.teamFooterReqId = requestAnimationFrame(animateTeamFooter);
+        const time = performance.now() * 0.001;
+
+        innerMesh.rotation.y += 0.01;
+        innerMesh.rotation.x += 0.005;
+        outerMesh.rotation.y -= 0.005;
+        outerMesh.rotation.z += 0.002;
+        torusMesh.rotation.z += 0.008;
+        particles.rotation.y += 0.001;
+
+        const scale = 1 + Math.sin(time * 2) * 0.05;
+        innerMesh.scale.set(scale, scale, scale);
+
+        teamFooterGroup.rotation.x += (footerMouse.y * 0.2 - teamFooterGroup.rotation.x) * 0.05;
+        teamFooterGroup.rotation.y += (footerMouse.x * 0.2 - teamFooterGroup.rotation.y) * 0.05;
+
+        footerRenderer.render(footerScene, footerCamera);
+    }
+    animateTeamFooter();
+};
+
 // --- BRUTALIST EVENTS JS ENGINE ---
 const brutalEventsData = [
     { id: '01', title: "DevTalk 2026", date: "JAN 24-25, 2026", img: "events-assets/DevTalk2026.webp", status: "CLOSED", desc: "We are excited to announce our upcoming Dev Talk, jointly organised by CSE Society, VSSUT, Burla and Enigma, Web and Coding cell of VSSUT, Burla, where real-world development meets real experiences. From building at scale to navigating the tech ecosystem, this session brings perspectives shaped by practice, not theory.\n\nJoin us as our speakers share insights, journeys, and lessons that matter to anyone serious about technology and growth.\n\nDate: 24th - 25th January, 2026\nVenue: E-learning center, VSSUT Burla\n\nRegistrations starting soon!!", link: "https://devtalk.enigmavssut.in/", closed: true },
@@ -910,6 +1041,7 @@ window.initBarba = function () {
                 },
                 afterEnter() {
                     window.cleanupFooterCrystal();
+                    if (window.cleanupTeamFooter) window.cleanupTeamFooter();
                 },
                 beforeLeave() {
                     window.cleanupProjectReel();
@@ -921,6 +1053,7 @@ window.initBarba = function () {
                 },
                 afterOnce() {
                     window.cleanupFooterCrystal();
+                    if (window.cleanupTeamFooter) window.cleanupTeamFooter();
                 }
             },
             {
@@ -936,8 +1069,10 @@ window.initBarba = function () {
                     });
                 },
                 afterEnter() {
+                    if (window.initTeamFooter) window.initTeamFooter();
                 },
                 beforeLeave() {
+                    if (window.cleanupTeamFooter) window.cleanupTeamFooter();
                 },
                 beforeOnce(data) {
                     document.body.style.overflowY = 'auto';
@@ -949,7 +1084,7 @@ window.initBarba = function () {
                     });
                 },
                 afterOnce() {
-                    window.initFooterCrystal();
+                    if (window.initTeamFooter) window.initTeamFooter();
                 }
             },
             {
