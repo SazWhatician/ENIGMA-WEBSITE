@@ -270,6 +270,7 @@
             html {
                 -ms-overflow-style: none;
                 scrollbar-width: none;
+                overflow-x: hidden;
             }
 
             /* --- CUSTOM CURSOR --- */
@@ -986,6 +987,10 @@
                 border: 2px solid var(--b-light);
                 border-radius: 0;
                 padding: 3rem;
+                width: 90%;
+                max-width: 500px;
+                box-sizing: border-box;
+                position: relative;
             }
 
             .cal-day.has-event {
@@ -1520,7 +1525,7 @@
 
         <!-- Float Calendar Trigger -->
         <button id="btn-open-calendar"
-            class="z-btn-cyber fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[100] flex items-center gap-2"
+            class="z-btn-cyber fixed bottom-6 right-6 md:bottom-12 md:right-12 z-[100] flex items-center gap-2"
             data-cursor-hover>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -1573,7 +1578,7 @@
 
     <!-- FOOTER TEXT -->
     <div style="width: 100%; text-align: center; padding: 20px 0; font-family: 'Syncopate', sans-serif; font-size: 11px; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; letter-spacing: 2px; position: relative; z-index: 2000; bottom: 0; background: transparent; pointer-events: none;">
-        Developed by: Saswat Kumar Mohanty <span style="color: #2BA648; text-shadow: 0 0 8px rgba(43, 166, 72, 0.8), 0 0 12px rgba(43, 166, 72, 0.5);">@enigma</span>
+        Made with love <span style="color: #2BA648; text-shadow: 0 0 8px rgba(43, 166, 72, 0.8), 0 0 12px rgba(43, 166, 72, 0.5);">ENIGMA.</span>
     </div>
 
     </main>
