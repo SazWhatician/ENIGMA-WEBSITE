@@ -962,6 +962,11 @@
                 cursor: none;
             }
 
+            #btn-open-calendar {
+                position: fixed !important;
+                z-index: 9999 !important;
+            }
+
             .z-btn-cyber::before {
                 content: '';
                 position: absolute;
@@ -1525,7 +1530,7 @@
 
         <!-- Float Calendar Trigger -->
         <button id="btn-open-calendar"
-            class="z-btn-cyber fixed bottom-6 right-6 md:bottom-12 md:right-12 z-[100] flex items-center gap-2"
+            class="z-btn-cyber fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[9999] flex items-center gap-2"
             data-cursor-hover>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
