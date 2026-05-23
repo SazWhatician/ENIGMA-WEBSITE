@@ -377,12 +377,22 @@ window.cleanupTeamFooter = function () {
         cancelAnimationFrame(window.teamFooterReqId);
         window.teamFooterReqId = null;
     }
+    if (window.teamFooterScrollTrigger) {
+        window.teamFooterScrollTrigger.kill();
+        window.teamFooterScrollTrigger = null;
+    }
 };
 
 window.initTeamFooter = function () {
     window.cleanupTeamFooter();
     const footerContainerEl = document.getElementById('footer-canvas');
     if (!footerContainerEl || typeof THREE === 'undefined') return;
+
+    // Safety: if container is not laid out yet (0 size), retry in 100ms
+    if (footerContainerEl.offsetWidth === 0 || footerContainerEl.offsetHeight === 0) {
+        setTimeout(window.initTeamFooter, 100);
+        return;
+    }
 
     if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.refresh();
@@ -467,6 +477,26 @@ window.initTeamFooter = function () {
         });
     }
 
+    let modelBaseZ = -5;
+    const footerContainer = document.querySelector(".footer-container");
+    if (footerContainer && typeof gsap !== 'undefined') {
+        gsap.set(footerContainer, { yPercent: -50 });
+
+        const trigger = ScrollTrigger.create({
+            trigger: footerEl,
+            start: "top bottom",
+            end: "bottom bottom",
+            scrub: true,
+            onUpdate: (self) => {
+                const progress = self.progress;
+                const yValue = -50 * (1 - progress);
+                gsap.set(footerContainer, { yPercent: yValue });
+                modelBaseZ = -5 + (progress * 5); 
+            }
+        });
+        window.teamFooterScrollTrigger = trigger;
+    }
+
     const resizeHandler = () => {
         if (!document.getElementById('footer-canvas')) return;
         footerCamera.aspect = footerContainerEl.offsetWidth / footerContainerEl.offsetHeight;
@@ -494,6 +524,7 @@ window.initTeamFooter = function () {
         const scale = 1 + Math.sin(time * 2) * 0.05;
         innerMesh.scale.set(scale, scale, scale);
 
+        teamFooterGroup.position.z += (modelBaseZ - teamFooterGroup.position.z) * 0.05;
         teamFooterGroup.rotation.x += (footerMouse.y * 0.2 - teamFooterGroup.rotation.x) * 0.05;
         teamFooterGroup.rotation.y += (footerMouse.x * 0.2 - teamFooterGroup.rotation.y) * 0.05;
 
@@ -1066,10 +1097,17 @@ window.initBarba = function () {
                     window.fetchTeam().then(() => {
                         window.renderTeam('all', delay + 0.6);
                         window.initFilters();
+                        
+                        // Let grid paint and images start loading, then refresh ScrollTrigger & init footer
+                        setTimeout(() => {
+                            if (typeof ScrollTrigger !== 'undefined') {
+                                ScrollTrigger.refresh();
+                            }
+                            if (window.initTeamFooter) window.initTeamFooter();
+                        }, 200);
                     });
                 },
                 afterEnter() {
-                    if (window.initTeamFooter) window.initTeamFooter();
                 },
                 beforeLeave() {
                     if (window.cleanupTeamFooter) window.cleanupTeamFooter();
@@ -1081,10 +1119,17 @@ window.initBarba = function () {
                     window.fetchTeam().then(() => {
                         window.renderTeam('all', 0.6);
                         window.initFilters();
+                        
+                        // Let grid paint, then refresh ScrollTrigger & init footer
+                        setTimeout(() => {
+                            if (typeof ScrollTrigger !== 'undefined') {
+                                ScrollTrigger.refresh();
+                            }
+                            if (window.initTeamFooter) window.initTeamFooter();
+                        }, 200);
                     });
                 },
                 afterOnce() {
-                    if (window.initTeamFooter) window.initTeamFooter();
                 }
             },
             {
