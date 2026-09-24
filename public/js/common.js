@@ -160,13 +160,13 @@ window.renderTeam = function (filterValue, delay = 0) {
                             <span class="terminal-caret">&gt;_</span> DEVELOPER
                         </div>
                         <h2 class="dev-reveal-title">This website is developed by This guy!</h2>
-                        <div class="social-links dev-social-links" style="margin-top: 1rem;">
+                        <div class="social-links dev-social-links">
                             <a href="${member.linkedin || 'https://www.linkedin.com/in/saswat-mohanty-0a4549331/'}" target="_blank" onclick="event.stopPropagation()">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.2a1.62 1.62 0 1 0 1.62 1.62A1.62 1.62 0 0 0 7.83 6.2Z"/></svg>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.2a1.62 1.62 0 1 0 1.62 1.62A1.62 1.62 0 0 0 7.83 6.2Z"/></svg>
                                 LinkedIn
                             </a>
                             <a href="${member.github || 'https://github.com/SazWhatician'}" target="_blank" onclick="event.stopPropagation()">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>
                                 GitHub
                             </a>
                         </div>
@@ -1616,9 +1616,77 @@ window.initBarba = function () {
     });
 };
 
+// --- UNIFIED GLOBAL MOBILE MENU ---
+window.initGlobalMobileMenu = function () {
+    if (window._mobileMenuInitialized) return;
+    window._mobileMenuInitialized = true;
+
+    function openMobileMenu() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const realHamburger = document.getElementById('hamburger');
+        if (!mobileMenu || !realHamburger) return;
+
+        realHamburger.classList.add('active');
+        mobileMenu.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        const menuLinks = mobileMenu.querySelectorAll('a');
+        if (window.gsap) {
+            gsap.fromTo(menuLinks, 
+                { opacity: 0, y: 25, scale: 0.96 }, 
+                { opacity: 1, y: 0, scale: 1, duration: 0.4, stagger: 0.07, ease: "back.out(1.7)", delay: 0.15 }
+            );
+        } else {
+            menuLinks.forEach(l => { l.style.opacity = '1'; l.style.transform = 'none'; });
+        }
+    }
+
+    function closeMobileMenu() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const realHamburger = document.getElementById('hamburger');
+        if (!mobileMenu || !realHamburger) return;
+
+        realHamburger.classList.remove('active');
+        mobileMenu.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Single global click listener using event delegation
+    document.addEventListener('click', (e) => {
+        const hamburgerBtn = e.target.closest('#hamburger');
+        const closeBtn = e.target.closest('#mobile-menu-close');
+        const menuLink = e.target.closest('.mobile-menu a');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (hamburgerBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (mobileMenu && mobileMenu.classList.contains('active')) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
+        } else if (closeBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeMobileMenu();
+        } else if (menuLink) {
+            // Smoothly close menu before navigating
+            closeMobileMenu();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeMobileMenu();
+        }
+    });
+};
+
 function onDomReady() {
     const loader = document.getElementById('loading-screen');
     if (loader) { gsap.to(loader, { opacity: 0, duration: 0.5, delay: 0.2, onComplete: () => loader.style.display = 'none' }); }
+    window.initGlobalMobileMenu();
     window.initBarba();
 }
 
