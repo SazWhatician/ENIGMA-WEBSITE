@@ -1628,70 +1628,68 @@ window.initGlobalMobileMenu = function () {
     if (window._mobileMenuInitialized) return;
     window._mobileMenuInitialized = true;
 
-    let isToggling = false;
+    let lastToggleTime = 0;
+    const DEBOUNCE_MS = 400;
 
-    function getElements() {
-        const mobileMenu = document.querySelector('#mobile-menu, .mobile-menu');
-        const hamburger = document.querySelector('#hamburger, .hamburger');
-        const closeBtn = document.querySelector('#mobile-menu-close, .mobile-menu-close');
-        return { mobileMenu, hamburger, closeBtn };
+    function getMenu() {
+        return document.querySelector('#mobile-menu, .mobile-menu');
+    }
+    function getHamburger() {
+        return document.querySelector('#hamburger, .hamburger');
     }
 
-    function openMobileMenu() {
-        const { mobileMenu, hamburger } = getElements();
-        if (!mobileMenu) return;
-
-        if (hamburger) hamburger.classList.add('active');
-        mobileMenu.classList.add('active');
+    function openMenu() {
+        const menu = getMenu();
+        const btn = getHamburger();
+        if (!menu) return;
+        if (btn) btn.classList.add('active');
+        menu.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
 
-    function closeMobileMenu() {
-        const { mobileMenu, hamburger } = getElements();
-        if (!mobileMenu) return;
-
-        if (hamburger) hamburger.classList.remove('active');
-        mobileMenu.classList.remove('active');
+    function closeMenu() {
+        const menu = getMenu();
+        const btn = getHamburger();
+        if (!menu) return;
+        if (btn) btn.classList.remove('active');
+        menu.classList.remove('active');
         document.body.style.overflow = '';
     }
 
-    // Single global click listener using event delegation with debouncing
-    document.addEventListener('click', (e) => {
+    function handleInteraction(e) {
+        const now = Date.now();
         const hamburgerBtn = e.target.closest('#hamburger, .hamburger');
         const closeBtn = e.target.closest('#mobile-menu-close, .mobile-menu-close');
         const menuLink = e.target.closest('.mobile-menu a');
-        const mobileMenu = document.querySelector('#mobile-menu, .mobile-menu');
 
         if (hamburgerBtn) {
             e.preventDefault();
-            e.stopPropagation();
-            if (isToggling) return;
-            isToggling = true;
-            setTimeout(() => { isToggling = false; }, 250);
-
-            if (mobileMenu && mobileMenu.classList.contains('active')) {
-                closeMobileMenu();
+            e.stopImmediatePropagation();
+            if (now - lastToggleTime < DEBOUNCE_MS) return;
+            lastToggleTime = now;
+            const menu = getMenu();
+            if (menu && menu.classList.contains('active')) {
+                closeMenu();
             } else {
-                openMobileMenu();
+                openMenu();
             }
         } else if (closeBtn) {
             e.preventDefault();
-            e.stopPropagation();
-            if (isToggling) return;
-            isToggling = true;
-            setTimeout(() => { isToggling = false; }, 250);
-
-            closeMobileMenu();
+            e.stopImmediatePropagation();
+            if (now - lastToggleTime < DEBOUNCE_MS) return;
+            lastToggleTime = now;
+            closeMenu();
         } else if (menuLink) {
-            // Smoothly close menu before navigating
-            closeMobileMenu();
+            closeMenu();
         }
-    }, true);
+    }
+
+    // Use touchend on touch devices so that the subsequent 'click' ghost event is ignored by debounce
+    document.addEventListener('touchend', handleInteraction, true);
+    document.addEventListener('click', handleInteraction, true);
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeMobileMenu();
-        }
+        if (e.key === 'Escape') closeMenu();
     });
 };
 
