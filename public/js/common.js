@@ -27,7 +27,7 @@ window.fetchTeam = async function () {
 window.renderTeam = function (filterValue, delay = 0) {
     const grid = document.getElementById('team-grid');
     if (!grid) return;
-    
+
     // Only kill card-specific triggers, never the team footer trigger
     if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.getAll().forEach(st => {
@@ -38,8 +38,8 @@ window.renderTeam = function (filterValue, delay = 0) {
     }
 
     grid.innerHTML = '';
-    let filteredData = filterValue === 'all' 
-        ? window.teamData.filter(m => m.year !== 'alumni') 
+    let filteredData = filterValue === 'all'
+        ? window.teamData.filter(m => m.year !== 'alumni')
         : window.teamData.filter(m => m.year === filterValue);
 
     // Keep Srinibas Das and Sonakshi Pradhan together and at the top of 2027 and ALL
@@ -48,8 +48,8 @@ window.renderTeam = function (filterValue, delay = 0) {
         const nonLeaders = [];
         filteredData.forEach(member => {
             const isLeader = member.name && (
-                member.name.toLowerCase().includes('srinibas') || 
-                member.name.toLowerCase().includes('srinivas') || 
+                member.name.toLowerCase().includes('srinibas') ||
+                member.name.toLowerCase().includes('srinivas') ||
                 member.name.toLowerCase().includes('sonakshi')
             );
             if (isLeader) {
@@ -129,7 +129,7 @@ window.renderTeam = function (filterValue, delay = 0) {
 
             const card = document.createElement('div');
             card.className = `team-card-wrapper ${isSaswatDev ? 'dev-card' : ''} ${isAlumni ? 'alumni-card' : ''}`;
-            
+
             if (isSaswatDev) {
                 card.innerHTML = `
                 <div class="card-inner" onclick="this.parentElement.classList.toggle('flipped')">
@@ -193,7 +193,7 @@ window.renderTeam = function (filterValue, delay = 0) {
             grid.appendChild(card);
         });
 
-        gsap.fromTo(".team-card-wrapper", { autoAlpha: 0, y: 40, scale: 0.95 }, { 
+        gsap.fromTo(".team-card-wrapper", { autoAlpha: 0, y: 40, scale: 0.95 }, {
             autoAlpha: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out", stagger: 0.05, delay: delay,
             onComplete: () => {
                 if (typeof ScrollTrigger !== 'undefined') {
@@ -382,29 +382,29 @@ window.initContactPage = function (delay = 0) {
             },
             body: JSON.stringify(object)
         })
-        .then(res => {
-            if (!res.ok) throw new Error("Server transmission error");
-            return res.json();
-        })
-        .then(() => {
-            btn.classList.remove('animate-pulse');
-            let tl = gsap.timeline();
-            tl.to(btn, { opacity: 0, duration: 0.2 })
-                .call(() => {
-                    btn.innerText = "TRANSMISSION SUCCESSFUL";
-                    btn.style.background = "#2BA648";
-                    btn.style.color = "#000";
-                    form.reset();
-                })
-                .to(btn, { opacity: 1, duration: 0.4, ease: "power2.out" })
-                .to(status, { opacity: 1, text: "Data received by ENIGMA mainframe.", color: "#2BA648", duration: 0.5 });
-        })
-        .catch((error) => {
-            btn.classList.remove('animate-pulse');
-            btn.innerText = "SYSTEM FAILURE - RETRY";
-            btn.disabled = false;
-            gsap.to(status, { opacity: 1, text: "Transmission failed. Connection lost.", color: "red", duration: 0.5 });
-        });
+            .then(res => {
+                if (!res.ok) throw new Error("Server transmission error");
+                return res.json();
+            })
+            .then(() => {
+                btn.classList.remove('animate-pulse');
+                let tl = gsap.timeline();
+                tl.to(btn, { opacity: 0, duration: 0.2 })
+                    .call(() => {
+                        btn.innerText = "TRANSMISSION SUCCESSFUL";
+                        btn.style.background = "#2BA648";
+                        btn.style.color = "#000";
+                        form.reset();
+                    })
+                    .to(btn, { opacity: 1, duration: 0.4, ease: "power2.out" })
+                    .to(status, { opacity: 1, text: "Data received by ENIGMA mainframe.", color: "#2BA648", duration: 0.5 });
+            })
+            .catch((error) => {
+                btn.classList.remove('animate-pulse');
+                btn.innerText = "SYSTEM FAILURE - RETRY";
+                btn.disabled = false;
+                gsap.to(status, { opacity: 1, text: "Transmission failed. Connection lost.", color: "red", duration: 0.5 });
+            });
     };
 };
 
@@ -651,7 +651,7 @@ window.initTeamFooter = function () {
                 const progress = self.progress;
                 const yValue = -50 * (1 - progress);
                 gsap.set(footerContainer, { yPercent: yValue });
-                modelBaseZ = -5 + (progress * 5); 
+                modelBaseZ = -5 + (progress * 5);
             }
         });
         window.teamFooterScrollTrigger = trigger;
@@ -958,7 +958,7 @@ window.cleanupEventsTerminalModel = function () {
 window.initEventsBrutalist = function () {
     window.cleanupEventsBrutalist();
     document.body.style.overflow = 'auto'; // allow scrolling now
-    
+
     // Initialize 3D Computer Terminal in Footer
     setTimeout(() => {
         if (window.initEventsTerminalModel) window.initEventsTerminalModel();
@@ -991,7 +991,7 @@ window.initEventsBrutalist = function () {
         // clear out anything but the snake svg
         const existingBlocks = highlightContainer.querySelectorAll('.highlight-block');
         existingBlocks.forEach(el => el.remove());
-        
+
         topEvents.forEach((ev, i) => {
             const isEven = i % 2 !== 0; // alternate layout
             const shortDesc = ev.desc.split('\n\n')[0]; // first paragraph only for cards
@@ -1044,18 +1044,18 @@ window.initEventsBrutalist = function () {
 
         // Intro Animation
         const tl = gsap.timeline();
-        tl.fromTo('#hero-title-main', 
-            { y: 100, opacity: 0, scale: 0.9, filter: 'blur(10px)' }, 
+        tl.fromTo('#hero-title-main',
+            { y: 100, opacity: 0, scale: 0.9, filter: 'blur(10px)' },
             { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.5, ease: 'power4.out', delay: 0.2 }
         )
-        .fromTo('#hero-sub-text', 
-            { y: 20, opacity: 0 }, 
-            { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }, '-=1'
-        )
-        .fromTo('#scroll-indicator', 
-            { opacity: 0 }, 
-            { opacity: 1, duration: 1 }, '-=0.5'
-        );
+            .fromTo('#hero-sub-text',
+                { y: 20, opacity: 0 },
+                { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }, '-=1'
+            )
+            .fromTo('#scroll-indicator',
+                { opacity: 0 },
+                { opacity: 1, duration: 1 }, '-=0.5'
+            );
 
         // Hero Parallax (triggered after intro)
         gsap.to('.events-hero-parallax-wrap', {
@@ -1074,7 +1074,7 @@ window.initEventsBrutalist = function () {
             const img = block.querySelector('.h-img');
             const title = block.querySelector('.h-title');
             const extras = block.querySelectorAll('.h-date, .h-desc, .h-btn');
-            
+
             // Image parallax mapping (-10% to +10%)
             gsap.to(img, {
                 yPercent: 20,
@@ -1083,27 +1083,27 @@ window.initEventsBrutalist = function () {
             });
 
             // Scrolldriven Entrance Reveal
-            gsap.fromTo(imgWrap, 
+            gsap.fromTo(imgWrap,
                 { scale: 0.8, opacity: 0, y: 80 },
-                { 
+                {
                     scale: 1, opacity: 1, y: 0,
                     ease: "none",
                     scrollTrigger: { trigger: block, start: "top 95%", end: "center 65%", scrub: 1 }
                 }
             );
-            
-            gsap.fromTo(title, 
+
+            gsap.fromTo(title,
                 { opacity: 0, x: i % 2 !== 0 ? 80 : -80 },
-                { 
+                {
                     opacity: 1, x: 0,
                     ease: "none",
                     scrollTrigger: { trigger: block, start: "top 85%", end: "center 55%", scrub: 1 }
                 }
             );
-            
-            gsap.fromTo(extras, 
+
+            gsap.fromTo(extras,
                 { opacity: 0, y: 40 },
-                { 
+                {
                     opacity: 1, y: 0, stagger: 0.1,
                     ease: "none",
                     scrollTrigger: { trigger: block, start: "top 75%", end: "center 45%", scrub: 1 }
@@ -1131,7 +1131,7 @@ window.initEventsBrutalist = function () {
         if (track && pastEvents.length > 0) {
             function getScrollAmount() {
                 let trackWidth = track.scrollWidth;
-                return -(trackWidth - window.innerWidth + window.innerWidth * 0.1); 
+                return -(trackWidth - window.innerWidth + window.innerWidth * 0.1);
             }
             const tween = gsap.to(track, {
                 x: getScrollAmount,
@@ -1150,7 +1150,7 @@ window.initEventsBrutalist = function () {
                     const cards = track.querySelectorAll('.past-card');
                     cards.forEach((c, i) => {
                         const cardPos = i / cards.length;
-                        if(progress > cardPos - 0.2 && progress < cardPos + 0.2) {
+                        if (progress > cardPos - 0.2 && progress < cardPos + 0.2) {
                             gsap.to(c, { scale: 1, filter: 'brightness(1)', duration: 0.5 });
                         } else {
                             gsap.to(c, { scale: 0.95, filter: 'brightness(0.5)', duration: 0.5 });
@@ -1161,7 +1161,7 @@ window.initEventsBrutalist = function () {
         }
     }
 
-    window.openDetailViewStatic = function(index) {
+    window.openDetailViewStatic = function (index) {
         const data = brutalEventsData[index];
         if (data) openDetailView(data, null);
     };
@@ -1174,13 +1174,13 @@ window.initEventsBrutalist = function () {
     const detailDesc = document.getElementById('detail-desc-node');
 
     function openDetailView(data, originCard) {
-        if(window.eventsLenis) window.eventsLenis.stop();
+        if (window.eventsLenis) window.eventsLenis.stop();
         document.body.style.overflow = 'hidden';
-        
+
         // Push a history state so mobile back button closes modal
         window._detailModalOpen = true;
         history.pushState({ modal: 'detail' }, '');
-        
+
         detailImg.src = data.img;
         detailTitle.innerText = data.title;
         detailDate.innerText = data.date;
@@ -1221,32 +1221,32 @@ window.initEventsBrutalist = function () {
         gsap.set(detailView, { opacity: 0, pointerEvents: 'auto' });
         gsap.set(detailImg, { scale: 1.2, filter: 'grayscale(100%)' });
         gsap.set('.detail-content > *', { y: 30, opacity: 0 });
-        
+
         const tl = gsap.timeline();
         tl.to(detailView, { opacity: 1, duration: 0.4, ease: "power2.inOut" })
-          .to(detailImg, { scale: 1, filter: 'grayscale(0%)', duration: 1, ease: "expo.out" }, "-=0.2")
-          .to('.detail-content > *', { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "expo.out" }, "-=0.8")
-          .call(() => { if(typeof scrambleText === 'function') scrambleText(detailTitle); }, null, "-=0.6");
+            .to(detailImg, { scale: 1, filter: 'grayscale(0%)', duration: 1, ease: "expo.out" }, "-=0.2")
+            .to('.detail-content > *', { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "expo.out" }, "-=0.8")
+            .call(() => { if (typeof scrambleText === 'function') scrambleText(detailTitle); }, null, "-=0.6");
     }
 
     // Shared close function for detail modal
     function closeDetailView() {
         if (!window._detailModalOpen) return;
         window._detailModalOpen = false;
-        
+
         const tl = gsap.timeline({
             onComplete: () => {
                 gsap.set(detailView, { pointerEvents: 'none' });
                 document.body.style.overflow = '';
-                if(window.eventsLenis) window.eventsLenis.start();
+                if (window.eventsLenis) window.eventsLenis.start();
                 // Trigger the 3D scene reset (legacy)
-                if(window.tvResetScene) window.tvResetScene();
+                if (window.tvResetScene) window.tvResetScene();
             }
         });
-        
+
         tl.to('.detail-content > *', { y: -20, opacity: 0, duration: 0.3, stagger: -0.05, ease: "power2.in" })
-          .to(detailImg, { scale: 1.1, filter: 'grayscale(100%)', duration: 0.4, ease: "power2.inOut" }, 0)
-          .to(detailView, { opacity: 0, duration: 0.4, ease: "power2.inOut" }, 0.2);
+            .to(detailImg, { scale: 1.1, filter: 'grayscale(100%)', duration: 0.4, ease: "power2.inOut" }, 0)
+            .to(detailView, { opacity: 0, duration: 0.4, ease: "power2.inOut" }, 0.2);
     }
 
     if (btnCloseDetail) {
@@ -1263,7 +1263,7 @@ window.initEventsBrutalist = function () {
     }
 
     // Handle browser back button to close modals
-    window._eventsPopstateHandler = function(e) {
+    window._eventsPopstateHandler = function (e) {
         if (window._detailModalOpen) {
             closeDetailView();
             // Prevent default navigation — the popstate already consumed the history entry
@@ -1273,7 +1273,7 @@ window.initEventsBrutalist = function () {
             const calendarModal = document.getElementById('cyber-calendar-modal');
             if (calendarModal) {
                 calendarModal.classList.remove('active');
-                if(window.eventsLenis) window.eventsLenis.start();
+                if (window.eventsLenis) window.eventsLenis.start();
                 document.body.style.overflow = '';
             }
             window._calendarModalOpen = false;
@@ -1286,11 +1286,11 @@ window.initEventsBrutalist = function () {
     const btnOpenCalendar = document.getElementById('btn-open-calendar');
     const btnCloseCalendar = document.getElementById('btn-close-calendar');
     const calendarModal = document.getElementById('cyber-calendar-modal');
-    
+
     if (btnOpenCalendar && btnCloseCalendar && calendarModal) {
         btnOpenCalendar.addEventListener('click', () => {
             calendarModal.classList.add('active');
-            if(window.eventsLenis) window.eventsLenis.stop();
+            if (window.eventsLenis) window.eventsLenis.stop();
             document.body.style.overflow = 'hidden';
             window._calendarModalOpen = true;
             history.pushState({ modal: 'calendar' }, '');
@@ -1299,7 +1299,7 @@ window.initEventsBrutalist = function () {
 
         function closeCalendarModal() {
             calendarModal.classList.remove('active');
-            if(window.eventsLenis) window.eventsLenis.start();
+            if (window.eventsLenis) window.eventsLenis.start();
             document.body.style.overflow = '';
             window._calendarModalOpen = false;
         }
@@ -1336,23 +1336,23 @@ window.initEventsBrutalist = function () {
 
     function renderCalendar(date) {
         if (!calGrid || !calMonthYear) return;
-        
+
         const year = date.getFullYear();
         const month = date.getMonth();
-        
+
         const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
         calMonthYear.innerText = `${monthNames[month]} ${year}`;
-        
+
         calGrid.innerHTML = '';
-        
+
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-        
+
         // Empty slots
         for (let i = 0; i < firstDay; i++) {
             calGrid.insertAdjacentHTML('beforeend', `<div class="cal-day empty"></div>`);
         }
-        
+
         // Days
         for (let i = 1; i <= daysInMonth; i++) {
             const currentDayDate = new Date(year, month, i);
@@ -1362,16 +1362,16 @@ window.initEventsBrutalist = function () {
             });
             const hasEvent = !!eventDataObj;
             const dataIndex = brutalEventsData.indexOf(eventDataObj);
-            
+
             const className = hasEvent ? 'cal-day has-event' : 'cal-day';
             const clickEvent = hasEvent ? `onclick="window.openDetailViewForCal(${dataIndex})"` : '';
             calGrid.insertAdjacentHTML('beforeend', `<div class="${className}" ${clickEvent} data-cursor-hover>${i}</div>`);
         }
-        
+
     }
 
     // Expose openDetailView to global scope so inline onclick can access it
-    window.openDetailViewForCal = function(index) {
+    window.openDetailViewForCal = function (index) {
         const calendarModal = document.getElementById('cyber-calendar-modal');
         if (calendarModal) {
             calendarModal.classList.remove('active');
@@ -1391,7 +1391,7 @@ window.initEventsBrutalist = function () {
             currentDate.setMonth(currentDate.getMonth() - 1);
             renderCalendar(currentDate);
         });
-        
+
         calNext.addEventListener('click', () => {
             currentDate.setMonth(currentDate.getMonth() + 1);
             renderCalendar(currentDate);
@@ -1407,11 +1407,11 @@ window.cleanupEventsBrutalist = function () {
     }
     window._detailModalOpen = false;
     window._calendarModalOpen = false;
-    
+
     if (window.eventsLenisTicker) { gsap.ticker.remove(window.eventsLenisTicker); window.eventsLenisTicker = null; }
     if (window.eventsLenis) { window.eventsLenis.destroy(); window.eventsLenis = null; }
     if (window.marqueeTl) { window.marqueeTl.kill(); window.marqueeTl = null; }
-    
+
     if (window.introReqId) { cancelAnimationFrame(window.introReqId); window.introReqId = null; }
     if (window.introMouseMove) { document.removeEventListener('mousemove', window.introMouseMove); window.introMouseMove = null; }
     if (window.introResize) { window.removeEventListener('resize', window.introResize); window.introResize = null; }
@@ -1419,12 +1419,12 @@ window.cleanupEventsBrutalist = function () {
 
     // Clear scramblers
     document.querySelectorAll('.decode-text').forEach(el => {
-        if(el.scrambleInterval) clearInterval(el.scrambleInterval);
+        if (el.scrambleInterval) clearInterval(el.scrambleInterval);
         el.classList.remove('scrambled');
     });
 
-    if (typeof ScrollTrigger !== 'undefined') { 
-        ScrollTrigger.getAll().forEach(t => { 
+    if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.getAll().forEach(t => {
             if (t.vars.trigger) {
                 const tr = t.vars.trigger;
                 if (typeof tr === 'string') {
@@ -1435,15 +1435,16 @@ window.cleanupEventsBrutalist = function () {
                     t.kill();
                 }
             }
-        }); 
+        });
     }
-    
+
     document.body.style.overflow = '';
 };
 
 // --- BARBA CORE ---
 window.initBarba = function () {
     if (window.barbaInitialized) return;
+    if (typeof barba === 'undefined' || !document.querySelector('[data-barba="wrapper"]')) return;
     window.barbaInitialized = true;
 
     if (typeof ScrollTrigger !== 'undefined') {
@@ -1513,7 +1514,7 @@ window.initBarba = function () {
                     window.fetchTeam().then(() => {
                         window.renderTeam('all', delay + 0.6);
                         window.initFilters();
-                        
+
                         // Let grid paint and images start loading, then refresh ScrollTrigger & init footer
                         setTimeout(() => {
                             if (typeof ScrollTrigger !== 'undefined') {
@@ -1535,7 +1536,7 @@ window.initBarba = function () {
                     window.fetchTeam().then(() => {
                         window.renderTeam('all', 0.6);
                         window.initFilters();
-                        
+
                         // Let grid paint, then refresh ScrollTrigger & init footer
                         setTimeout(() => {
                             if (typeof ScrollTrigger !== 'undefined') {
@@ -1572,45 +1573,45 @@ window.initBarba = function () {
                 }
             },
             {
-                 namespace: 'events',
-                 beforeEnter(data) {
-                     document.body.style.overflowY = 'auto';
-                     document.body.style.touchAction = 'auto';
-                     window.initEventsBrutalist();
-                 },
-                 afterEnter() { 
-                     if (typeof ScrollTrigger !== 'undefined') {
-                         Promise.all(Array.from(document.images).filter(i => !i.complete).map(i => new Promise(r => { i.onload = i.onerror = r; }))).then(() => {
-                             ScrollTrigger.refresh();
-                         });
-                     }
-                     if (window.initEventsTerminalModel) {
-                         setTimeout(() => {
-                             window.initEventsTerminalModel();
-                         }, 150);
-                     }
-                 },
-                 beforeLeave() {
-                     window.cleanupEventsBrutalist();
-                     if (window.cleanupEventsTerminalModel) window.cleanupEventsTerminalModel();
-                 },
-                 beforeOnce(data) {
-                     document.body.style.overflowY = 'auto';
-                     document.body.style.touchAction = 'auto';
-                     window.initEventsBrutalist();
-                 },
-                 afterOnce() { 
-                     if (typeof ScrollTrigger !== 'undefined') {
-                         Promise.all(Array.from(document.images).filter(i => !i.complete).map(i => new Promise(r => { i.onload = i.onerror = r; }))).then(() => {
-                             ScrollTrigger.refresh();
-                         });
-                     }
-                     if (window.initEventsTerminalModel) {
-                         setTimeout(() => {
-                             window.initEventsTerminalModel();
-                         }, 150);
-                     }
-                 }
+                namespace: 'events',
+                beforeEnter(data) {
+                    document.body.style.overflowY = 'auto';
+                    document.body.style.touchAction = 'auto';
+                    window.initEventsBrutalist();
+                },
+                afterEnter() {
+                    if (typeof ScrollTrigger !== 'undefined') {
+                        Promise.all(Array.from(document.images).filter(i => !i.complete).map(i => new Promise(r => { i.onload = i.onerror = r; }))).then(() => {
+                            ScrollTrigger.refresh();
+                        });
+                    }
+                    if (window.initEventsTerminalModel) {
+                        setTimeout(() => {
+                            window.initEventsTerminalModel();
+                        }, 150);
+                    }
+                },
+                beforeLeave() {
+                    window.cleanupEventsBrutalist();
+                    if (window.cleanupEventsTerminalModel) window.cleanupEventsTerminalModel();
+                },
+                beforeOnce(data) {
+                    document.body.style.overflowY = 'auto';
+                    document.body.style.touchAction = 'auto';
+                    window.initEventsBrutalist();
+                },
+                afterOnce() {
+                    if (typeof ScrollTrigger !== 'undefined') {
+                        Promise.all(Array.from(document.images).filter(i => !i.complete).map(i => new Promise(r => { i.onload = i.onerror = r; }))).then(() => {
+                            ScrollTrigger.refresh();
+                        });
+                    }
+                    if (window.initEventsTerminalModel) {
+                        setTimeout(() => {
+                            window.initEventsTerminalModel();
+                        }, 150);
+                    }
+                }
             }
         ]
     });
@@ -1621,19 +1622,25 @@ window.initGlobalMobileMenu = function () {
     if (window._mobileMenuInitialized) return;
     window._mobileMenuInitialized = true;
 
-    function openMobileMenu() {
-        const mobileMenu = document.getElementById('mobile-menu');
-        const realHamburger = document.getElementById('hamburger');
-        if (!mobileMenu || !realHamburger) return;
+    function getElements() {
+        const mobileMenu = document.querySelector('#mobile-menu, .mobile-menu');
+        const hamburger = document.querySelector('#hamburger, .hamburger');
+        const closeBtn = document.querySelector('#mobile-menu-close, .mobile-menu-close');
+        return { mobileMenu, hamburger, closeBtn };
+    }
 
-        realHamburger.classList.add('active');
+    function openMobileMenu() {
+        const { mobileMenu, hamburger } = getElements();
+        if (!mobileMenu) return;
+
+        if (hamburger) hamburger.classList.add('active');
         mobileMenu.classList.add('active');
         document.body.style.overflow = 'hidden';
 
         const menuLinks = mobileMenu.querySelectorAll('a');
         if (window.gsap) {
-            gsap.fromTo(menuLinks, 
-                { opacity: 0, y: 25, scale: 0.96 }, 
+            gsap.fromTo(menuLinks,
+                { opacity: 0, y: 25, scale: 0.96 },
                 { opacity: 1, y: 0, scale: 1, duration: 0.4, stagger: 0.07, ease: "back.out(1.7)", delay: 0.15 }
             );
         } else {
@@ -1642,21 +1649,20 @@ window.initGlobalMobileMenu = function () {
     }
 
     function closeMobileMenu() {
-        const mobileMenu = document.getElementById('mobile-menu');
-        const realHamburger = document.getElementById('hamburger');
-        if (!mobileMenu || !realHamburger) return;
+        const { mobileMenu, hamburger } = getElements();
+        if (!mobileMenu) return;
 
-        realHamburger.classList.remove('active');
+        if (hamburger) hamburger.classList.remove('active');
         mobileMenu.classList.remove('active');
         document.body.style.overflow = '';
     }
 
     // Single global click listener using event delegation
     document.addEventListener('click', (e) => {
-        const hamburgerBtn = e.target.closest('#hamburger');
-        const closeBtn = e.target.closest('#mobile-menu-close');
+        const hamburgerBtn = e.target.closest('#hamburger, .hamburger');
+        const closeBtn = e.target.closest('#mobile-menu-close, .mobile-menu-close');
         const menuLink = e.target.closest('.mobile-menu a');
-        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenu = document.querySelector('#mobile-menu, .mobile-menu');
 
         if (hamburgerBtn) {
             e.preventDefault();
@@ -1672,6 +1678,9 @@ window.initGlobalMobileMenu = function () {
             closeMobileMenu();
         } else if (menuLink) {
             // Smoothly close menu before navigating
+            closeMobileMenu();
+        } else if (mobileMenu && mobileMenu.classList.contains('active') && e.target === mobileMenu) {
+            // Tap backdrop to close
             closeMobileMenu();
         }
     });
@@ -1703,14 +1712,14 @@ window.footerExpandingMouse = { x: 0, y: 0 };
 window.initExpandingFooter = function () {
     const container = document.getElementById("footer-canvas");
     const footerElement = document.querySelector("footer");
-    
+
     if (!container || !footerElement || typeof THREE === 'undefined' || typeof gsap === 'undefined') return;
 
     window.cleanupExpandingFooter(); // ensure clean state
 
     const scene = new THREE.Scene();
     window.footerExpandingScene = scene;
-    
+
     const camera = new THREE.PerspectiveCamera(50, container.offsetWidth / container.offsetHeight, 0.1, 1000);
     camera.position.set(0, 0, 3);
     window.footerExpandingCamera = camera;
@@ -1723,7 +1732,7 @@ window.initExpandingFooter = function () {
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
-    
+
     const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
     directionalLight.position.set(1, 1, 2);
     scene.add(directionalLight);
@@ -1755,7 +1764,7 @@ window.initExpandingFooter = function () {
             const progress = self.progress;
             const yValue = -50 * (1 - progress);
             gsap.set(footerContainer, { yPercent: yValue });
-            modelBaseZ = -5 + (progress * 5); 
+            modelBaseZ = -5 + (progress * 5);
             modelBaseRotationX = 0.5 + (progress * 0.5);
         }
     });
