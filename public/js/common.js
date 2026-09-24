@@ -725,47 +725,71 @@ function ensureGLTFLoader() {
 window.initEventsTerminalModel = async function () {
     window.cleanupEventsTerminalModel();
 
-    const container = document.getElementById('events-terminal-canvas');
-    if (!container || typeof THREE === 'undefined') return;
+    const footerContainerEl = document.getElementById('footer-canvas');
+    if (!footerContainerEl || typeof THREE === 'undefined') return;
+
+    // Safety: if container is not laid out yet (0 size), retry in 100ms
+    if (footerContainerEl.offsetWidth === 0 || footerContainerEl.offsetHeight === 0) {
+        setTimeout(window.initEventsTerminalModel, 100);
+        return;
+    }
 
     await ensureGLTFLoader();
     if (typeof THREE.GLTFLoader === 'undefined') return;
 
-    if (!document.getElementById('events-terminal-canvas')) return;
+    if (!document.getElementById('footer-canvas')) return;
 
-    container.innerHTML = '';
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
+    if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+    }
+
+    const width = footerContainerEl.offsetWidth || window.innerWidth;
+    const height = footerContainerEl.offsetHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x000000, 0.08);
     window.eventsTerminalScene = scene;
 
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0, 7.5);
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+    camera.position.set(0, 0, 6.0);
     window.eventsTerminalCamera = camera;
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     if (THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
-    container.appendChild(renderer.domElement);
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+    footerContainerEl.innerHTML = '';
+    footerContainerEl.appendChild(renderer.domElement);
     window.eventsTerminalRenderer = renderer;
 
-    // Rich studio lighting for the terminal
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2.5);
+    // Rich studio & cyber lighting for the terminal in the footer
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
     scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 3.2);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 3.0);
     dirLight.position.set(5, 8, 6);
     scene.add(dirLight);
 
-    const greenFill = new THREE.PointLight(0x2BA648, 5.0, 18);
-    greenFill.position.set(0, -0.6, 3.5);
+    const greenFill = new THREE.PointLight(0x2BA648, 6.0, 30);
+    greenFill.position.set(0, 0, 2);
     scene.add(greenFill);
 
-    const rimLight = new THREE.DirectionalLight(0x00ff88, 2.0);
+    const rimLight = new THREE.DirectionalLight(0x185D28, 3.5);
     rimLight.position.set(-6, 4, -4);
     scene.add(rimLight);
+
+    // Green cyber particle field
+    const particlesGeo = new THREE.BufferGeometry();
+    const posArray = new Float32Array(500 * 3);
+    for (let i = 0; i < 500 * 3; i++) posArray[i] = (Math.random() - 0.5) * 14;
+    particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particles = new THREE.Points(
+        particlesGeo,
+        new THREE.PointsMaterial({ size: 0.018, color: 0x2BA648, transparent: true, opacity: 0.55 })
+    );
+    scene.add(particles);
+    window.eventsTerminalParticles = particles;
 
     const terminalGroup = new THREE.Group();
     scene.add(terminalGroup);
@@ -786,13 +810,14 @@ window.initEventsTerminalModel = async function () {
         model.position.z -= center.z;
 
         const maxDim = Math.max(size.x, size.y, size.z);
-        // Prominent responsive scale
-        const targetScale = (window.innerWidth < 768 ? 3.8 : 5.4) / maxDim;
+        // Prominent responsive scale tailored for footer
+        const targetScale = (window.innerWidth < 768 ? 3.0 : 4.4) / maxDim;
         terminalGroup.scale.set(targetScale, targetScale, targetScale);
 
-        // Angled perspective so CRT monitor and keys are clearly visible
-        terminalGroup.rotation.y = -0.28;
-        terminalGroup.rotation.x = 0.14;
+        // Angled perspective so CRT monitor and keys glow towards viewer
+        terminalGroup.rotation.y = -0.32;
+        terminalGroup.rotation.x = 0.16;
+        terminalGroup.position.y = -0.2;
 
         terminalGroup.add(model);
 
@@ -813,24 +838,46 @@ window.initEventsTerminalModel = async function () {
     });
 
     // Interactive mouse rotation tracking
-    let targetRotX = 0.12;
-    let targetRotY = -0.3;
-    let currentRotX = 0.12;
-    let currentRotY = -0.3;
+    let targetRotX = 0.16;
+    let targetRotY = -0.32;
+    let currentRotX = 0.16;
+    let currentRotY = -0.32;
+    let modelBaseZ = -3.5;
 
+    const footerEl = document.querySelector('footer');
     window.eventsTerminalMouseMove = (e) => {
         const nx = (e.clientX / window.innerWidth) * 2 - 1;
         const ny = (e.clientY / window.innerHeight) * 2 - 1;
-        targetRotY = -0.3 + nx * 0.45;
-        targetRotX = 0.12 + ny * 0.25;
+        targetRotY = -0.32 + nx * 0.45;
+        targetRotX = 0.16 + ny * 0.25;
     };
     window.addEventListener('mousemove', window.eventsTerminalMouseMove);
 
+    // Scroll parallax with GSAP ScrollTrigger for footer expansion
+    const footerContainer = document.querySelector(".footer-container");
+    if (footerContainer && footerEl && typeof gsap !== 'undefined') {
+        gsap.set(footerContainer, { yPercent: -50 });
+
+        const trigger = ScrollTrigger.create({
+            trigger: footerEl,
+            start: "top bottom",
+            end: "bottom bottom",
+            scrub: true,
+            onUpdate: (self) => {
+                const progress = self.progress;
+                const yValue = -50 * (1 - progress);
+                gsap.set(footerContainer, { yPercent: yValue });
+                modelBaseZ = -4.5 + (progress * 4.5); // Zooms forward organically as user reaches footer
+            }
+        });
+        window.eventsTerminalScrollTrigger = trigger;
+    }
+
     // Responsive resize handler
     window.eventsTerminalResize = () => {
-        if (!container || !renderer || !camera) return;
-        const w = container.clientWidth || window.innerWidth;
-        const h = container.clientHeight || window.innerHeight;
+        if (!footerContainerEl || !renderer || !camera) return;
+        const w = footerContainerEl.offsetWidth || window.innerWidth;
+        const h = footerContainerEl.offsetHeight || window.innerHeight;
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
@@ -842,46 +889,39 @@ window.initEventsTerminalModel = async function () {
     window.eventsTerminalReqId = null;
 
     function animateTerminal() {
-        if (!document.getElementById('events-terminal-canvas')) {
+        if (!document.getElementById('footer-canvas')) {
             window.cleanupEventsTerminalModel();
             return;
         }
         window.eventsTerminalReqId = requestAnimationFrame(animateTerminal);
         const time = clock.getElapsedTime();
 
-        currentRotX += (targetRotX - currentRotX) * 0.06;
-        currentRotY += (targetRotY - currentRotY) * 0.06;
+        currentRotX += (targetRotX - currentRotX) * 0.05;
+        currentRotY += (targetRotY - currentRotY) * 0.05;
 
         if (terminalGroup) {
-            terminalGroup.rotation.x = currentRotX + Math.sin(time * 1.5) * 0.02;
+            terminalGroup.position.z += (modelBaseZ - terminalGroup.position.z) * 0.05;
+            terminalGroup.position.y = -0.2 + Math.sin(time * 1.5) * 0.06;
+            terminalGroup.rotation.x = currentRotX + Math.sin(time * 1.2) * 0.015;
             terminalGroup.rotation.y = currentRotY;
-            terminalGroup.position.y = Math.sin(time * 2.0) * 0.06;
+        }
+        if (particles) {
+            particles.rotation.y += 0.0008;
         }
 
         renderer.render(scene, camera);
     }
     animateTerminal();
-
-    // Scroll parallax with GSAP ScrollTrigger
-    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-        gsap.to(terminalGroup.position, {
-            y: -2.5,
-            z: -3.5,
-            ease: 'none',
-            scrollTrigger: {
-                trigger: '.events-hero-new',
-                start: 'top top',
-                end: 'bottom top',
-                scrub: true
-            }
-        });
-    }
 };
 
 window.cleanupEventsTerminalModel = function () {
     if (window.eventsTerminalReqId) {
         cancelAnimationFrame(window.eventsTerminalReqId);
         window.eventsTerminalReqId = null;
+    }
+    if (window.eventsTerminalScrollTrigger) {
+        window.eventsTerminalScrollTrigger.kill();
+        window.eventsTerminalScrollTrigger = null;
     }
     if (window.eventsTerminalMouseMove) {
         window.removeEventListener('mousemove', window.eventsTerminalMouseMove);
@@ -910,14 +950,19 @@ window.cleanupEventsTerminalModel = function () {
     }
     window.eventsTerminalGroup = null;
     window.eventsTerminalCamera = null;
-    const container = document.getElementById('events-terminal-canvas');
+    window.eventsTerminalParticles = null;
+    const container = document.getElementById('footer-canvas');
     if (container) container.innerHTML = '';
 };
 
 window.initEventsBrutalist = function () {
     window.cleanupEventsBrutalist();
     document.body.style.overflow = 'auto'; // allow scrolling now
-    window.initEventsTerminalModel();
+    
+    // Initialize 3D Computer Terminal in Footer
+    setTimeout(() => {
+        if (window.initEventsTerminalModel) window.initEventsTerminalModel();
+    }, 150);
 
     // 1. Initialize Lenis specific to events if needed
     if (typeof Lenis !== 'undefined') {
@@ -1539,11 +1584,15 @@ window.initBarba = function () {
                              ScrollTrigger.refresh();
                          });
                      }
-                     if (window.initExpandingFooter) window.initExpandingFooter();
+                     if (window.initEventsTerminalModel) {
+                         setTimeout(() => {
+                             window.initEventsTerminalModel();
+                         }, 150);
+                     }
                  },
                  beforeLeave() {
                      window.cleanupEventsBrutalist();
-                     if (window.cleanupExpandingFooter) window.cleanupExpandingFooter();
+                     if (window.cleanupEventsTerminalModel) window.cleanupEventsTerminalModel();
                  },
                  beforeOnce(data) {
                      document.body.style.overflowY = 'auto';
@@ -1556,7 +1605,11 @@ window.initBarba = function () {
                              ScrollTrigger.refresh();
                          });
                      }
-                     if (window.initExpandingFooter) window.initExpandingFooter();
+                     if (window.initEventsTerminalModel) {
+                         setTimeout(() => {
+                             window.initEventsTerminalModel();
+                         }, 150);
+                     }
                  }
             }
         ]
