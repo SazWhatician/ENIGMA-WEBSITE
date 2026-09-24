@@ -4,118 +4,144 @@
       "id": 1,
       "name": "Ananya Pati",
       "role": "Web Dev",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/ANANYA PATI.jpg",
       "linkedin": "https://www.linkedin.com/in/ananya-pati-b25027263/",
-      "github": "https://github.com/ananyapati26"
+      "github": "https://github.com/ananyapati26",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 10,
       "name": "Ashish Kumar Mohapatra",
       "role": "Web Dev",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/Ashish Kumar Mohapatra.jpg",
       "linkedin": "https://www.linkedin.com/in/ashish-kumar-mohapatra-767879247?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-      "github": "https://github.com/ashish095-EE"
+      "github": "https://github.com/ashish095-EE",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 3,
       "name": "Aumshuman Mohapatra",
       "role": "Web Dev",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/Aumshuman Mohapatra.jpeg",
       "linkedin": "https://www.linkedin.com/in/aumshuman-mohapatra-5ab731263/",
-      "github": "https://github.com/Rapid-merc"
+      "github": "https://github.com/Rapid-merc",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 4,
       "name": "Debasish Dey",
       "role": "App Dev",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/Debasish Dey.jpg",
       "linkedin": "https://www.linkedin.com/in/debasish-dey-58647226b/",
-      "github": "https://github.com/Debasish-Dey"
+      "github": "https://github.com/Debasish-Dey",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 5,
       "name": "Hardeep Mohanty",
       "role": "Web Dev",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/Hardeep Mohanty.jpg",
       "linkedin": "https://www.linkedin.com/in/hardeep-mohanty-9a0a33253",
-      "github": "https://github.com/hardeepmty"
+      "github": "https://github.com/hardeepmty",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 6,
       "name": "Khitish Kumar Pradhan ",
       "role": "Web Dev",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/khitish.png",
       "linkedin": "https://www.linkedin.com/in/khitish-kumar-pradhan-05704a263/",
-      "github": "https://github.com/Khitishgithub"
+      "github": "https://github.com/Khitishgithub",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 7,
       "name": "Kritika Sureka",
       "role": "UI-UX",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/Kritika Sureka.jpg",
       "linkedin": "https://www.linkedin.com/in/kritika-sureka-29269a267/",
-      "github": "https://github.com/kritika909"
+      "github": "https://github.com/kritika909",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 8,
       "name": "Nitesh Kumar Yadav ",
       "role": "Outreach",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/Nitesh Yadav.jpeg",
       "linkedin": "https://www.linkedin.com/in/niteshhyadav/",
-      "github": "https://github.com/nitessy"
+      "github": "https://github.com/nitessy",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 9,
       "name": "Priyadarshini Muduli",
       "role": "UI-UX",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/priyadarshini.png",
       "linkedin": "https://www.linkedin.com/in/priyadarshini-muduli-8a7ab0258?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-      "github": "https://github.com/priyadarshini004"
+      "github": "https://github.com/priyadarshini004",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 2,
       "name": "Ritesh Kumar Panda",
       "role": "CP, AI/ML, Web Dev",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/Ritesh Kumar Panda.jpg",
       "linkedin": "https://www.linkedin.com/in/ritesh-kumar-panda-7b423b231",
-      "github": "https://github.com/ritpa2005"
+      "github": "https://github.com/ritpa2005",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 11,
       "name": "Suraj Panda",
       "role": "App Dev",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/Suraj Panda.JPG",
       "linkedin": "https://www.linkedin.com/in/thesurajpanda",
-      "github": "https://github.com/surajsanu"
+      "github": "https://github.com/surajsanu",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 12,
       "name": "Swayamjeet Padhi",
       "role": "Cyber Security",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/Swayamjeet Padhi.jpg",
       "linkedin": "http://www.linkedin.com/in/swayamjeet-padhi-380825257",
-      "github": "https://github.com/Swayamjeet7"
+      "github": "https://github.com/Swayamjeet7",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 68,
       "name": "Kaushik Dash",
       "role": "AI/ML",
-      "year": "2026",
+      "year": "alumni",
       "img": "./team-assets/4thyear/Kaushik Dash.png",
       "linkedin": "https://www.linkedin.com/in/kaushikdash",
-      "github": "https://github.com/KaushikDash04"
+      "github": "https://github.com/KaushikDash04",
+      "batch": "2026",
+      "tag": "alumni"
     },
     {
       "id": 13,
@@ -124,8 +150,7 @@
       "year": "2027",
       "img": "./team-assets/3rdyear/srinibas.png",
       "linkedin": "",
-      "github": "",
-      "tag": "coordinator"
+      "github": ""
     },
     {
       "id": 14,
@@ -134,8 +159,7 @@
       "year": "2027",
       "img": "./team-assets/3rdyear/sonakshi.png",
       "linkedin": "",
-      "github": "",
-      "tag": "coordinator"
+      "github": ""
     },
     {
       "id": 15,
@@ -318,14 +342,14 @@
       "github": "https://github.com/Anushree-Mohanty"
     },
     {
-      "id": 31,
+      "id": 30,
       "name": "Aryan Rajguru",
       "role": "Web Dev",
       "year": "2028",
       "img": "./team-assets/2ndyear/aryan.png",
       "linkedin": "https://www.linkedin.com/in/aryan-rajguru-a1333230a",
       "github": "https://github.com/Aryan-R-18",
-      "tag": "asst_coordinator"
+      "tag": "coordinator"
     },
     {
       "id": 36,
@@ -490,13 +514,14 @@
       "github": "https://github.com/Saswat132004"
     },
     {
-      "id": 30,
+      "id": 32,
       "name": "Saswat Mohanty",
-      "role": "AI/ML,Web Dev",
+      "role": "Web Dev and AI/ML",
       "year": "2028",
       "img": "./team-assets/2ndyear/saswatt.jpeg",
       "linkedin": "https://www.linkedin.com/in/saswat-mohanty-0a4549331/",
-      "github": "https://github.com/SazWhatician"
+      "github": "https://github.com/SazWhatician",
+      "is_dev": true
     },
     {
       "id": 55,
@@ -535,14 +560,14 @@
       "github": "https://github.com/Soobin1102"
     },
     {
-      "id": 32,
+      "id": 31,
       "name": "Subhashree Sahu",
       "role": "Web Dev, UI-UX",
       "year": "2028",
       "img": "./team-assets/2ndyear/Subhashree Sahu.jpg",
       "linkedin": "http://www.linkedin.com/in/subhashree-sahu-95116b371",
       "github": "https://github.com/Subhashree-794",
-      "tag": "asst_coordinator"
+      "tag": "coordinator"
     },
     {
       "id": 60,

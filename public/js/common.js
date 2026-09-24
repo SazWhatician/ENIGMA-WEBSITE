@@ -27,50 +27,210 @@ window.fetchTeam = async function () {
 window.renderTeam = function (filterValue, delay = 0) {
     const grid = document.getElementById('team-grid');
     if (!grid) return;
+    
+    // Only kill card-specific triggers, never the team footer trigger
     if (typeof ScrollTrigger !== 'undefined') {
-        ScrollTrigger.getAll().forEach(st => st.kill());
+        ScrollTrigger.getAll().forEach(st => {
+            if (st !== window.teamFooterScrollTrigger) {
+                st.kill();
+            }
+        });
     }
+
     grid.innerHTML = '';
-    const filteredData = filterValue === 'all' ? window.teamData : window.teamData.filter(m => m.year === filterValue);
+    let filteredData = filterValue === 'all' 
+        ? window.teamData.filter(m => m.year !== 'alumni') 
+        : window.teamData.filter(m => m.year === filterValue);
 
-    filteredData.forEach(member => {
-        const avatarHtml = member.img
-            ? `<img src="${encodeURI(member.img)}" class="card-avatar" alt="${member.name}" loading="lazy">`
-            : `<div class="card-avatar"></div>`;
+    // Keep Srinibas Das and Sonakshi Pradhan together and at the top of 2027 and ALL
+    if (filterValue === 'all' || filterValue === '2027') {
+        const leaders = [];
+        const nonLeaders = [];
+        filteredData.forEach(member => {
+            const isLeader = member.name && (
+                member.name.toLowerCase().includes('srinibas') || 
+                member.name.toLowerCase().includes('srinivas') || 
+                member.name.toLowerCase().includes('sonakshi')
+            );
+            if (isLeader) {
+                leaders.push(member);
+            } else {
+                nonLeaders.push(member);
+            }
+        });
+        leaders.sort((a, b) => (a.id || 0) - (b.id || 0));
+        filteredData = [...leaders, ...nonLeaders];
+    }
 
-        const card = document.createElement('div');
-        card.className = `team-card-wrapper`;
-        card.innerHTML = `
-            <div class="card-inner" onclick="this.parentElement.classList.toggle('flipped')">
-                <div class="card-front">
-                    ${avatarHtml}
-                    <h2>${member.name}</h2>
-                    ${member.tag ? `<div class="member-tag ${member.tag === 'coordinator' ? 'tag-golden' : 'tag-silver'}">${member.tag === 'coordinator' ? 'Coordinator' : 'Asst. Coordinator'}</div>` : ''}
-                    ${member.role ? `<div class="card-role"><div class="role-dot"></div>${member.role}</div>` : ''}
-                    <p style="margin-top: 0.6rem;">${member.year === 'alumni' ? 'Alumni' : 'Class of ' + member.year}</p>
-                </div>
-                <div class="card-back">
-                    <div class="social-links">
-                        <a href="${member.linkedin || '#'}" target="_blank" onclick="event.stopPropagation()">LinkedIn</a>
-                        <a href="${member.github || '#'}" target="_blank" onclick="event.stopPropagation()">GitHub</a>
+    // Ensure 2028 batch order: Aryan Rajguru -> Subhashree Sahu -> Saswat Mohanty -> remaining
+    function orderBatch2028(list) {
+        const top3 = [];
+        const findAndAdd = (predicate) => {
+            const idx = list.findIndex(predicate);
+            if (idx !== -1 && !top3.includes(list[idx])) {
+                top3.push(list[idx]);
+            }
+        };
+        findAndAdd(m => m.name && m.name.toLowerCase().includes('aryan'));
+        findAndAdd(m => m.name && m.name.toLowerCase().includes('subhashree'));
+        findAndAdd(m => m.name && m.name.toLowerCase().includes('saswat') && m.name.toLowerCase().includes('mohanty'));
+        const rest = list.filter(m => !top3.includes(m));
+        return [...top3, ...rest];
+    }
+
+    if (filterValue === '2028') {
+        filteredData = orderBatch2028(filteredData);
+    } else if (filterValue === 'all') {
+        const y27 = filteredData.filter(m => m.year === '2027');
+        const y28 = filteredData.filter(m => m.year === '2028');
+        const others = filteredData.filter(m => m.year !== '2027' && m.year !== '2028');
+        filteredData = [...y27, ...orderBatch2028(y28), ...others];
+    }
+
+    if (filteredData.length === 0) {
+        const emptyNotice = document.createElement('div');
+        emptyNotice.className = 'empty-team-notice';
+        emptyNotice.style.cssText = 'grid-column: 1 / -1; width: 100%; text-align: center; padding: 4rem 1rem; color: rgba(255,255,255,0.4); font-family: "Syncopate", sans-serif; font-size: 0.85rem; letter-spacing: 2px;';
+        emptyNotice.innerHTML = `
+            <p style="color: rgba(255,255,255,0.4);">NO MEMBERS IN ${filterValue.toUpperCase()}</p>
+        `;
+        grid.appendChild(emptyNotice);
+    } else {
+        filteredData.forEach(member => {
+            const isSaswatDev = member.name && member.name.toLowerCase().includes('saswat') && member.name.toLowerCase().includes('mohanty');
+            const isAlumni = member.year === 'alumni';
+
+            const avatarHtml = member.img
+                ? `<img src="${encodeURI(member.img)}" class="card-avatar ${isSaswatDev ? 'dev-avatar' : ''}" alt="${member.name}" loading="lazy">`
+                : `<div class="card-avatar ${isSaswatDev ? 'dev-avatar' : ''}"></div>`;
+
+            let tagHtml = '';
+            if (isSaswatDev) {
+                tagHtml = ''; // No member tag for Saswat
+            } else if (member.tag) {
+                let tagClass = '';
+                let tagLabel = '';
+                if (member.tag === 'coordinator') {
+                    tagClass = 'tag-golden';
+                    tagLabel = 'Coordinator';
+                    tagHtml = `<div class="member-tag ${tagClass}">${tagLabel}</div>`;
+                } else if (member.tag === 'asst_coordinator' || member.tag === 'asst-coordinator') {
+                    tagClass = 'tag-silver';
+                    tagLabel = 'Asst. Coordinator';
+                    tagHtml = `<div class="member-tag ${tagClass}">${tagLabel}</div>`;
+                } else if (member.tag === 'ex_coordinator' || member.tag === 'ex-coordinator') {
+                    tagHtml = ''; // Don't give ex-coordinators any badge
+                } else if (member.tag === 'alumni') {
+                    tagClass = 'tag-diamond';
+                    tagLabel = 'Alumni';
+                    tagHtml = `<div class="member-tag ${tagClass}">${tagLabel}</div>`;
+                }
+            }
+
+            const card = document.createElement('div');
+            card.className = `team-card-wrapper ${isSaswatDev ? 'dev-card' : ''} ${isAlumni ? 'alumni-card' : ''}`;
+            
+            if (isSaswatDev) {
+                card.innerHTML = `
+                <div class="card-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                    <div class="card-front">
+                        <div class="dev-glitch-bg">
+                            <div class="dev-glitch-layer dev-glitch-base"></div>
+                            <div class="dev-glitch-layer dev-glitch-slice-red"></div>
+                            <div class="dev-glitch-layer dev-glitch-slice-cyan"></div>
+                            <div class="dev-glitch-scanlines"></div>
+                            <div class="dev-glitch-beam"></div>
+                        </div>
+                        ${avatarHtml}
+                        <h2>${member.name}</h2>
+                        ${tagHtml}
+                        <div class="card-role"><div class="role-dot"></div>${member.role || 'Web Dev and AI/ML'}</div>
+                        <p style="margin-top: 0.6rem;">Class of ${member.year}</p>
+                        <div class="dev-flip-hint">&lt; CLICK TO FLIP &gt;</div>
                     </div>
-                </div>
-            </div>`;
-        grid.appendChild(card);
-    });
-    gsap.fromTo(".team-card-wrapper", { autoAlpha: 0, y: 40, scale: 0.95 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out", stagger: 0.05, delay: delay });
+                    <div class="card-back">
+                        <div class="dev-glitch-bg">
+                            <div class="dev-glitch-layer dev-glitch-base"></div>
+                            <div class="dev-glitch-layer dev-glitch-slice-red"></div>
+                            <div class="dev-glitch-layer dev-glitch-slice-cyan"></div>
+                            <div class="dev-glitch-scanlines"></div>
+                            <div class="dev-glitch-beam"></div>
+                        </div>
+                        <div class="dev-reveal-tag">
+                            <span class="terminal-caret">&gt;_</span> DEVELOPER
+                        </div>
+                        <h2 class="dev-reveal-title">This website is developed by This guy!</h2>
+                        <div class="social-links dev-social-links" style="margin-top: 1rem;">
+                            <a href="${member.linkedin || 'https://www.linkedin.com/in/saswat-mohanty-0a4549331/'}" target="_blank" onclick="event.stopPropagation()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.2a1.62 1.62 0 1 0 1.62 1.62A1.62 1.62 0 0 0 7.83 6.2Z"/></svg>
+                                LinkedIn
+                            </a>
+                            <a href="${member.github || 'https://github.com/SazWhatician'}" target="_blank" onclick="event.stopPropagation()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>
+                                GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                card.innerHTML = `
+                <div class="card-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                    <div class="card-front">
+                        ${avatarHtml}
+                        <h2>${member.name}</h2>
+                        ${tagHtml}
+                        ${member.role ? `<div class="card-role"><div class="role-dot"></div>${member.role}</div>` : ''}
+                        <p style="margin-top: 0.6rem;">${isAlumni ? (member.batch ? 'Class of ' + member.batch : 'Alumni') : 'Class of ' + member.year}</p>
+                    </div>
+                    <div class="card-back">
+                        <div class="social-links">
+                            <a href="${member.linkedin || '#'}" target="_blank" onclick="event.stopPropagation()">LinkedIn</a>
+                            <a href="${member.github || '#'}" target="_blank" onclick="event.stopPropagation()">GitHub</a>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            grid.appendChild(card);
+        });
+
+        gsap.fromTo(".team-card-wrapper", { autoAlpha: 0, y: 40, scale: 0.95 }, { 
+            autoAlpha: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out", stagger: 0.05, delay: delay,
+            onComplete: () => {
+                if (typeof ScrollTrigger !== 'undefined') {
+                    ScrollTrigger.refresh();
+                }
+            }
+        });
+    }
+
+    setTimeout(() => {
+        if (typeof ScrollTrigger !== 'undefined') {
+            ScrollTrigger.refresh();
+        }
+    }, 100);
 };
 
 window.initFilters = function () {
     const buttons = document.querySelectorAll('.filter-btn');
     buttons.forEach(btn => {
         btn.onclick = (e) => {
+            const btnEl = e.currentTarget || e.target.closest('.filter-btn');
+            if (!btnEl) return;
+            const filterVal = btnEl.getAttribute('data-filter');
             buttons.forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            gsap.to(".team-card-wrapper", {
-                autoAlpha: 0, y: -20, duration: 0.3, stagger: 0.02, ease: "power2.in",
-                onComplete: () => window.renderTeam(e.target.getAttribute('data-filter'), 0)
-            });
+            btnEl.classList.add('active');
+
+            const cards = document.querySelectorAll('.team-card-wrapper');
+            if (cards.length > 0) {
+                gsap.to(cards, {
+                    autoAlpha: 0, y: -20, duration: 0.25, stagger: 0.015, ease: "power2.in",
+                    onComplete: () => {
+                        window.renderTeam(filterVal, 0);
+                    }
+                });
+            } else {
+                window.renderTeam(filterVal, 0);
+            }
         };
     });
 };
@@ -545,9 +705,219 @@ const brutalEventsData = [
 ];
 
 
+// --- EVENTS 3D COMPUTER TERMINAL MODEL ---
+function ensureGLTFLoader() {
+    return new Promise((resolve) => {
+        if (typeof THREE !== 'undefined' && typeof THREE.GLTFLoader !== 'undefined') {
+            return resolve(true);
+        }
+        const script = document.createElement('script');
+        script.src = 'js/GLTFLoader.js';
+        script.onload = () => resolve(true);
+        script.onerror = () => {
+            console.error('Failed to load GLTFLoader.js');
+            resolve(false);
+        };
+        document.head.appendChild(script);
+    });
+}
+
+window.initEventsTerminalModel = async function () {
+    window.cleanupEventsTerminalModel();
+
+    const container = document.getElementById('events-terminal-canvas');
+    if (!container || typeof THREE === 'undefined') return;
+
+    await ensureGLTFLoader();
+    if (typeof THREE.GLTFLoader === 'undefined') return;
+
+    if (!document.getElementById('events-terminal-canvas')) return;
+
+    container.innerHTML = '';
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
+    const scene = new THREE.Scene();
+    window.eventsTerminalScene = scene;
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    camera.position.set(0, 0, 7.5);
+    window.eventsTerminalCamera = camera;
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    if (THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
+    container.appendChild(renderer.domElement);
+    window.eventsTerminalRenderer = renderer;
+
+    // Rich studio lighting for the terminal
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2.5);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 3.2);
+    dirLight.position.set(5, 8, 6);
+    scene.add(dirLight);
+
+    const greenFill = new THREE.PointLight(0x2BA648, 5.0, 18);
+    greenFill.position.set(0, -0.6, 3.5);
+    scene.add(greenFill);
+
+    const rimLight = new THREE.DirectionalLight(0x00ff88, 2.0);
+    rimLight.position.set(-6, 4, -4);
+    scene.add(rimLight);
+
+    const terminalGroup = new THREE.Group();
+    scene.add(terminalGroup);
+    window.eventsTerminalGroup = terminalGroup;
+
+    const loader = new THREE.GLTFLoader();
+    loader.load('events-assets/computer_terminal.glb', (gltf) => {
+        if (!window.eventsTerminalScene) return;
+        const model = gltf.scene;
+
+        // Auto center bounding box
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+
+        model.position.x -= center.x;
+        model.position.y -= center.y;
+        model.position.z -= center.z;
+
+        const maxDim = Math.max(size.x, size.y, size.z);
+        // Prominent responsive scale
+        const targetScale = (window.innerWidth < 768 ? 3.8 : 5.4) / maxDim;
+        terminalGroup.scale.set(targetScale, targetScale, targetScale);
+
+        // Angled perspective so CRT monitor and keys are clearly visible
+        terminalGroup.rotation.y = -0.28;
+        terminalGroup.rotation.x = 0.14;
+
+        terminalGroup.add(model);
+
+        if (typeof gsap !== 'undefined') {
+            gsap.from(terminalGroup.scale, {
+                x: 0.001, y: 0.001, z: 0.001,
+                duration: 1.4,
+                ease: 'power3.out'
+            });
+            gsap.from(terminalGroup.rotation, {
+                y: -Math.PI * 0.7,
+                duration: 1.6,
+                ease: 'power3.out'
+            });
+        }
+    }, undefined, (err) => {
+        console.error('Failed to load computer_terminal.glb:', err);
+    });
+
+    // Interactive mouse rotation tracking
+    let targetRotX = 0.12;
+    let targetRotY = -0.3;
+    let currentRotX = 0.12;
+    let currentRotY = -0.3;
+
+    window.eventsTerminalMouseMove = (e) => {
+        const nx = (e.clientX / window.innerWidth) * 2 - 1;
+        const ny = (e.clientY / window.innerHeight) * 2 - 1;
+        targetRotY = -0.3 + nx * 0.45;
+        targetRotX = 0.12 + ny * 0.25;
+    };
+    window.addEventListener('mousemove', window.eventsTerminalMouseMove);
+
+    // Responsive resize handler
+    window.eventsTerminalResize = () => {
+        if (!container || !renderer || !camera) return;
+        const w = container.clientWidth || window.innerWidth;
+        const h = container.clientHeight || window.innerHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+    };
+    window.addEventListener('resize', window.eventsTerminalResize);
+
+    // Render loop with subtle organic float
+    const clock = new THREE.Clock();
+    window.eventsTerminalReqId = null;
+
+    function animateTerminal() {
+        if (!document.getElementById('events-terminal-canvas')) {
+            window.cleanupEventsTerminalModel();
+            return;
+        }
+        window.eventsTerminalReqId = requestAnimationFrame(animateTerminal);
+        const time = clock.getElapsedTime();
+
+        currentRotX += (targetRotX - currentRotX) * 0.06;
+        currentRotY += (targetRotY - currentRotY) * 0.06;
+
+        if (terminalGroup) {
+            terminalGroup.rotation.x = currentRotX + Math.sin(time * 1.5) * 0.02;
+            terminalGroup.rotation.y = currentRotY;
+            terminalGroup.position.y = Math.sin(time * 2.0) * 0.06;
+        }
+
+        renderer.render(scene, camera);
+    }
+    animateTerminal();
+
+    // Scroll parallax with GSAP ScrollTrigger
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.to(terminalGroup.position, {
+            y: -2.5,
+            z: -3.5,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '.events-hero-new',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: true
+            }
+        });
+    }
+};
+
+window.cleanupEventsTerminalModel = function () {
+    if (window.eventsTerminalReqId) {
+        cancelAnimationFrame(window.eventsTerminalReqId);
+        window.eventsTerminalReqId = null;
+    }
+    if (window.eventsTerminalMouseMove) {
+        window.removeEventListener('mousemove', window.eventsTerminalMouseMove);
+        window.eventsTerminalMouseMove = null;
+    }
+    if (window.eventsTerminalResize) {
+        window.removeEventListener('resize', window.eventsTerminalResize);
+        window.eventsTerminalResize = null;
+    }
+    if (window.eventsTerminalRenderer) {
+        window.eventsTerminalRenderer.dispose();
+        window.eventsTerminalRenderer = null;
+    }
+    if (window.eventsTerminalScene) {
+        window.eventsTerminalScene.traverse((obj) => {
+            if (obj.geometry) obj.geometry.dispose();
+            if (obj.material) {
+                if (Array.isArray(obj.material)) {
+                    obj.material.forEach(m => m.dispose());
+                } else {
+                    obj.material.dispose();
+                }
+            }
+        });
+        window.eventsTerminalScene = null;
+    }
+    window.eventsTerminalGroup = null;
+    window.eventsTerminalCamera = null;
+    const container = document.getElementById('events-terminal-canvas');
+    if (container) container.innerHTML = '';
+};
+
 window.initEventsBrutalist = function () {
     window.cleanupEventsBrutalist();
     document.body.style.overflow = 'auto'; // allow scrolling now
+    window.initEventsTerminalModel();
 
     // 1. Initialize Lenis specific to events if needed
     if (typeof Lenis !== 'undefined') {
@@ -1000,6 +1370,7 @@ window.cleanupEventsBrutalist = function () {
     if (window.introReqId) { cancelAnimationFrame(window.introReqId); window.introReqId = null; }
     if (window.introMouseMove) { document.removeEventListener('mousemove', window.introMouseMove); window.introMouseMove = null; }
     if (window.introResize) { window.removeEventListener('resize', window.introResize); window.introResize = null; }
+    if (window.cleanupEventsTerminalModel) window.cleanupEventsTerminalModel();
 
     // Clear scramblers
     document.querySelectorAll('.decode-text').forEach(el => {
@@ -1192,11 +1563,17 @@ window.initBarba = function () {
     });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+function onDomReady() {
     const loader = document.getElementById('loading-screen');
     if (loader) { gsap.to(loader, { opacity: 0, duration: 0.5, delay: 0.2, onComplete: () => loader.style.display = 'none' }); }
     window.initBarba();
-});
+}
+
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    onDomReady();
+} else {
+    document.addEventListener('DOMContentLoaded', onDomReady);
+}
 
 // --- EXPANDING 3D FOOTER LOGIC ---
 window.footerExpandingReqId = null;
