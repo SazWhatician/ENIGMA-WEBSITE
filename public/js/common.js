@@ -1463,6 +1463,9 @@ window.initBarba = function () {
             enter(data) {
                 const done = this.async();
                 window.scrollTo(0, 0);
+                document.body.style.overflow = '';
+                document.body.style.overflowY = 'auto';
+                document.body.style.touchAction = 'auto';
 
                 if (data.current.container) {
                     data.current.container.style.display = 'none';
@@ -1493,6 +1496,9 @@ window.initBarba = function () {
                 },
                 beforeLeave() {
                     window.cleanupProjectReel();
+                    document.body.style.overflow = '';
+                    document.body.style.overflowY = 'auto';
+                    document.body.style.touchAction = 'auto';
                 },
                 beforeOnce(data) {
                     document.body.style.overflow = 'hidden';
@@ -1622,6 +1628,8 @@ window.initGlobalMobileMenu = function () {
     if (window._mobileMenuInitialized) return;
     window._mobileMenuInitialized = true;
 
+    let isToggling = false;
+
     function getElements() {
         const mobileMenu = document.querySelector('#mobile-menu, .mobile-menu');
         const hamburger = document.querySelector('#hamburger, .hamburger');
@@ -1636,16 +1644,6 @@ window.initGlobalMobileMenu = function () {
         if (hamburger) hamburger.classList.add('active');
         mobileMenu.classList.add('active');
         document.body.style.overflow = 'hidden';
-
-        const menuLinks = mobileMenu.querySelectorAll('a');
-        if (window.gsap) {
-            gsap.fromTo(menuLinks,
-                { opacity: 0, y: 25, scale: 0.96 },
-                { opacity: 1, y: 0, scale: 1, duration: 0.4, stagger: 0.07, ease: "back.out(1.7)", delay: 0.15 }
-            );
-        } else {
-            menuLinks.forEach(l => { l.style.opacity = '1'; l.style.transform = 'none'; });
-        }
     }
 
     function closeMobileMenu() {
@@ -1657,7 +1655,7 @@ window.initGlobalMobileMenu = function () {
         document.body.style.overflow = '';
     }
 
-    // Single global click listener using event delegation
+    // Single global click listener using event delegation with debouncing
     document.addEventListener('click', (e) => {
         const hamburgerBtn = e.target.closest('#hamburger, .hamburger');
         const closeBtn = e.target.closest('#mobile-menu-close, .mobile-menu-close');
@@ -1667,6 +1665,10 @@ window.initGlobalMobileMenu = function () {
         if (hamburgerBtn) {
             e.preventDefault();
             e.stopPropagation();
+            if (isToggling) return;
+            isToggling = true;
+            setTimeout(() => { isToggling = false; }, 250);
+
             if (mobileMenu && mobileMenu.classList.contains('active')) {
                 closeMobileMenu();
             } else {
@@ -1675,15 +1677,16 @@ window.initGlobalMobileMenu = function () {
         } else if (closeBtn) {
             e.preventDefault();
             e.stopPropagation();
+            if (isToggling) return;
+            isToggling = true;
+            setTimeout(() => { isToggling = false; }, 250);
+
             closeMobileMenu();
         } else if (menuLink) {
             // Smoothly close menu before navigating
             closeMobileMenu();
-        } else if (mobileMenu && mobileMenu.classList.contains('active') && e.target === mobileMenu) {
-            // Tap backdrop to close
-            closeMobileMenu();
         }
-    });
+    }, true);
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
