@@ -1632,6 +1632,9 @@ window.initGlobalMobileMenu = function () {
         var menuStyle = document.createElement('style');
         menuStyle.id = 'enigma-mobile-menu-styles';
         menuStyle.textContent = `
+            :root {
+                --clip-origin: calc(100% - 46px) 46px;
+            }
             nav {
                 position: fixed !important;
                 top: 0 !important;
@@ -1713,42 +1716,38 @@ window.initGlobalMobileMenu = function () {
                 width: 100% !important;
                 height: 100vh !important;
                 height: 100dvh !important;
-                background: rgba(8, 8, 8, 0.97) !important;
-                backdrop-filter: blur(16px);
-                -webkit-backdrop-filter: blur(16px);
+                background: #080808 !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
                 display: flex !important;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 gap: 2.25rem;
                 z-index: 3000 !important;
-                clip-path: circle(0% at calc(100% - 37px) 37px);
-                -webkit-clip-path: circle(0% at calc(100% - 37px) 37px);
-                opacity: 0;
+                clip-path: circle(0% at var(--clip-origin, calc(100% - 46px) 46px));
+                -webkit-clip-path: circle(0% at var(--clip-origin, calc(100% - 46px) 46px));
                 visibility: hidden;
                 pointer-events: none;
                 overscroll-behavior: contain;
                 touch-action: none;
                 -webkit-backface-visibility: hidden;
                 backface-visibility: hidden;
-                transform: translateZ(0);
-                -webkit-transform: translateZ(0);
-                will-change: clip-path, opacity;
-                transition: clip-path 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
-                            -webkit-clip-path 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
-                            opacity 0.35s ease, 
-                            visibility 0.45s step-end;
+                transform: translate3d(0, 0, 0);
+                -webkit-transform: translate3d(0, 0, 0);
+                will-change: clip-path;
+                transition: clip-path 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                            -webkit-clip-path 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                            visibility 0s linear 0.4s;
             }
             .mobile-menu.active {
-                clip-path: circle(150% at calc(100% - 37px) 37px);
-                -webkit-clip-path: circle(150% at calc(100% - 37px) 37px);
-                opacity: 1;
+                clip-path: circle(150% at var(--clip-origin, calc(100% - 46px) 46px));
+                -webkit-clip-path: circle(150% at var(--clip-origin, calc(100% - 46px) 46px));
                 visibility: visible;
                 pointer-events: auto;
                 transition: clip-path 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
                             -webkit-clip-path 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
-                            opacity 0.35s ease, 
-                            visibility 0s;
+                            visibility 0s linear 0s;
             }
             .mobile-menu a {
                 font-size: clamp(1.8rem, 6vw, 2.4rem);
@@ -1760,19 +1759,23 @@ window.initGlobalMobileMenu = function () {
                 letter-spacing: 0.1em;
                 opacity: 0;
                 transform: translateY(20px);
-                transition: color 0.3s ease, text-shadow 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+                transition: opacity 0.2s ease, transform 0.2s ease, color 0.3s ease, text-shadow 0.3s ease;
                 touch-action: manipulation;
                 -webkit-tap-highlight-color: transparent;
             }
             .mobile-menu.active a {
                 opacity: 1;
                 transform: translateY(0);
+                transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                            transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                            color 0.3s ease, 
+                            text-shadow 0.3s ease;
             }
-            .mobile-menu.active a:nth-child(2) { transition-delay: 0.05s; }
-            .mobile-menu.active a:nth-child(3) { transition-delay: 0.10s; }
-            .mobile-menu.active a:nth-child(4) { transition-delay: 0.15s; }
-            .mobile-menu.active a:nth-child(5) { transition-delay: 0.20s; }
-            .mobile-menu.active a:nth-child(6) { transition-delay: 0.25s; }
+            .mobile-menu.active a:nth-of-type(1) { transition-delay: 0.08s; }
+            .mobile-menu.active a:nth-of-type(2) { transition-delay: 0.13s; }
+            .mobile-menu.active a:nth-of-type(3) { transition-delay: 0.18s; }
+            .mobile-menu.active a:nth-of-type(4) { transition-delay: 0.23s; }
+            .mobile-menu.active a:nth-of-type(5) { transition-delay: 0.28s; }
             .mobile-menu a:hover,
             .mobile-menu a:active {
                 color: #2BA648;
@@ -1788,6 +1791,17 @@ window.initGlobalMobileMenu = function () {
 
     var _prevOverflow = '';
 
+    function updateClipOrigin(burgerEl) {
+        if (!burgerEl) burgerEl = document.querySelector('.hamburger, #hamburger');
+        if (!burgerEl) return;
+        var rect = burgerEl.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+            var x = Math.round(rect.left + rect.width / 2) + 'px';
+            var y = Math.round(rect.top + rect.height / 2) + 'px';
+            document.documentElement.style.setProperty('--clip-origin', x + ' ' + y);
+        }
+    }
+
     function closeAllMenus() {
         var menus = document.querySelectorAll('.mobile-menu, #mobile-menu');
         var burgers = document.querySelectorAll('.hamburger, #hamburger');
@@ -1796,7 +1810,7 @@ window.initGlobalMobileMenu = function () {
         document.body.style.overflow = _prevOverflow;
     }
 
-    function toggleMenu() {
+    function toggleMenu(sourceBtn) {
         var anyActive = false;
         var menus = document.querySelectorAll('.mobile-menu, #mobile-menu');
         var burgers = document.querySelectorAll('.hamburger, #hamburger');
@@ -1807,6 +1821,7 @@ window.initGlobalMobileMenu = function () {
         if (anyActive) {
             closeAllMenus();
         } else {
+            updateClipOrigin(sourceBtn);
             _prevOverflow = document.body.style.overflow || '';
             menus.forEach(function (m) { m.classList.add('active'); });
             burgers.forEach(function (h) { h.classList.add('active'); });
@@ -1826,7 +1841,7 @@ window.initGlobalMobileMenu = function () {
         if (hamburgerBtn) {
             e.preventDefault();
             e.stopPropagation();
-            toggleMenu();
+            toggleMenu(hamburgerBtn);
         } else if (closeBtn) {
             e.preventDefault();
             e.stopPropagation();
@@ -1841,6 +1856,10 @@ window.initGlobalMobileMenu = function () {
             closeAllMenus();
         }
     });
+
+    window.addEventListener('resize', function () {
+        updateClipOrigin();
+    }, { passive: true });
 };
 
 function onDomReady() {
