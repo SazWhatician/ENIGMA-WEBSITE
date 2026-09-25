@@ -575,91 +575,124 @@
             }
         }
     
+        /* MASTER MOBILE MENU & HAMBURGER STYLES */
+        nav {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 3500 !important;
+            background: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border-bottom: none !important;
+        }
+        @media (max-width: 768px) {
+            nav {
+                padding: 1.5rem !important;
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+            }
+            .nav-items { display: none !important; }
+            .hamburger { display: flex !important; }
+        }
         .hamburger {
-            position: relative;
-            width: 40px;
-            height: 40px;
             display: none;
+            position: relative;
+            width: 44px;
+            height: 44px;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            z-index: 2000;
+            z-index: 3600;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 0;
         }
         .hamburger-lines {
             width: 24px;
-            height: 12px;
+            height: 14px;
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            pointer-events: none;
         }
         .hamburger-lines span {
             display: block;
             width: 100%;
             height: 2px;
-            background-color: #fff;
+            background-color: #ffffff;
             border-radius: 2px;
-            transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.5s ease;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, background-color 0.3s ease;
             transform-origin: center;
+            will-change: transform, opacity;
         }
         .hamburger.active .hamburger-lines span:nth-child(1) {
-            transform: translateY(5px) rotate(45deg);
+            transform: translateY(6px) rotate(45deg);
+            background-color: #2BA648;
         }
         .hamburger.active .hamburger-lines span:nth-child(2) {
-            transform: scaleX(0);
             opacity: 0;
+            transform: scaleX(0);
         }
         .hamburger.active .hamburger-lines span:nth-child(3) {
-            transform: translateY(-5px) rotate(-45deg);
+            transform: translateY(-6px) rotate(-45deg);
+            background-color: #2BA648;
         }
-        
+        .mobile-menu-close {
+            display: none !important;
+        }
         .mobile-menu {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(10, 10, 10, 0.96);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            display: flex;
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            width: 100% !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            background: rgba(8, 8, 8, 0.97) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex !important;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 2.5rem;
-            z-index: 2500;
-            clip-path: circle(0% at 100% 0%);
-            transition: clip-path 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-            pointer-events: none;
+            gap: 2.25rem;
+            z-index: 3000 !important;
+            clip-path: circle(0% at calc(100% - 37px) 37px);
+            -webkit-clip-path: circle(0% at calc(100% - 37px) 37px);
+            opacity: 0;
             visibility: hidden;
+            pointer-events: none;
+            overscroll-behavior: contain;
+            touch-action: none;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            will-change: clip-path, opacity;
+            transition: clip-path 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+                        -webkit-clip-path 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.35s ease, 
+                        visibility 0.45s step-end;
         }
         .mobile-menu.active {
-            clip-path: circle(150% at 100% 0%);
-            pointer-events: auto;
-            visibility: visible;
-        }
-        .mobile-menu-close {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            color: #fff;
-            opacity: 0;
-            transform: rotate(-90deg);
-            transition: opacity 0.4s ease 0.2s, transform 0.5s cubic-bezier(0.77, 0, 0.175, 1) 0.1s;
-        }
-        .mobile-menu.active .mobile-menu-close {
+            clip-path: circle(150% at calc(100% - 37px) 37px);
+            -webkit-clip-path: circle(150% at calc(100% - 37px) 37px);
             opacity: 1;
-            transform: rotate(0deg);
-        }
-        .mobile-menu-close svg {
-            width: 28px;
-            height: 28px;
+            visibility: visible;
+            pointer-events: auto;
+            transition: clip-path 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+                        -webkit-clip-path 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.35s ease, 
+                        visibility 0s;
         }
         .mobile-menu a {
             font-size: clamp(1.8rem, 6vw, 2.4rem);
@@ -671,7 +704,9 @@
             letter-spacing: 0.1em;
             opacity: 0;
             transform: translateY(20px);
-            transition: color 0.3s ease, text-shadow 0.3s ease, opacity 0.4s ease, transform 0.4s ease;
+            transition: color 0.3s ease, text-shadow 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
         .mobile-menu.active a {
             opacity: 1;
@@ -682,44 +717,13 @@
         .mobile-menu.active a:nth-child(4) { transition-delay: 0.15s; }
         .mobile-menu.active a:nth-child(5) { transition-delay: 0.20s; }
         .mobile-menu.active a:nth-child(6) { transition-delay: 0.25s; }
-        .mobile-menu a:hover {
+        .mobile-menu a:hover,
+        .mobile-menu a:active {
             color: #2BA648;
             text-shadow: 0 0 20px rgba(43, 166, 72, 0.6), 0 0 40px rgba(43, 166, 72, 0.3);
             transform: scale(1.05);
         }
     </style>
-
-<style>
-    /* MASTER OVERRIDES FOR HAMBURGER & NAV */
-    .hamburger { 
-        display: none !important; 
-        z-index: 3000 !important;
-    }
-    nav {
-        z-index: 2000 !important;
-        background: transparent !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-        border-bottom: none !important;
-    }
-    .mobile-menu {
-        z-index: 2500 !important;
-    }
-    @media (max-width: 768px) {
-        .hamburger { 
-            display: flex !important; 
-        }
-        .nav-items { 
-            display: none !important; 
-        }
-        nav {
-            padding: 1.5rem !important;
-            flex-direction: row !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-        }
-    }
-</style>
 
 </head>
 
