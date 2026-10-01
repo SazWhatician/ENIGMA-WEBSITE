@@ -1620,6 +1620,42 @@ window.initBarba = function () {
                         }, 150);
                     }
                 }
+            },
+            {
+                namespace: 'blog',
+                beforeEnter(data) {
+                    document.body.style.overflowY = 'auto';
+                    document.body.style.touchAction = 'auto';
+                    if (window.initBlogPage) window.initBlogPage();
+                },
+                afterEnter() {
+                },
+                beforeLeave() {
+                    if (window.cleanupBlogFlowCanvas) window.cleanupBlogFlowCanvas();
+                },
+                beforeOnce(data) {
+                    document.body.style.overflowY = 'auto';
+                    document.body.style.touchAction = 'auto';
+                    if (window.initBlogPage) window.initBlogPage();
+                }
+            },
+            {
+                namespace: 'blog-post',
+                beforeEnter(data) {
+                    document.body.style.overflowY = 'auto';
+                    document.body.style.touchAction = 'auto';
+                    if (window.initBlogPostPage) window.initBlogPostPage();
+                },
+                afterEnter() {
+                },
+                beforeLeave() {
+                    if (window.cleanupBlogPostPage) window.cleanupBlogPostPage();
+                },
+                beforeOnce(data) {
+                    document.body.style.overflowY = 'auto';
+                    document.body.style.touchAction = 'auto';
+                    if (window.initBlogPostPage) window.initBlogPostPage();
+                }
             }
         ]
     });

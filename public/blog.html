@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <meta name="description" content="ENIGMA Dispatches - Decoded Transmissions from the Digital Frontier. Articles on AI/ML, Cybersecurity, Distributed Systems, and Advanced Computation.">
+    <meta name="keywords" content="ENIGMA, Blog, AI, ML, Cybersecurity, Systems, Coding Club, VSSUT">
+    <meta property="og:title" content="ENIGMA | Dispatches & Tech Blog">
+    <meta property="og:description" content="Decoded transmissions from the digital frontier. Deep dives into machine intelligence, systems, and cryptographic protocols.">
+    <meta property="og:image" content="https://www.enigmavssut.in/logo.bg.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <title>ENIGMA | Dispatches</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Syncopate:wght@400;700&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/@barba/core"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#000000',
+                        orbitGreen: '#2BA648',
+                        orbitDark: '#0F3918',
+                    },
+                    fontFamily: {
+                        sans: ['"Host Grotesk"', 'sans-serif'],
+                        syncopate: ['"Syncopate"', 'sans-serif'],
+                        cinzel: ['"Cinzel"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --neon-green: #2BA648;
+            --neon-glow: rgba(43, 166, 72, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: 'Host Grotesk', sans-serif;
+            position: relative;
+        }
+
+        /* Ambient scanline texture */
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 5;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 4px, 6px 100%;
+            opacity: 0.6;
+        }
+
+        #blog-flow-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .blueprint-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(43, 166, 72, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(43, 166, 72, 0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Transitions */
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            pointer-events: none;
+            display: flex;
+        }
+
+        .transition-panel {
+            flex: 1;
+            height: 100%;
+            background-color: #2BA648;
+            transform: translateY(100%);
+            will-change: transform;
+            box-shadow: 2px 0 0 #2BA648;
+        }
+
+        /* Master Nav */
+        nav {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            padding: 1.5rem 2rem !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            z-index: 3500 !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+        }
+
+        .nav-items a {
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: 450;
+            font-size: 0.9rem;
+        }
+
+        .nav-items a:hover {
+            color: #2BA648;
+            text-shadow: 0 0 10px rgba(43, 166, 72, 0.8);
+        }
+
+        /* Filter Pills */
+        .topic-pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+        }
+
+        .topic-pill:hover {
+            border-color: rgba(43, 166, 72, 0.6);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(43, 166, 72, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .topic-pill.active {
+            background: rgba(43, 166, 72, 0.12);
+            border-color: #2BA648;
+            color: #2BA648;
+            box-shadow: 0 0 20px rgba(43, 166, 72, 0.4);
+        }
+
+        /* Blog Card 3D & Holographic */
+        .blog-card-wrap {
+            perspective: 1200px;
+            will-change: transform, opacity;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .blog-card {
+            background: rgba(12, 14, 12, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .blog-card:hover {
+            border-color: rgba(43, 166, 72, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(43, 166, 72, 0.2);
+        }
+
+        .card-sheen {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(43, 166, 72, 0.15) 0%, transparent 60%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .blog-card:hover .card-sheen {
+            opacity: 1;
+        }
+
+        .hero-tag {
+            font-family: 'Syncopate', sans-serif;
+            letter-spacing: 3px;
+        }
+
+        /* Glitch reveal effect */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Mobile Hamburger */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            width: 30px;
+            height: 20px;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger-lines span {
+            display: block;
+            height: 2px;
+            width: 100%;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-items {
+                display: none !important;
+            }
+
+            .mobile-menu {
+                position: fixed;
+                inset: 0;
+                background: #000;
+                z-index: 4000;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 2rem;
+                clip-path: circle(0% at var(--clip-origin, 100% 0));
+                transition: clip-path 0.5s ease-in-out;
+            }
+
+            .mobile-menu.open {
+                clip-path: circle(150% at var(--clip-origin, 100% 0));
+            }
+
+            .mobile-menu a {
+                color: #fff;
+                font-family: 'Syncopate', sans-serif;
+                font-size: 1.5rem;
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+            .mobile-menu a:hover {
+                color: #2BA648;
+            }
+        }
+    </style>
+</head>
+
+<body data-barba="wrapper">
+
+    <!-- Page Wipe Panels -->
+    <div class="page-transition">
+        <div class="transition-panel"></div>
+        <div class="transition-panel"></div>
+        <div class="transition-panel"></div>
+    </div>
+
+    <!-- Scanlines & Background Effects -->
+    <div class="scanlines"></div>
+    <div class="blueprint-grid"></div>
+    <canvas id="blog-flow-canvas"></canvas>
+
+    <!-- Master Nav -->
+    <nav>
+        <div class="logo">
+            <a href="index.html" style="font-weight: 700; font-size: 1.2rem; text-decoration: none; color: #fff; letter-spacing: 2px; font-family: 'Host Grotesk', sans-serif;">ENIGMA.</a>
+        </div>
+        <div class="nav-items flex gap-8">
+            <p><a href="events.html">Events</a></p>
+            <p><a href="project.html">Projects</a></p>
+            <p><a href="team.html">Team</a></p>
+            <p><a href="blog.html" style="color: #2BA648; text-shadow: 0 0 10px rgba(43, 166, 72, 0.8);">Dispatches</a></p>
+            <p><a href="contact.html">Contact</a></p>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <div class="hamburger-lines">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div style="position: absolute; top: 2rem; right: 2rem; cursor: pointer; color: #fff; font-size: 2rem;" id="mobile-menu-close">&times;</div>
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="project.html">Projects</a>
+        <a href="team.html">Team</a>
+        <a href="blog.html" style="color: #2BA648;">Dispatches</a>
+        <a href="contact.html">Contact</a>
+    </div>
+
+    <!-- Barba Container -->
+    <main data-barba="container" data-barba-namespace="blog" class="relative z-10 min-h-screen pt-32 pb-24 px-4 sm:px-8 max-w-7xl mx-auto">
+
+        <!-- HERO HEADER WITH SPLIT REVEAL -->
+        <header class="mb-14 text-center sm:text-left relative">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-[10px] tracking-[2px] uppercase text-emerald-400 font-syncopate mb-4 hero-pill opacity-0 translate-y-4">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span>TRANSMISSIONS FEED // 0xBLOG</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-syncopate font-bold uppercase tracking-tight text-white mb-4 hero-title overflow-hidden">
+                <span class="inline-block hero-word">ENIGMA</span>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-[#2BA648] inline-block hero-word">DISPATCHES</span>
+            </h1>
+
+            <p class="text-gray-400 max-w-2xl text-base sm:text-lg font-light leading-relaxed hero-desc opacity-0 translate-y-4">
+                Decoded transmissions from the digital frontier. Research, architectural breakthroughs, and high-entropy experiments engineered by the ENIGMA tech cell.
+            </p>
+
+            <div class="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-b border-white/[0.08] py-4 hero-meta opacity-0 translate-y-4">
+                <div class="flex items-center gap-6 text-xs text-gray-400 uppercase tracking-widest font-syncopate">
+                    <span>STATUS: <span class="text-emerald-400">BROADCASTING</span></span>
+                    <span class="hidden sm:inline">PROTOCOLS: <span class="text-white">QUANTUM-RESILIENT</span></span>
+                </div>
+                <div id="blog-count" class="text-xs text-emerald-400 font-syncopate uppercase tracking-widest">
+                    SYNCING ARCHIVES...
+                </div>
+            </div>
+        </header>
+
+        <!-- TOPIC FILTER BAR -->
+        <section class="mb-12">
+            <div class="flex items-center gap-2 mb-3 text-xs uppercase tracking-[2px] font-syncopate text-gray-500">
+                <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                <span>FILTER TRANSMISSION CHANNELS</span>
+            </div>
+            <div id="topic-filters" class="flex flex-wrap gap-2.5 sm:gap-3">
+                <button class="topic-pill active px-4 py-2 rounded-md" data-topic="ALL">[ ALL ARCHIVES ]</button>
+                <!-- Dynamic topic buttons will be populated here -->
+            </div>
+        </section>
+
+        <!-- BLOG GRID CONTAINER -->
+        <section id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 relative min-h-[400px]">
+            <!-- Dynamic Blog Cards rendered by JavaScript -->
+            <div class="col-span-full flex flex-col items-center justify-center py-20 text-gray-500 font-syncopate text-xs tracking-[2px]">
+                <div class="w-8 h-8 rounded-full border-2 border-emerald-500/20 border-t-emerald-500 animate-spin mb-4"></div>
+                <span>ACCESSING CLASSIFIED DISPATCHES...</span>
+            </div>
+        </section>
+
+        <!-- FOOTER TEXT -->
+        <div style="width: 100%; text-align: center; padding: 40px 0 20px 0; font-family: 'Syncopate', sans-serif; font-size: 11px; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; letter-spacing: 2px; position: relative; z-index: 2000; background: transparent; pointer-events: none;">
+            Made with love <span style="color: #2BA648; text-shadow: 0 0 8px rgba(43, 166, 72, 0.8), 0 0 12px rgba(43, 166, 72, 0.5);">ENIGMA.</span>
+        </div>
+
+    </main>
+
+    <!-- MAIN INTERACTIVE BLOG ENGINE -->
+    <script>
+        // Global storage
+        window.enigmaBlogs = [];
+        window.activeTopic = 'ALL';
+        window.blogFlowScene = null;
+        window.blogFlowRenderer = null;
+        window.blogFlowReqId = null;
+
+        // Initialize 3D Flow Canvas
+        function initBlogFlowCanvas() {
+            const canvas = document.getElementById('blog-flow-canvas');
+            if (!canvas || typeof THREE === 'undefined') return;
+
+            if (window.blogFlowRenderer) {
+                window.cleanupBlogFlowCanvas();
+            }
+
+            const scene = new THREE.Scene();
+            window.blogFlowScene = scene;
+
+            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 5, 20);
+            camera.lookAt(0, 0, 0);
+
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            window.blogFlowRenderer = renderer;
+
+            // Geometry: Curved Wave Plane
+            const width = 60;
+            const height = 40;
+            const widthSegments = 50;
+            const heightSegments = 35;
+            const geometry = new THREE.PlaneGeometry(width, height, widthSegments, heightSegments);
+            geometry.rotateX(-Math.PI / 2.3);
+
+            // Shader Material with Green Neon Wave Field
+            const count = geometry.attributes.position.count;
+            const originalY = new Float32Array(count);
+            for (let i = 0; i < count; i++) {
+                originalY[i] = geometry.attributes.position.getY(i);
+            }
+
+            // Material: Cyber Wireframe + Particle Points
+            const wireMaterial = new THREE.MeshBasicMaterial({
+                color: 0x2BA648,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.12
+            });
+            const planeMesh = new THREE.Mesh(geometry, wireMaterial);
+            planeMesh.position.y = -8;
+            scene.add(planeMesh);
+
+            // Floating Green Particle Dust
+            const particleCount = 120;
+            const pGeometry = new THREE.BufferGeometry();
+            const pPositions = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                pPositions[i] = (Math.random() - 0.5) * 50;
+                pPositions[i + 1] = Math.random() * 20 - 5;
+                pPositions[i + 2] = (Math.random() - 0.5) * 40;
+            }
+            pGeometry.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+            const pMaterial = new THREE.PointsMaterial({
+                color: 0x2BA648,
+                size: 1.5,
+                transparent: true,
+                opacity: 0.45,
+                blending: THREE.AdditiveBlending
+            });
+            const particles = new THREE.Points(pGeometry, pMaterial);
+            scene.add(particles);
+
+            let clock = new THREE.Clock();
+            let mouseX = 0;
+            let mouseY = 0;
+
+            const onMouseMove = (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            };
+            window.addEventListener('mousemove', onMouseMove);
+
+            function animate() {
+                window.blogFlowReqId = requestAnimationFrame(animate);
+                const t = clock.getElapsedTime() * 0.8;
+
+                const positions = geometry.attributes.position;
+                for (let i = 0; i < count; i++) {
+                    const x = positions.getX(i);
+                    const z = positions.getZ(i);
+                    // Wave calculation
+                    const y = Math.sin(x * 0.2 + t) * Math.cos(z * 0.15 + t * 0.7) * 2.2 +
+                              Math.sin(x * 0.4 - t * 0.5) * 0.8;
+                    positions.setY(i, originalY[i] + y);
+                }
+                positions.needsUpdate = true;
+
+                // Subtle camera float
+                camera.position.x += (mouseX * 3 - camera.position.x) * 0.03;
+                camera.position.y += (-mouseY * 2 + 5 - camera.position.y) * 0.03;
+                camera.lookAt(0, 0, 0);
+
+                particles.rotation.y = t * 0.03;
+
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            const onResize = () => {
+                if (!canvas) return;
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            };
+            window.addEventListener('resize', onResize);
+
+            window.cleanupBlogFlowCanvas = () => {
+                if (window.blogFlowReqId) cancelAnimationFrame(window.blogFlowReqId);
+                window.removeEventListener('mousemove', onMouseMove);
+                window.removeEventListener('resize', onResize);
+                if (renderer) renderer.dispose();
+                if (scene) scene.clear();
+            };
+        }
+
+        // Fetch Blogs from API
+        async function fetchBlogs() {
+            try {
+                const res = await fetch('/api/blogs?t=' + Date.now());
+                if (!res.ok) throw new Error("API returned " + res.status);
+                const data = await res.json();
+                window.enigmaBlogs = Array.isArray(data) ? data : (data.blogs || []);
+                renderTopics();
+                renderBlogGrid();
+                updateMetaBadge();
+            } catch (err) {
+                console.warn("Could not fetch from /api/blogs, checking fallback:", err);
+                window.enigmaBlogs = [];
+                renderBlogGrid();
+            }
+        }
+
+        function updateMetaBadge() {
+            const countEl = document.getElementById('blog-count');
+            if (countEl) {
+                countEl.textContent = `[ ${window.enigmaBlogs.length} DISPATCHES ARCHIVED ]`;
+            }
+        }
+
+        // Extract and Render Topic Pills
+        function renderTopics() {
+            const container = document.getElementById('topic-filters');
+            if (!container) return;
+
+            const topics = Array.from(new Set(window.enigmaBlogs.map(b => (b.topic || 'GENERAL').toUpperCase())));
+            
+            let html = `<button class="topic-pill ${window.activeTopic === 'ALL' ? 'active' : ''} px-4 py-2 rounded-md" data-topic="ALL">[ ALL ARCHIVES ]</button>`;
+            topics.forEach(t => {
+                const isActive = window.activeTopic === t;
+                html += `<button class="topic-pill ${isActive ? 'active' : ''} px-4 py-2 rounded-md" data-topic="${t}">[ ${t} ]</button>`;
+            });
+
+            container.innerHTML = html;
+
+            // Bind click listeners
+            container.querySelectorAll('.topic-pill').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const topic = btn.dataset.topic;
+                    if (window.activeTopic === topic) return;
+                    window.activeTopic = topic;
+
+                    container.querySelectorAll('.topic-pill').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    shuffleBlogGrid(topic);
+                });
+            });
+        }
+
+        // FLIP (First Last Invert Play) Grid Shuffle Animation
+        function shuffleBlogGrid(filterTopic) {
+            const grid = document.getElementById('blog-grid');
+            if (!grid) return;
+
+            const cards = Array.from(grid.querySelectorAll('.blog-card-wrap'));
+            
+            // 1. FIRST: Record bounding boxes
+            const firstRects = new Map();
+            cards.forEach(card => {
+                firstRects.set(card, card.getBoundingClientRect());
+            });
+
+            // 2. Filter data & Re-render DOM
+            const filtered = filterTopic === 'ALL' 
+                ? window.enigmaBlogs 
+                : window.enigmaBlogs.filter(b => (b.topic || 'GENERAL').toUpperCase() === filterTopic);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-20 text-center text-gray-500 font-syncopate text-xs tracking-[2px]">
+                        NO TRANSMISSIONS DECODED FOR TOPIC [ ${filterTopic} ]
+                    </div>
+                `;
+                return;
+            }
+
+            // Render matching cards
+            grid.innerHTML = filtered.map(b => createCardHTML(b)).join('');
+            initCard3DTilt();
+
+            // 3. LAST & INVERT & PLAY using GSAP
+            const newCards = Array.from(grid.querySelectorAll('.blog-card-wrap'));
+            newCards.forEach((card, index) => {
+                const slug = card.dataset.slug;
+                const oldCard = cards.find(c => c.dataset.slug === slug);
+
+                if (oldCard && firstRects.has(oldCard)) {
+                    const first = firstRects.get(oldCard);
+                    const last = card.getBoundingClientRect();
+                    const deltaX = first.left - last.left;
+                    const deltaY = first.top - last.top;
+
+                    // Play smooth spring glide
+                    gsap.fromTo(card, 
+                        { x: deltaX, y: deltaY, opacity: 0.8 },
+                        { x: 0, y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }
+                    );
+                } else {
+                    // New card entry
+                    gsap.fromTo(card,
+                        { opacity: 0, scale: 0.9, y: 30 },
+                        { opacity: 1, scale: 1, y: 0, duration: 0.5, delay: index * 0.05, ease: "power2.out" }
+                    );
+                }
+            });
+        }
+
+        function createCardHTML(b) {
+            return `
+                <article class="blog-card-wrap group" data-slug="${b.slug}">
+                    <a href="/blog/${b.slug}" class="block h-full text-inherit no-underline">
+                        <div class="blog-card h-full flex flex-col justify-between p-6">
+                            <div class="card-sheen"></div>
+                            
+                            <div>
+                                <!-- Image Thumbnail with Zoom -->
+                                <div class="relative w-full h-48 mb-5 overflow-hidden rounded-md bg-black/60 border border-white/[0.06]">
+                                    <img src="${b.cover}" alt="${b.title}" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" loading="lazy">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                    <div class="absolute top-3 left-3 px-2.5 py-1 rounded bg-black/80 backdrop-blur-md border border-white/10 text-[9px] font-syncopate tracking-widest text-emerald-400">
+                                        ${b.topic}
+                                    </div>
+                                    <div class="absolute bottom-3 right-3 text-[10px] text-gray-300 font-mono">
+                                        ${b.readTime || '5 min'} read
+                                    </div>
+                                </div>
+
+                                <!-- Date & Author -->
+                                <div class="flex items-center gap-3 text-xs text-gray-500 font-syncopate uppercase mb-3">
+                                    <span>${b.date}</span>
+                                    <span>•</span>
+                                    <span class="text-gray-400">${b.author}</span>
+                                </div>
+
+                                <!-- Title -->
+                                <h3 class="text-xl font-bold font-syncopate tracking-tight text-white mb-3 group-hover:text-emerald-400 transition-colors duration-300">
+                                    ${b.title}
+                                </h3>
+
+                                <!-- Summary -->
+                                <p class="text-sm text-gray-400 line-clamp-3 leading-relaxed mb-6 font-light">
+                                    ${b.summary || ''}
+                                </p>
+                            </div>
+
+                            <!-- Bottom CTA -->
+                            <div class="pt-4 border-t border-white/[0.07] flex items-center justify-between text-xs font-syncopate text-emerald-400 tracking-wider">
+                                <span class="group-hover:translate-x-1 transition-transform duration-300 inline-flex items-center gap-1">
+                                    READ DISPATCH &rarr;
+                                </span>
+                                <span class="text-[10px] text-gray-600 font-mono">0x${b.slug.slice(0, 6)}</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+            `;
+        }
+
+        function renderBlogGrid() {
+            const grid = document.getElementById('blog-grid');
+            if (!grid) return;
+
+            if (window.enigmaBlogs.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-20 text-center text-gray-500 font-syncopate text-xs tracking-[2px]">
+                        NO TRANSMISSIONS DECODED. CHECK BACK SOON.
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = window.enigmaBlogs.map(b => createCardHTML(b)).join('');
+            initCard3DTilt();
+
+            // Stagger reveal of cards
+            gsap.fromTo('.blog-card-wrap', 
+                { opacity: 0, y: 40 },
+                { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out' }
+            );
+        }
+
+        // Holographic 3D Mouse Parallax Tilt
+        function initCard3DTilt() {
+            const cards = document.querySelectorAll('.blog-card');
+            cards.forEach(card => {
+                const onCardMove = (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = ((y - centerY) / centerY) * -6;
+                    const rotateY = ((x - centerX) / centerX) * 6;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                    card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
+                    card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
+                };
+
+                const onCardLeave = () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                };
+
+                card.addEventListener('mousemove', onCardMove);
+                card.addEventListener('mouseleave', onCardLeave);
+            });
+        }
+
+        // Kinetic Header Reveal Animation
+        function animateBlogHero() {
+            const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+            tl.to('.hero-pill', { opacity: 1, y: 0, duration: 0.6 })
+              .fromTo('.hero-word', 
+                  { y: 80, opacity: 0 }, 
+                  { y: 0, opacity: 1, duration: 0.8, stagger: 0.15 }, 
+                  "-=0.3")
+              .to('.hero-desc', { opacity: 1, y: 0, duration: 0.6 }, "-=0.4")
+              .to('.hero-meta', { opacity: 1, y: 0, duration: 0.5 }, "-=0.3");
+        }
+
+        // Mobile Menu toggle
+        function initMobileMenu() {
+            const burger = document.getElementById('hamburger');
+            const menu = document.getElementById('mobile-menu');
+            const close = document.getElementById('mobile-menu-close');
+            if (!burger || !menu) return;
+
+            burger.onclick = () => menu.classList.add('open');
+            if (close) close.onclick = () => menu.classList.remove('open');
+        }
+
+        // Global Init Hook
+        window.initBlogPage = function() {
+            initMobileMenu();
+            initBlogFlowCanvas();
+            animateBlogHero();
+            fetchBlogs();
+        };
+
+        // DOM Ready fallback
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.querySelector('[data-barba-namespace="blog"]')) {
+                window.initBlogPage();
+            }
+        });
+    </script>
+</body>
+
+</html>
