@@ -211,15 +211,177 @@
             opacity: 1;
         }
 
-        .hero-tag {
-            font-family: 'Syncopate', sans-serif;
-            letter-spacing: 3px;
+        /* ===================================================
+           HERO STAGE: ATMOSPHERIC SEPARATION & SPATIAL LAYERING
+           =================================================== */
+        .hero-stage {
+            position: relative;
+            isolation: isolate;
         }
 
-        /* Glitch reveal effect */
-        .glitch-text {
-            position: relative;
+        /* Dark Matter Occlusion Shield - Pushes 3D Canvas back into deep space */
+        .hero-optic-shield {
+            position: absolute;
+            inset: -4rem -3rem -3rem -3rem;
+            background: radial-gradient(ellipse 70% 60% at 30% 35%, rgba(0, 0, 0, 0.95) 0%, rgba(3, 7, 4, 0.82) 55%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+            border-radius: 32px;
+        }
+
+        /* Giant Ghost Watermark - Floating Brutalist Typography */
+        .hero-watermark {
+            position: absolute;
+            top: -3.5rem;
+            left: -5%;
+            width: 140%;
+            overflow: hidden;
+            white-space: nowrap;
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(3.5rem, 11vw, 8.5rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.04);
+            z-index: 1;
+            pointer-events: none;
+            user-select: none;
+            will-change: transform;
+        }
+
+        .watermark-inner {
             display: inline-block;
+            animation: watermarkDrift 40s linear infinite;
+        }
+
+        @keyframes watermarkDrift {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* 3D CIPHER HEADLINE TYPOGRAPHY */
+        .hero-title-stage {
+            perspective: 1200px;
+            transform-style: preserve-3d;
+        }
+
+        .cipher-hero-title {
+            perspective: 1200px;
+            transform-style: preserve-3d;
+        }
+
+        .cipher-word {
+            display: inline-flex;
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            padding: 4px 0;
+            transition: filter 0.3s ease;
+        }
+
+        .cipher-word:hover {
+            filter: drop-shadow(0 0 20px rgba(43, 166, 72, 0.4));
+        }
+
+        .cipher-char {
+            display: inline-block;
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform, color, filter, text-shadow;
+            transition: color 0.15s ease;
+            user-select: none;
+        }
+
+        /* Word 1: ENIGMA - Cold Pure Titanium White with Cyan/Crimson Prismatic Aberration */
+        .word-enigma .cipher-char {
+            color: #FFFFFF;
+            font-weight: 800;
+            text-shadow: 
+                0 0 2px rgba(255, 255, 255, 0.95),
+                -2px 0 0 rgba(0, 240, 255, 0.5),
+                2px 0 0 rgba(255, 0, 85, 0.4);
+        }
+
+        /* Word 2: DISPATCHES - Electric Titanium-to-Green Gradient with Holographic Aura */
+        .word-dispatches .cipher-char {
+            font-weight: 800;
+            background: linear-gradient(180deg, #FFFFFF 15%, #93f542 55%, #2BA648 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 18px rgba(43, 166, 72, 0.6));
+        }
+
+        /* Decryption Active / Shuffling State */
+        .cipher-char.decrypting {
+            color: #2BA648 !important;
+            -webkit-text-fill-color: #2BA648 !important;
+            text-shadow: 0 0 15px #2BA648, 0 0 30px rgba(43, 166, 72, 0.8) !important;
+            filter: brightness(2.2) drop-shadow(0 0 10px #2BA648) !important;
+        }
+
+        /* Decryption Lock-in Snap Pulse */
+        .cipher-char.locked {
+            animation: charLockPulse 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes charLockPulse {
+            0% {
+                filter: brightness(3.5) drop-shadow(0 0 30px #2BA648);
+                transform: scale(1.18) translateZ(30px);
+            }
+            50% {
+                filter: brightness(1.8) drop-shadow(0 0 15px #2BA648);
+                transform: scale(0.96) translateZ(8px);
+            }
+            100% {
+                filter: brightness(1);
+                transform: scale(1) translateZ(0);
+            }
+        }
+
+        /* Horizontal Laser Sweep Horizon */
+        .hero-laser-line {
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #2BA648 0%, #00f0ff 25%, #2BA648 60%, transparent 100%);
+            box-shadow: 0 0 14px #2BA648, 0 0 28px rgba(43, 166, 72, 0.6);
+            transform-origin: left;
+            transform: scaleX(0);
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        /* Terminal Subtitle Box */
+        .hero-terminal-box {
+            position: relative;
+            background: rgba(5, 8, 6, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: border-color 0.3s ease;
+        }
+
+        .hero-terminal-box:hover {
+            border-color: rgba(43, 166, 72, 0.35);
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            color: #2BA648;
+            animation: cursorBlink 0.8s infinite;
+            font-weight: 700;
+            margin-left: 2px;
+            vertical-align: middle;
+        }
+
+        @keyframes cursorBlink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
         }
 
         /* Mobile Hamburger */
@@ -331,29 +493,78 @@
     <!-- Barba Container -->
     <main data-barba="container" data-barba-namespace="blog" class="relative z-10 min-h-screen pt-32 pb-24 px-4 sm:px-8 max-w-7xl mx-auto">
 
-        <!-- HERO HEADER WITH SPLIT REVEAL -->
-        <header class="mb-14 text-center sm:text-left relative">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-[10px] tracking-[2px] uppercase text-emerald-400 font-syncopate mb-4 hero-pill opacity-0 translate-y-4">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                <span>TRANSMISSIONS FEED // 0xBLOG</span>
+        <!-- HERO STAGE WITH ATMOSPHERIC OPTIC SHIELD & CIPHER TYPOGRAPHY -->
+        <header class="hero-stage mb-16 relative">
+            <!-- Atmospheric Dark Matter Occlusion Shield (Separates text plane from 3D canvas) -->
+            <div class="hero-optic-shield"></div>
+
+            <!-- Kinetic Ghost Outlined Watermark (Floating background layer) -->
+            <div class="hero-watermark select-none pointer-events-none" id="hero-watermark" aria-hidden="true">
+                <div class="watermark-inner">DISPATCHES // 0xBLOG // ENIGMA RESEARCH // QUANTUM ARCHIVE // DISPATCHES // 0xBLOG // ENIGMA RESEARCH // QUANTUM ARCHIVE</div>
             </div>
 
-            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-syncopate font-bold uppercase tracking-tight text-white mb-4 hero-title overflow-hidden">
-                <span class="inline-block hero-word">ENIGMA</span>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-[#2BA648] inline-block hero-word">DISPATCHES</span>
-            </h1>
-
-            <p class="text-gray-400 max-w-2xl text-base sm:text-lg font-light leading-relaxed hero-desc opacity-0 translate-y-4">
-                Decoded transmissions from the digital frontier. Research, architectural breakthroughs, and high-entropy experiments engineered by the ENIGMA tech cell.
-            </p>
-
-            <div class="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-b border-white/[0.08] py-4 hero-meta opacity-0 translate-y-4">
-                <div class="flex items-center gap-6 text-xs text-gray-400 uppercase tracking-widest font-syncopate">
-                    <span>STATUS: <span class="text-emerald-400">BROADCASTING</span></span>
-                    <span class="hidden sm:inline">PROTOCOLS: <span class="text-white">QUANTUM-RESILIENT</span></span>
+            <!-- Top Telemetry Badge Row -->
+            <div class="relative z-10 flex flex-wrap items-center gap-3 mb-5 hero-badge-row opacity-0" id="hero-badge-row">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 border border-emerald-500/30 text-[10px] tracking-[2px] uppercase text-emerald-400 font-syncopate backdrop-blur-md shadow-[0_0_15px_rgba(43,166,72,0.2)]">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="text-white font-semibold">FEED // 0xDISPATCH</span>
                 </div>
-                <div id="blog-count" class="text-xs text-emerald-400 font-syncopate uppercase tracking-widest">
-                    SYNCING ARCHIVES...
+                <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/10 text-[10px] font-mono text-gray-400 tracking-wider">
+                    <span class="text-emerald-400">CIPHER:</span>
+                    <span>Q-REPRESENTATIONAL</span>
+                </div>
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/10 text-[10px] font-mono text-gray-400 tracking-wider">
+                    <span class="text-cyan-400">BUR:</span>
+                    <span>21.4988°N 83.9056°E</span>
+                </div>
+            </div>
+
+            <!-- INSANE 3D CIPHER HEADLINE WITH MAGNETIC PROXIMITY WAVE -->
+            <div class="hero-title-stage relative z-10 mb-6 py-2" id="hero-title-stage">
+                <h1 class="cipher-hero-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-syncopate font-bold uppercase tracking-tight leading-none select-none flex flex-wrap items-baseline gap-x-5 gap-y-3" id="cipher-headline">
+                    <!-- WORD 1: ENIGMA (High-contrast pure titanium white with chromatic edge) -->
+                    <span class="cipher-word word-enigma" data-word="ENIGMA" title="Click to re-decrypt">ENIGMA</span>
+
+                    <!-- WORD 2: DISPATCHES (Electric dual-split chrome with neon holographic edge) -->
+                    <span class="cipher-word word-dispatches" data-word="DISPATCHES" title="Click to re-decrypt">DISPATCHES</span>
+                </h1>
+
+                <!-- Real-time Horizontal Laser Sweep Horizon -->
+                <div class="hero-laser-line" id="hero-laser-line"></div>
+            </div>
+
+            <!-- CYBERNETIC TERMINAL TYPEWRITER SUBTITLE -->
+            <div class="hero-terminal-box relative z-10 max-w-3xl rounded-lg border border-white/[0.08] bg-black/75 backdrop-blur-2xl p-4 sm:p-5 mb-8 shadow-[0_20px_50px_rgba(0,0,0,0.8)] opacity-0" id="hero-terminal-box">
+                <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.08] text-[10px] font-mono text-gray-400 uppercase tracking-widest">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500/70 inline-block"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/70 inline-block"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block animate-pulse"></span>
+                        <span class="ml-2 text-white font-bold font-mono">SYS_LOG://TRANSMISSION_STREAM</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-emerald-400 font-mono">[DECRYPT: VERIFIED]</span>
+                        <span id="live-utc-clock" class="text-gray-400 font-mono hidden md:inline">00:00:00.000 UTC</span>
+                    </div>
+                </div>
+                <div class="font-mono text-xs sm:text-sm text-gray-300 leading-relaxed min-h-[48px]" id="terminal-content">
+                    <span id="terminal-typewriter"></span><span class="terminal-cursor">▌</span>
+                </div>
+            </div>
+
+            <!-- MIL-SPEC TELEMETRY RIBBON -->
+            <div class="relative z-10 flex flex-wrap items-center justify-between gap-4 border-t border-b border-white/[0.08] py-4 hero-telemetry-ribbon opacity-0" id="hero-telemetry-ribbon">
+                <div class="flex items-center gap-4 sm:gap-8 text-xs text-gray-400 uppercase tracking-widest font-syncopate">
+                    <span class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        TRANSMISSION: <span class="text-emerald-400 font-semibold">LIVE</span>
+                    </span>
+                    <span class="hidden sm:inline">ENTROPY: <span class="text-white font-mono" id="entropy-metric">0.9994</span></span>
+                    <span class="hidden md:inline">BANDWIDTH: <span class="text-emerald-400 font-mono">10.4 Gbps</span></span>
+                </div>
+                <div id="blog-count" class="text-xs text-emerald-400 font-syncopate uppercase tracking-widest flex items-center gap-2">
+                    <span class="animate-spin inline-block text-[10px]">⟁</span>
+                    <span>INITIALIZING INDEX...</span>
                 </div>
             </div>
         </header>
@@ -408,7 +619,7 @@
             window.blogFlowScene = scene;
 
             const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 5, 20);
+            camera.position.set(0, 6, 24);
             camera.lookAt(0, 0, 0);
 
             const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
@@ -416,9 +627,9 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             window.blogFlowRenderer = renderer;
 
-            // Geometry: Curved Wave Plane
-            const width = 60;
-            const height = 40;
+            // Geometry: Curved Wave Plane (Receded into deep background)
+            const width = 70;
+            const height = 45;
             const widthSegments = 50;
             const heightSegments = 35;
             const geometry = new THREE.PlaneGeometry(width, height, widthSegments, heightSegments);
@@ -431,33 +642,47 @@
                 originalY[i] = geometry.attributes.position.getY(i);
             }
 
-            // Material: Cyber Wireframe + Particle Points
+            // Material: Atmospheric Deep Cyber Wireframe
             const wireMaterial = new THREE.MeshBasicMaterial({
-                color: 0x2BA648,
+                color: 0x1a7033,
                 wireframe: true,
                 transparent: true,
-                opacity: 0.12
+                opacity: 0.08
             });
             const planeMesh = new THREE.Mesh(geometry, wireMaterial);
-            planeMesh.position.y = -8;
+            planeMesh.position.y = -12;
             scene.add(planeMesh);
 
-            // Floating Green Particle Dust
-            const particleCount = 120;
+            // Floating Subtle Green Particle Dust (Circular Glow Sprite)
+            const pCanvas = document.createElement('canvas');
+            pCanvas.width = 16;
+            pCanvas.height = 16;
+            const pCtx = pCanvas.getContext('2d');
+            const pGrad = pCtx.createRadialGradient(8, 8, 0, 8, 8, 8);
+            pGrad.addColorStop(0, 'rgba(43, 166, 72, 1)');
+            pGrad.addColorStop(0.4, 'rgba(43, 166, 72, 0.4)');
+            pGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            pCtx.fillStyle = pGrad;
+            pCtx.fillRect(0, 0, 16, 16);
+            const pTexture = new THREE.CanvasTexture(pCanvas);
+
+            const particleCount = 80;
             const pGeometry = new THREE.BufferGeometry();
             const pPositions = new Float32Array(particleCount * 3);
             for (let i = 0; i < particleCount * 3; i += 3) {
                 pPositions[i] = (Math.random() - 0.5) * 50;
-                pPositions[i + 1] = Math.random() * 20 - 5;
-                pPositions[i + 2] = (Math.random() - 0.5) * 40;
+                pPositions[i + 1] = Math.random() * 20 - 8;
+                pPositions[i + 2] = (Math.random() - 0.5) * 35;
             }
             pGeometry.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
             const pMaterial = new THREE.PointsMaterial({
-                color: 0x2BA648,
-                size: 1.5,
+                color: 0x55ff77,
+                size: 0.8,
+                map: pTexture,
                 transparent: true,
-                opacity: 0.45,
-                blending: THREE.AdditiveBlending
+                opacity: 0.35,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
             });
             const particles = new THREE.Points(pGeometry, pMaterial);
             scene.add(particles);
@@ -729,16 +954,330 @@
             });
         }
 
-        // Kinetic Header Reveal Animation
+        // =========================================================================
+        // CYBERNETIC CIPHER TYPOGRAPHY & INTERACTIVE QUANTUM DECRYPTION ENGINE
+        // =========================================================================
+        const CIPHER_GLYPHS = "010101█▓▒░⟁⌬⌖∿✕⚡§¶ø¥<>_{}[]/*!?#%&=+~^";
+        let cyberTitleEngine = null;
+
+        class CyberTitleEngine {
+            constructor(containerId) {
+                this.container = document.getElementById(containerId);
+                if (!this.container) return;
+                this.words = this.container.querySelectorAll('.cipher-word');
+                this.allChars = [];
+                this.isDecrypted = false;
+                this.glitchTimer = null;
+                this.init();
+            }
+
+            init() {
+                this.allChars = [];
+                this.words.forEach(wordEl => {
+                    const rawText = wordEl.dataset.word || wordEl.textContent.trim();
+                    wordEl.innerHTML = '';
+                    
+                    for (let i = 0; i < rawText.length; i++) {
+                        const targetChar = rawText[i];
+                        const charSpan = document.createElement('span');
+                        charSpan.className = 'cipher-char';
+                        charSpan.dataset.char = targetChar;
+                        charSpan.dataset.index = i;
+                        
+                        const inner = document.createElement('span');
+                        inner.className = 'char-inner';
+                        inner.textContent = CIPHER_GLYPHS[Math.floor(Math.random() * CIPHER_GLYPHS.length)];
+                        charSpan.appendChild(inner);
+                        
+                        wordEl.appendChild(charSpan);
+                        this.allChars.push({
+                            wrapper: charSpan,
+                            inner: inner,
+                            target: targetChar,
+                            wordEl: wordEl
+                        });
+                    }
+
+                    // Hover and Click triggers a rapid re-scramble of this specific word!
+                    wordEl.addEventListener('mouseenter', () => this.scrambleWord(wordEl));
+                    wordEl.addEventListener('click', () => this.scrambleWord(wordEl));
+                });
+
+                this.initMagneticProximity();
+            }
+
+            // Play the majestic opening decryption sequence
+            decrypt(onComplete) {
+                const laser = document.getElementById('hero-laser-line');
+                if (laser) {
+                    gsap.fromTo(laser, 
+                        { scaleX: 0, opacity: 1 }, 
+                        { 
+                            scaleX: 1, 
+                            duration: 1.2, 
+                            ease: 'power2.inOut', 
+                            onComplete: () => {
+                                gsap.to(laser, { opacity: 0.35, duration: 0.6 });
+                            }
+                        }
+                    );
+                }
+
+                // 3D Flip entrance of each individual character with elastic snap
+                gsap.fromTo(this.allChars.map(c => c.wrapper), 
+                    { 
+                        opacity: 0, 
+                        rotateX: -105, 
+                        y: 50, 
+                        scale: 0.7 
+                    }, 
+                    { 
+                        opacity: 1, 
+                        rotateX: 0, 
+                        y: 0, 
+                        scale: 1, 
+                        duration: 0.8, 
+                        stagger: 0.035, 
+                        ease: 'back.out(2.4)' 
+                    }
+                );
+
+                // Scramble and sequentially lock each character
+                this.allChars.forEach((item, idx) => {
+                    const resolveDelay = 150 + idx * 55;
+                    const totalDuration = 600 + idx * 45;
+                    const startTime = Date.now();
+                    item.wrapper.classList.add('decrypting');
+
+                    const interval = setInterval(() => {
+                        const elapsed = Date.now() - startTime;
+                        
+                        if (elapsed >= totalDuration) {
+                            clearInterval(interval);
+                            item.inner.textContent = item.target;
+                            item.wrapper.classList.remove('decrypting');
+                            item.wrapper.classList.add('locked');
+                            setTimeout(() => item.wrapper.classList.remove('locked'), 500);
+                            
+                            if (idx === this.allChars.length - 1) {
+                                this.isDecrypted = true;
+                                if (onComplete) onComplete();
+                                this.startAmbientGlitch();
+                            }
+                        } else if (elapsed >= resolveDelay && Math.random() < 0.45) {
+                            item.inner.textContent = item.target;
+                        } else {
+                            item.inner.textContent = CIPHER_GLYPHS[Math.floor(Math.random() * CIPHER_GLYPHS.length)];
+                        }
+                    }, 30);
+                });
+            }
+
+            // Rapid re-scramble of a single word on hover or click
+            scrambleWord(wordEl) {
+                const charsInWord = this.allChars.filter(c => c.wordEl === wordEl);
+                charsInWord.forEach((item, i) => {
+                    item.wrapper.classList.add('decrypting');
+                    let count = 0;
+                    const maxCycles = 6 + i * 2;
+                    const timer = setInterval(() => {
+                        count++;
+                        if (count >= maxCycles) {
+                            clearInterval(timer);
+                            item.inner.textContent = item.target;
+                            item.wrapper.classList.remove('decrypting');
+                            item.wrapper.classList.add('locked');
+                            setTimeout(() => item.wrapper.classList.remove('locked'), 400);
+                        } else {
+                            item.inner.textContent = CIPHER_GLYPHS[Math.floor(Math.random() * CIPHER_GLYPHS.length)];
+                        }
+                    }, 30);
+                });
+            }
+
+            // Ambient organic glitch pulse on a random character every 4 seconds
+            startAmbientGlitch() {
+                if (this.glitchTimer) clearInterval(this.glitchTimer);
+                this.glitchTimer = setInterval(() => {
+                    if (!this.allChars.length) return;
+                    const randomItem = this.allChars[Math.floor(Math.random() * this.allChars.length)];
+                    randomItem.wrapper.classList.add('decrypting');
+                    randomItem.inner.textContent = CIPHER_GLYPHS[Math.floor(Math.random() * CIPHER_GLYPHS.length)];
+                    setTimeout(() => {
+                        randomItem.inner.textContent = randomItem.target;
+                        randomItem.wrapper.classList.remove('decrypting');
+                    }, 120);
+                }, 4000);
+            }
+
+            // Liquid 3D Magnetic Wave: Letters physically react, elevate, and tilt with cursor proximity
+            initMagneticProximity() {
+                const stage = document.getElementById('hero-title-stage');
+                if (!stage) return;
+
+                const onMove = (e) => {
+                    const mouseX = e.clientX;
+                    const mouseY = e.clientY;
+
+                    this.allChars.forEach(item => {
+                        const rect = item.wrapper.getBoundingClientRect();
+                        const charX = rect.left + rect.width / 2;
+                        const charY = rect.top + rect.height / 2;
+                        const dist = Math.hypot(mouseX - charX, mouseY - charY);
+                        const maxDist = 160;
+
+                        if (dist < maxDist) {
+                            const factor = (1 - dist / maxDist);
+                            const pushX = (mouseX - charX) * -0.15 * factor;
+                            const pushY = (mouseY - charY) * -0.15 * factor;
+                            const rotX = (mouseY - charY) * 0.12 * factor;
+                            const rotY = (mouseX - charX) * -0.12 * factor;
+                            const elevateZ = factor * 30;
+                            const scale = 1 + factor * 0.18;
+
+                            gsap.to(item.wrapper, {
+                                x: pushX,
+                                y: pushY,
+                                z: elevateZ,
+                                rotateX: rotX,
+                                rotateY: rotY,
+                                scale: scale,
+                                duration: 0.15,
+                                ease: 'power1.out',
+                                overwrite: 'auto'
+                            });
+                        } else {
+                            gsap.to(item.wrapper, {
+                                x: 0,
+                                y: 0,
+                                z: 0,
+                                rotateX: 0,
+                                rotateY: 0,
+                                scale: 1,
+                                duration: 0.5,
+                                ease: 'elastic.out(1, 0.4)',
+                                overwrite: 'auto'
+                            });
+                        }
+                    });
+                };
+
+                const onLeave = () => {
+                    this.allChars.forEach(item => {
+                        gsap.to(item.wrapper, {
+                            x: 0,
+                            y: 0,
+                            z: 0,
+                            rotateX: 0,
+                            rotateY: 0,
+                            scale: 1,
+                            duration: 0.6,
+                            ease: 'elastic.out(1, 0.4)',
+                            overwrite: 'auto'
+                        });
+                    });
+                };
+
+                stage.addEventListener('mousemove', onMove);
+                stage.addEventListener('mouseleave', onLeave);
+            }
+
+            destroy() {
+                if (this.glitchTimer) clearInterval(this.glitchTimer);
+            }
+        }
+
+        // Subtitle Typewriter Terminal with Keyword Highlights
+        function runTerminalTypewriter(onComplete) {
+            const target = document.getElementById('terminal-typewriter');
+            if (!target) return;
+
+            const fullText = "Decoded transmissions from the digital frontier. Research, architectural breakthroughs, and high-entropy experiments engineered by the ENIGMA tech cell.";
+            target.innerHTML = '';
+            let charIndex = 0;
+            const speed = 15;
+
+            function typeNext() {
+                if (charIndex < fullText.length) {
+                    target.textContent += fullText.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeNext, speed);
+                } else {
+                    target.innerHTML = target.textContent
+                        .replace("digital frontier", '<span class="text-cyan-400 font-semibold">digital frontier</span>')
+                        .replace("architectural breakthroughs", '<span class="text-emerald-400 font-semibold">architectural breakthroughs</span>')
+                        .replace("high-entropy experiments", '<span class="text-yellow-400 font-semibold">high-entropy experiments</span>')
+                        .replace("ENIGMA tech cell", '<span class="text-white font-bold bg-white/10 px-1 py-0.5 rounded">ENIGMA tech cell</span>');
+                    if (onComplete) onComplete();
+                }
+            }
+            typeNext();
+        }
+
+        // Parallax depth on Ghost Outlined Watermark
+        function initWatermarkParallax() {
+            const watermark = document.getElementById('hero-watermark');
+            if (!watermark) return;
+
+            window.addEventListener('mousemove', (e) => {
+                const moveX = (e.clientX / window.innerWidth - 0.5) * -45;
+                const moveY = (e.clientY / window.innerHeight - 0.5) * -20;
+                gsap.to(watermark, {
+                    x: moveX,
+                    y: moveY,
+                    duration: 0.9,
+                    ease: 'power2.out'
+                });
+            });
+        }
+
+        // Live Mil-Spec Telemetry (UTC Clock + Real-Time Entropy Variance)
+        function startLiveTelemetry() {
+            const clockEl = document.getElementById('live-utc-clock');
+            const entropyEl = document.getElementById('entropy-metric');
+
+            function tick() {
+                const now = new Date();
+                if (clockEl) {
+                    const h = String(now.getUTCHours()).padStart(2, '0');
+                    const m = String(now.getUTCMinutes()).padStart(2, '0');
+                    const s = String(now.getUTCSeconds()).padStart(2, '0');
+                    const ms = String(now.getUTCMilliseconds()).padStart(3, '0');
+                    clockEl.textContent = `${h}:${m}:${s}.${ms} UTC`;
+                }
+                if (entropyEl && Math.random() < 0.05) {
+                    entropyEl.textContent = (0.9990 + Math.random() * 0.0009).toFixed(4);
+                }
+                requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+
+        // Master Kinetic Header Orchestrator
         function animateBlogHero() {
             const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-            tl.to('.hero-pill', { opacity: 1, y: 0, duration: 0.6 })
-              .fromTo('.hero-word', 
-                  { y: 80, opacity: 0 }, 
-                  { y: 0, opacity: 1, duration: 0.8, stagger: 0.15 }, 
-                  "-=0.3")
-              .to('.hero-desc', { opacity: 1, y: 0, duration: 0.6 }, "-=0.4")
-              .to('.hero-meta', { opacity: 1, y: 0, duration: 0.5 }, "-=0.3");
+
+            // 1. Reveal telemetry badge row
+            tl.to('#hero-badge-row', { opacity: 1, y: 0, duration: 0.5 })
+              // 2. Trigger Cipher Decryption & 3D entrance
+              .add(() => {
+                  if (cyberTitleEngine) cyberTitleEngine.destroy();
+                  cyberTitleEngine = new CyberTitleEngine('cipher-headline');
+                  cyberTitleEngine.decrypt(() => {
+                      // 3. Once title locks in, reveal terminal box and type out narrative
+                      gsap.to('#hero-terminal-box', { 
+                          opacity: 1, 
+                          y: 0, 
+                          duration: 0.5, 
+                          onComplete: () => runTerminalTypewriter() 
+                      });
+                      // 4. Reveal telemetry ribbon
+                      gsap.to('#hero-telemetry-ribbon', { opacity: 1, y: 0, duration: 0.5 });
+                  });
+              }, "-=0.2");
+
+            initWatermarkParallax();
+            startLiveTelemetry();
         }
 
         // Mobile Menu toggle
