@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ENIGMA // Classified Terminal Admin</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Syncopate:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#000000',
+                        orbitGreen: '#2BA648',
+                        orbitDark: '#0F3918',
+                    },
+                    fontFamily: {
+                        sans: ['"Host Grotesk"', 'sans-serif'],
+                        syncopate: ['"Syncopate"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --neon-green: #2BA648;
+            --neon-glow: rgba(43, 166, 72, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #030504;
+            color: #e2e8f0;
+            min-height: 100vh;
+            font-family: 'Host Grotesk', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
+            background-size: 100% 4px, 6px 100%;
+            opacity: 0.6;
+        }
+
+        .terminal-box {
+            background: rgba(5, 8, 6, 0.95);
+            border: 1px solid rgba(43, 166, 72, 0.3);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), 0 0 20px rgba(43, 166, 72, 0.15);
+        }
+
+        .tab-btn {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            padding: 0.75rem 1.25rem;
+            border-bottom: 2px solid transparent;
+            color: #64748b;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+        }
+
+        .tab-btn.active {
+            color: #2BA648;
+            border-color: #2BA648;
+            background: rgba(43, 166, 72, 0.08);
+            text-shadow: 0 0 10px rgba(43, 166, 72, 0.4);
+        }
+
+        input, textarea, select {
+            background: #080c09 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+            font-family: 'Host Grotesk', sans-serif;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: #2BA648 !important;
+            box-shadow: 0 0 10px rgba(43, 166, 72, 0.3) !important;
+            outline: none !important;
+        }
+
+        /* Modal transitions */
+        .modal {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1b3d22;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2BA648;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scanlines"></div>
+
+    <!-- ========================================== -->
+    <!-- 1. TERMINAL LOGIN GATE -->
+    <!-- ========================================== -->
+    <section id="login-section" class="min-h-screen flex items-center justify-center p-4 relative z-10">
+        <div class="terminal-box w-full max-w-lg p-6 sm:p-8 rounded-lg">
+            <!-- Terminal Header -->
+            <div class="flex items-center justify-between pb-4 mb-6 border-b border-emerald-500/20">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="ml-2 text-xs font-mono text-emerald-400">ENIGMA // KERNEL ACCESS</span>
+                </div>
+                <span class="text-[10px] font-mono text-gray-500">PORT 0x4F</span>
+            </div>
+
+            <!-- Terminal Text Output -->
+            <div class="font-mono text-xs text-emerald-400 space-y-2 mb-6">
+                <div>[SYSTEM] INITIALIZING SECURE SHELL...</div>
+                <div>[SYSTEM] CIPHER ROTATION: AES-256-GCM / POST-QUANTUM RESILIENT</div>
+                <div class="text-white">[AUTH] SECURITY CLEARANCE LEVEL: ENIGMA APEX</div>
+                <div id="login-error-msg" class="text-red-400 font-bold hidden">
+                    ACCESS DENIED: INVALID SECURITY PASSCODE.
+                </div>
+            </div>
+
+            <!-- Passcode Form -->
+            <form id="login-form" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-syncopate uppercase tracking-widest text-gray-400 mb-2">
+                        ENTER TERMINAL PASSCODE:
+                    </label>
+                    <div class="relative flex items-center">
+                        <span class="absolute left-3 text-emerald-400 font-mono font-bold">&gt;</span>
+                        <input type="password" id="passcode-input" autofocus required placeholder="••••••••••••"
+                            class="w-full pl-8 pr-4 py-3 rounded text-sm font-mono tracking-widest">
+                    </div>
+                </div>
+
+                <button type="submit" id="login-btn"
+                    class="w-full py-3 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-[0_0_15px_rgba(43,166,72,0.4)] flex items-center justify-center gap-2">
+                    <span>AUTHENTICATE & ENTER</span>
+                    <span>&rarr;</span>
+                </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-white/[0.06] text-center">
+                <a href="/index.html" class="text-[10px] font-syncopate text-gray-500 hover:text-emerald-400 uppercase tracking-widest transition-colors">
+                    &larr; ABORT & RETURN TO SITE
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 2. ADMIN DASHBOARD WORKSPACE -->
+    <!-- ========================================== -->
+    <div id="admin-workspace" class="hidden min-h-screen flex flex-col relative z-10">
+
+        <!-- Top Header Bar -->
+        <header class="bg-black/90 border-b border-emerald-500/20 px-6 py-4 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md">
+            <div class="flex items-center gap-4">
+                <span class="text-base font-bold font-syncopate tracking-widest text-white">
+                    ENIGMA<span class="text-emerald-400">.ADMIN</span>
+                </span>
+                <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono">
+                    ONLINE
+                </span>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="/blog.html" target="_blank" class="text-xs font-syncopate text-gray-400 hover:text-emerald-400 transition-colors hidden sm:inline">
+                    VIEW BLOG &rarr;
+                </a>
+                <button id="logout-btn" class="px-3 py-1.5 rounded border border-red-500/40 text-red-400 font-syncopate text-[10px] uppercase tracking-wider hover:bg-red-500 hover:text-black transition-all">
+                    TERMINATE SESSION
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="bg-black/40 border-b border-white/[0.08] px-6 flex gap-2">
+            <button class="tab-btn active" data-tab="tab-blogs">📝 DISPATCHES (BLOGS)</button>
+            <button class="tab-btn" data-tab="tab-team">👥 OPERATIVES (TEAM)</button>
+            <button class="tab-btn" data-tab="tab-projects">🚀 INITIATIVES (PROJECTS)</button>
+        </div>
+
+        <!-- Main Tab Contents -->
+        <main class="flex-1 p-6 max-w-7xl w-full mx-auto">
+
+            <!-- ==================================== -->
+            <!-- TAB 1: BLOGS / DISPATCHES -->
+            <!-- ==================================== -->
+            <section id="tab-blogs" class="tab-content space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold font-syncopate tracking-tight text-white">MANAGE DISPATCHES</h2>
+                        <p class="text-xs text-gray-400 font-light mt-1">Publish, edit, and organize research articles with interactive bullet navigation points.</p>
+                    </div>
+                    <button id="new-blog-btn" class="px-4 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all flex items-center gap-2">
+                        <span>+ NEW DISPATCH</span>
+                    </button>
+                </div>
+
+                <!-- Blogs Table / Cards -->
+                <div class="terminal-box rounded-lg overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-mono">
+                            <thead class="bg-black/60 border-b border-emerald-500/20 text-gray-400 uppercase tracking-widest font-syncopate text-[10px]">
+                                <tr>
+                                    <th class="p-4">TOPIC</th>
+                                    <th class="p-4">TITLE</th>
+                                    <th class="p-4">AUTHOR</th>
+                                    <th class="p-4">SECTIONS</th>
+                                    <th class="p-4">DATE</th>
+                                    <th class="p-4 text-right">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="blogs-table-body" class="divide-y divide-white/[0.05]">
+                                <tr>
+                                    <td colspan="6" class="p-6 text-center text-gray-500 font-syncopate">Loading dispatches...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================== -->
+            <!-- TAB 2: OPERATIVES (TEAM) -->
+            <!-- ==================================== -->
+            <section id="tab-team" class="tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold font-syncopate tracking-tight text-white">OPERATIVES ROSTER</h2>
+                        <p class="text-xs text-gray-400 font-light mt-1">Add and update regular club members across batches with live cloud synchronization.</p>
+                    </div>
+                    <button id="new-member-btn" class="px-4 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all flex items-center gap-2">
+                        <span>+ ADD OPERATIVE</span>
+                    </button>
+                </div>
+
+                <!-- Info Alert about special cards -->
+                <div class="p-4 rounded-lg bg-emerald-950/20 border border-emerald-500/30 flex items-start gap-3 text-xs text-emerald-300">
+                    <span class="text-emerald-400 font-bold font-mono text-sm">ⓘ</span>
+                    <div>
+                        <span class="font-bold font-syncopate">SPECIAL CARDS NOTICE:</span>
+                        Special interactive card styles (such as Apex 3D holographic transforms or Devcards) are defined strictly in engine code. Standard members added here render with full portfolio cards and batch classification.
+                    </div>
+                </div>
+
+                <!-- Team Table -->
+                <div class="terminal-box rounded-lg overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-mono">
+                            <thead class="bg-black/60 border-b border-emerald-500/20 text-gray-400 uppercase tracking-widest font-syncopate text-[10px]">
+                                <tr>
+                                    <th class="p-4">ID</th>
+                                    <th class="p-4">OPERATIVE</th>
+                                    <th class="p-4">ROLE</th>
+                                    <th class="p-4">BATCH</th>
+                                    <th class="p-4">IMAGE PATH</th>
+                                    <th class="p-4 text-right">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="team-table-body" class="divide-y divide-white/[0.05]">
+                                <tr>
+                                    <td colspan="6" class="p-6 text-center text-gray-500 font-syncopate">Loading team data...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================== -->
+            <!-- TAB 3: INITIATIVES (PROJECTS) -->
+            <!-- ==================================== -->
+            <section id="tab-projects" class="tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold font-syncopate tracking-tight text-white">PROJECT INITIATIVES</h2>
+                        <p class="text-xs text-gray-400 font-light mt-1">Configure showcased web applications, platforms, and club builds.</p>
+                    </div>
+                    <button id="new-project-btn" class="px-4 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all flex items-center gap-2">
+                        <span>+ ADD PROJECT</span>
+                    </button>
+                </div>
+
+                <!-- Projects Table -->
+                <div class="terminal-box rounded-lg overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-mono">
+                            <thead class="bg-black/60 border-b border-emerald-500/20 text-gray-400 uppercase tracking-widest font-syncopate text-[10px]">
+                                <tr>
+                                    <th class="p-4">ID</th>
+                                    <th class="p-4">TITLE</th>
+                                    <th class="p-4">DESCRIPTION</th>
+                                    <th class="p-4">IMAGE</th>
+                                    <th class="p-4">LINK</th>
+                                    <th class="p-4 text-right">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projects-table-body" class="divide-y divide-white/[0.05]">
+                                <tr>
+                                    <td colspan="6" class="p-6 text-center text-gray-500 font-syncopate">Loading projects...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: BLOG COMPOSER (SECTION BLOCK BUILDER) -->
+    <!-- ========================================== -->
+    <div id="blog-modal" class="modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="terminal-box w-full max-w-4xl p-6 sm:p-8 rounded-lg max-h-[90vh] overflow-y-auto my-8">
+            <div class="flex items-center justify-between pb-4 mb-6 border-b border-emerald-500/30">
+                <h3 id="blog-modal-title" class="text-lg font-bold font-syncopate text-white">NEW TRANSMISSION COMPOSER</h3>
+                <button id="close-blog-modal" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+
+            <form id="blog-form" class="space-y-6">
+                <input type="hidden" id="blog-edit-id">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-syncopate text-gray-400 mb-1">POST TITLE *</label>
+                        <input type="text" id="b-title" required class="w-full p-2.5 rounded text-sm" placeholder="e.g. Distributed State Machine Consensus">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-syncopate text-gray-400 mb-1">URL SLUG *</label>
+                        <input type="text" id="b-slug" required class="w-full p-2.5 rounded text-sm font-mono" placeholder="distributed-consensus">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-syncopate text-gray-400 mb-1">TOPIC CHANNEL</label>
+                        <input type="text" id="b-topic" class="w-full p-2.5 rounded text-sm uppercase" placeholder="AI/ML, SYSTEMS, etc.">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-syncopate text-gray-400 mb-1">AUTHOR</label>
+                        <input type="text" id="b-author" class="w-full p-2.5 rounded text-sm" placeholder="ENIGMA Operative">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-syncopate text-gray-400 mb-1">READ TIME</label>
+                        <input type="text" id="b-readtime" class="w-full p-2.5 rounded text-sm" placeholder="5 min">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-syncopate text-gray-400 mb-1">COVER IMAGE URL</label>
+                    <input type="text" id="b-cover" class="w-full p-2.5 rounded text-sm" placeholder="https://images.unsplash.com/...">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-syncopate text-gray-400 mb-1">ABSTRACT / SUMMARY</label>
+                    <textarea id="b-summary" rows="2" class="w-full p-2.5 rounded text-sm" placeholder="Brief high-level transmission abstract..."></textarea>
+                </div>
+
+                <!-- SECTION BLOCK BUILDER -->
+                <div class="pt-6 border-t border-white/[0.08]">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <span class="text-xs font-bold font-syncopate text-emerald-400 tracking-wider">ARTICLE SECTIONS &amp; BULLET POINTS</span>
+                            <p class="text-[11px] text-gray-400">Each Section Title automatically generates an interactive bullet in the reader's right-side navigation HUD.</p>
+                        </div>
+                        <button type="button" id="add-section-btn" class="px-3 py-1.5 rounded border border-emerald-500/40 text-emerald-400 font-syncopate text-[10px] hover:bg-emerald-500 hover:text-black transition-all">
+                            + ADD SECTION
+                        </button>
+                    </div>
+
+                    <div id="sections-builder" class="space-y-4">
+                        <!-- Sections inserted dynamically -->
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="pt-6 border-t border-emerald-500/20 flex justify-end gap-3">
+                    <button type="button" id="cancel-blog-btn" class="px-4 py-2 rounded border border-white/10 text-gray-400 font-syncopate text-xs hover:text-white">
+                        CANCEL
+                    </button>
+                    <button type="submit" class="px-6 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all">
+                        BROADCAST TRANSMISSION
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: TEAM MEMBER COMPOSER -->
+    <!-- ========================================== -->
+    <div id="team-modal" class="modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="terminal-box w-full max-w-lg p-6 sm:p-8 rounded-lg">
+            <div class="flex items-center justify-between pb-4 mb-6 border-b border-emerald-500/30">
+                <h3 id="team-modal-title" class="text-base font-bold font-syncopate text-white">OPERATIVE PROFILE</h3>
+                <button id="close-team-modal" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+
+            <form id="team-form" class="space-y-4">
+                <input type="hidden" id="team-edit-id">
+
+                <div>
+                    <label class="block text-xs font-syncopate text-gray-400 mb-1">OPERATIVE NAME *</label>
+                    <input type="text" id="m-name" required class="w-full p-2.5 rounded text-sm" placeholder="Full Name">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-syncopate text-gray-400 mb-1">ROLE</label>
+                        <input type="text" id="m-role" class="w-full p-2.5 rounded text-sm" placeholder="Core Developer">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-syncopate text-gray-400 mb-1">BATCH YEAR</label>
+                        <select id="m-year" class="w-full p-2.5 rounded text-sm">
+                            <option value="2028">batch_2028 (2nd Year)</option>
+                            <option value="2027">batch_2027 (3rd Year)</option>
+                            <option value="2026">batch_2026 (4th Year)</option>
+                            <option value="alumni">Alumni</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-syncopate text-gray-400 mb-1">IMAGE PATH / URL</label>
+                    <input type="text" id="m-img" class="w-full p-2.5 rounded text-sm font-mono" placeholder="./team-assets/batch_2028/photo.jpg">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-syncopate text-gray-400 mb-1">GITHUB URL</label>
+                        <input type="text" id="m-github" class="w-full p-2.5 rounded text-sm" placeholder="https://github.com/...">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-syncopate text-gray-400 mb-1">LINKEDIN URL</label>
+                        <input type="text" id="m-linkedin" class="w-full p-2.5 rounded text-sm" placeholder="https://linkedin.com/in/...">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-emerald-500/20 flex justify-end gap-3">
+                    <button type="button" id="cancel-team-btn" class="px-4 py-2 rounded border border-white/10 text-gray-400 font-syncopate text-xs">CANCEL</button>
+                    <button type="submit" class="px-6 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400">SAVE OPERATIVE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: PROJECT COMPOSER -->
+    <!-- ========================================== -->
+    <div id="project-modal" class="modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="terminal-box w-full max-w-lg p-6 sm:p-8 rounded-lg">
+            <div class="flex items-center justify-between pb-4 mb-6 border-b border-emerald-500/30">
+                <h3 id="project-modal-title" class="text-base font-bold font-syncopate text-white">PROJECT SPECIFICATION</h3>
+                <button id="close-project-modal" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+
+            <form id="project-form" class="space-y-4">
+                <input type="hidden" id="proj-edit-id">
+
+                <div>
+                    <label class="block text-xs font-syncopate text-gray-400 mb-1">PROJECT TITLE *</label>
+                    <input type="text" id="p-title" required class="w-full p-2.5 rounded text-sm" placeholder="Initiative Name">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-syncopate text-gray-400 mb-1">DESCRIPTION</label>
+                    <textarea id="p-desc" rows="3" class="w-full p-2.5 rounded text-sm" placeholder="Detailed project overview..."></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-syncopate text-gray-400 mb-1">THUMBNAIL IMAGE</label>
+                    <input type="text" id="p-img" class="w-full p-2.5 rounded text-sm font-mono" placeholder="./project-assets/your-app.png">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-syncopate text-gray-400 mb-1">PROJECT LINK / URL</label>
+                    <input type="text" id="p-link" class="w-full p-2.5 rounded text-sm" placeholder="https://yourproject.com">
+                </div>
+
+                <div class="pt-4 border-t border-emerald-500/20 flex justify-end gap-3">
+                    <button type="button" id="cancel-project-btn" class="px-4 py-2 rounded border border-white/10 text-gray-400 font-syncopate text-xs">CANCEL</button>
+                    <button type="submit" class="px-6 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400">SAVE INITIATIVE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN ADMIN CONTROLLER -->
+    <script>
+        // State
+        let adminToken = sessionStorage.getItem('enigma_admin_token') || null;
+        let cachedBlogs = [];
+        let cachedTeam = [];
+        let cachedProjects = [];
+
+        // Check authentication on load
+        async function checkInitialAuth() {
+            if (adminToken) {
+                try {
+                    const res = await fetch('/api/admin', {
+                        headers: { 'Authorization': `Bearer ${adminToken}` }
+                    });
+                    const data = await res.json();
+                    if (data.authenticated) {
+                        showWorkspace();
+                        return;
+                    }
+                } catch (e) {}
+            }
+            showLogin();
+        }
+
+        function showLogin() {
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('admin-workspace').classList.add('hidden');
+        }
+
+        function showWorkspace() {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('admin-workspace').classList.remove('hidden');
+            loadAllData();
+        }
+
+        // Login Submission
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const passcode = document.getElementById('passcode-input').value;
+            const errBox = document.getElementById('login-error-msg');
+            errBox.classList.add('hidden');
+
+            try {
+                const res = await fetch('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ passcode })
+                });
+                const data = await res.json();
+                if (data.success && data.token) {
+                    adminToken = data.token;
+                    sessionStorage.setItem('enigma_admin_token', adminToken);
+                    showWorkspace();
+                } else {
+                    errBox.classList.remove('hidden');
+                }
+            } catch (err) {
+                errBox.textContent = "COMMUNICATION ERROR: " + err.message;
+                errBox.classList.remove('hidden');
+            }
+        };
+
+        // Logout
+        document.getElementById('logout-btn').onclick = () => {
+            sessionStorage.removeItem('enigma_admin_token');
+            adminToken = null;
+            showLogin();
+        };
+
+        // Tab Switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.remove('hidden');
+            };
+        });
+
+        // Load All Data
+        function loadAllData() {
+            loadBlogs();
+            loadTeam();
+            loadProjects();
+        }
+
+        /* ---------------- BLOGS MANAGEMENT ---------------- */
+        async function loadBlogs() {
+            try {
+                const res = await fetch('/api/blogs?t=' + Date.now());
+                cachedBlogs = await res.json();
+                renderBlogsTable();
+            } catch (err) {
+                console.error("Failed to load blogs:", err);
+            }
+        }
+
+        function renderBlogsTable() {
+            const tbody = document.getElementById('blogs-table-body');
+            if (cachedBlogs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-500 font-syncopate">No dispatches found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = cachedBlogs.map(b => `
+                <tr class="hover:bg-white/[0.02]">
+                    <td class="p-4 text-emerald-400 font-bold">${b.topic || 'RESEARCH'}</td>
+                    <td class="p-4 font-bold text-white max-w-xs truncate">${b.title}</td>
+                    <td class="p-4 text-gray-400">${b.author}</td>
+                    <td class="p-4 text-gray-400 font-mono">${(b.sections || []).length} Points</td>
+                    <td class="p-4 text-gray-400">${b.date}</td>
+                    <td class="p-4 text-right space-x-2">
+                        <button onclick="editBlog('${b.slug}')" class="px-2.5 py-1 rounded border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-black">EDIT</button>
+                        <button onclick="deleteBlog('${b.slug}')" class="px-2.5 py-1 rounded border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-black">DEL</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Section Builder Logic
+        const sectionsContainer = document.getElementById('sections-builder');
+        document.getElementById('add-section-btn').onclick = () => addSectionRow();
+
+        function addSectionRow(title = '', content = '') {
+            const count = sectionsContainer.children.length + 1;
+            const div = document.createElement('div');
+            div.className = 'section-row p-4 rounded bg-black/60 border border-white/10 space-y-3';
+            div.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-mono text-emerald-400 font-bold">SECTION // ${count}</span>
+                    <button type="button" onclick="this.closest('.section-row').remove()" class="text-red-400 hover:text-red-300 text-xs font-mono">[REMOVE]</button>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-syncopate text-gray-400 mb-1">SECTION HEADING (BULLET NAV TITLE) *</label>
+                    <input type="text" class="sec-title w-full p-2 rounded text-xs" required value="${title.replace(/"/g, '&quot;')}" placeholder="e.g. Asynchronous Microkernel Architecture">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-syncopate text-gray-400 mb-1">SECTION CONTENT (PARAGRAPHS &amp; CODE) *</label>
+                    <textarea class="sec-content w-full p-2 rounded text-xs font-mono" rows="3" required placeholder="Detailed content... Markdown code blocks supported with \`\`\`lang...">${content}</textarea>
+                </div>
+            `;
+            sectionsContainer.appendChild(div);
+        }
+
+        // New / Edit Blog Modal Handlers
+        document.getElementById('new-blog-btn').onclick = () => {
+            document.getElementById('blog-form').reset();
+            document.getElementById('blog-edit-id').value = '';
+            document.getElementById('blog-modal-title').textContent = "NEW TRANSMISSION COMPOSER";
+            sectionsContainer.innerHTML = '';
+            addSectionRow("Overview", "Initial transmission findings...");
+            document.getElementById('blog-modal').classList.remove('hidden');
+        };
+
+        window.editBlog = (slug) => {
+            const blog = cachedBlogs.find(b => b.slug === slug);
+            if (!blog) return;
+
+            document.getElementById('blog-edit-id').value = blog.slug;
+            document.getElementById('blog-modal-title').textContent = `EDIT DISPATCH: ${blog.title}`;
+            document.getElementById('b-title').value = blog.title;
+            document.getElementById('b-slug').value = blog.slug;
+            document.getElementById('b-topic').value = blog.topic || '';
+            document.getElementById('b-author').value = blog.author || '';
+            document.getElementById('b-readtime').value = blog.readTime || '';
+            document.getElementById('b-cover').value = blog.cover || '';
+            document.getElementById('b-summary').value = blog.summary || '';
+
+            sectionsContainer.innerHTML = '';
+            const sections = blog.sections || [];
+            if (sections.length > 0) {
+                sections.forEach(s => addSectionRow(s.title, s.content));
+            } else {
+                addSectionRow("Overview", "");
+            }
+
+            document.getElementById('blog-modal').classList.remove('hidden');
+        };
+
+        document.getElementById('close-blog-modal').onclick = () => document.getElementById('blog-modal').classList.add('hidden');
+        document.getElementById('cancel-blog-btn').onclick = () => document.getElementById('blog-modal').classList.add('hidden');
+
+        // Submit Blog Form
+        document.getElementById('blog-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const editSlug = document.getElementById('blog-edit-id').value;
+            const isEdit = !!editSlug;
+
+            const sections = [];
+            document.querySelectorAll('.section-row').forEach((row, i) => {
+                const title = row.querySelector('.sec-title').value.trim();
+                const content = row.querySelector('.sec-content').value.trim();
+                sections.push({ id: `sec-${i + 1}`, title, content });
+            });
+
+            const blogPayload = {
+                title: document.getElementById('b-title').value.trim(),
+                slug: document.getElementById('b-slug').value.trim(),
+                topic: document.getElementById('b-topic').value.trim().toUpperCase(),
+                author: document.getElementById('b-author').value.trim(),
+                readTime: document.getElementById('b-readtime').value.trim(),
+                cover: document.getElementById('b-cover').value.trim(),
+                summary: document.getElementById('b-summary').value.trim(),
+                sections
+            };
+
+            try {
+                const method = isEdit ? 'PUT' : 'POST';
+                const res = await fetch('/api/blogs' + (isEdit ? `?slug=${editSlug}` : ''), {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify(blogPayload)
+                });
+
+                if (res.ok) {
+                    document.getElementById('blog-modal').classList.add('hidden');
+                    loadBlogs();
+                } else {
+                    const err = await res.json();
+                    alert("Error: " + (err.error || "Save failed"));
+                }
+            } catch (err) {
+                alert("Request error: " + err.message);
+            }
+        };
+
+        window.deleteBlog = async (slug) => {
+            if (!confirm(`Are you sure you want to delete dispatch '${slug}'?`)) return;
+
+            try {
+                const res = await fetch(`/api/blogs?slug=${encodeURIComponent(slug)}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                if (res.ok) {
+                    loadBlogs();
+                } else {
+                    alert("Failed to delete post.");
+                }
+            } catch (err) {
+                alert("Request error: " + err.message);
+            }
+        };
+
+        /* ---------------- TEAM MANAGEMENT ---------------- */
+        async function loadTeam() {
+            try {
+                const res = await fetch('/api/team?t=' + Date.now());
+                cachedTeam = await res.json();
+                renderTeamTable();
+            } catch (err) {
+                console.error("Failed to load team:", err);
+            }
+        }
+
+        function renderTeamTable() {
+            const tbody = document.getElementById('team-table-body');
+            tbody.innerHTML = cachedTeam.map(m => `
+                <tr class="hover:bg-white/[0.02]">
+                    <td class="p-4 text-gray-500 font-mono">#${m.id}</td>
+                    <td class="p-4 font-bold text-white">${m.name}</td>
+                    <td class="p-4 text-emerald-400">${m.role}</td>
+                    <td class="p-4 text-gray-400">batch_${m.year}</td>
+                    <td class="p-4 text-gray-400 font-mono text-[10px] truncate max-w-xs">${m.img}</td>
+                    <td class="p-4 text-right space-x-2">
+                        <button onclick="editTeam(${m.id})" class="px-2.5 py-1 rounded border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-black">EDIT</button>
+                        <button onclick="deleteTeam(${m.id})" class="px-2.5 py-1 rounded border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-black">DEL</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('new-member-btn').onclick = () => {
+            document.getElementById('team-form').reset();
+            document.getElementById('team-edit-id').value = '';
+            document.getElementById('team-modal').classList.remove('hidden');
+        };
+
+        window.editTeam = (id) => {
+            const m = cachedTeam.find(item => item.id === id);
+            if (!m) return;
+            document.getElementById('team-edit-id').value = m.id;
+            document.getElementById('m-name').value = m.name;
+            document.getElementById('m-role').value = m.role;
+            document.getElementById('m-year').value = m.year;
+            document.getElementById('m-img').value = m.img || '';
+            document.getElementById('m-github').value = m.github || '';
+            document.getElementById('m-linkedin').value = m.linkedin || '';
+            document.getElementById('team-modal').classList.remove('hidden');
+        };
+
+        document.getElementById('close-team-modal').onclick = () => document.getElementById('team-modal').classList.add('hidden');
+        document.getElementById('cancel-team-btn').onclick = () => document.getElementById('team-modal').classList.add('hidden');
+
+        document.getElementById('team-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('team-edit-id').value;
+            const isEdit = !!editId;
+
+            const payload = {
+                name: document.getElementById('m-name').value.trim(),
+                role: document.getElementById('m-role').value.trim(),
+                year: document.getElementById('m-year').value,
+                img: document.getElementById('m-img').value.trim(),
+                github: document.getElementById('m-github').value.trim(),
+                linkedin: document.getElementById('m-linkedin').value.trim()
+            };
+            if (isEdit) payload.id = parseInt(editId, 10);
+
+            try {
+                const res = await fetch('/api/team', {
+                    method: isEdit ? 'PUT' : 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    document.getElementById('team-modal').classList.add('hidden');
+                    loadTeam();
+                } else {
+                    alert("Failed to save operative.");
+                }
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        };
+
+        window.deleteTeam = async (id) => {
+            if (!confirm(`Confirm deletion of operative ID #${id}?`)) return;
+            try {
+                const res = await fetch(`/api/team?id=${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                if (res.ok) loadTeam();
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        };
+
+        /* ---------------- PROJECTS MANAGEMENT ---------------- */
+        async function loadProjects() {
+            try {
+                const res = await fetch('/api/projects?t=' + Date.now());
+                cachedProjects = await res.json();
+                renderProjectsTable();
+            } catch (err) {
+                console.error("Failed to load projects:", err);
+            }
+        }
+
+        function renderProjectsTable() {
+            const tbody = document.getElementById('projects-table-body');
+            tbody.innerHTML = cachedProjects.map(p => `
+                <tr class="hover:bg-white/[0.02]">
+                    <td class="p-4 text-gray-500 font-mono">#${p.id}</td>
+                    <td class="p-4 font-bold text-white">${p.title}</td>
+                    <td class="p-4 text-gray-400 max-w-xs truncate">${p.desc || ''}</td>
+                    <td class="p-4 text-gray-400 font-mono text-[10px] truncate max-w-xs">${p.img}</td>
+                    <td class="p-4 text-emerald-400 font-mono text-[10px] truncate max-w-xs"><a href="${p.link}" target="_blank">${p.link}</a></td>
+                    <td class="p-4 text-right space-x-2">
+                        <button onclick="editProject(${p.id})" class="px-2.5 py-1 rounded border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-black">EDIT</button>
+                        <button onclick="deleteProject(${p.id})" class="px-2.5 py-1 rounded border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-black">DEL</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('new-project-btn').onclick = () => {
+            document.getElementById('project-form').reset();
+            document.getElementById('proj-edit-id').value = '';
+            document.getElementById('project-modal').classList.remove('hidden');
+        };
+
+        window.editProject = (id) => {
+            const p = cachedProjects.find(item => item.id === id);
+            if (!p) return;
+            document.getElementById('proj-edit-id').value = p.id;
+            document.getElementById('p-title').value = p.title;
+            document.getElementById('p-desc').value = p.desc || '';
+            document.getElementById('p-img').value = p.img || '';
+            document.getElementById('p-link').value = p.link || '';
+            document.getElementById('project-modal').classList.remove('hidden');
+        };
+
+        document.getElementById('close-project-modal').onclick = () => document.getElementById('project-modal').classList.add('hidden');
+        document.getElementById('cancel-project-btn').onclick = () => document.getElementById('project-modal').classList.add('hidden');
+
+        document.getElementById('project-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('proj-edit-id').value;
+            const isEdit = !!editId;
+
+            const payload = {
+                title: document.getElementById('p-title').value.trim(),
+                desc: document.getElementById('p-desc').value.trim(),
+                img: document.getElementById('p-img').value.trim(),
+                link: document.getElementById('p-link').value.trim()
+            };
+            if (isEdit) payload.id = parseInt(editId, 10);
+
+            try {
+                const res = await fetch('/api/projects', {
+                    method: isEdit ? 'PUT' : 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    document.getElementById('project-modal').classList.add('hidden');
+                    loadProjects();
+                } else {
+                    alert("Failed to save project.");
+                }
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        };
+
+        window.deleteProject = async (id) => {
+            if (!confirm(`Confirm deletion of initiative ID #${id}?`)) return;
+            try {
+                const res = await fetch(`/api/projects?id=${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                if (res.ok) loadProjects();
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        };
+
+        // Auto-slug generator on title input
+        document.getElementById('b-title').addEventListener('input', (e) => {
+            if (!document.getElementById('blog-edit-id').value) {
+                document.getElementById('b-slug').value = e.target.value.toLowerCase().trim()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+            }
+        });
+
+        // Initialize
+        checkInitialAuth();
+    </script>
+</body>
+
+</html>
