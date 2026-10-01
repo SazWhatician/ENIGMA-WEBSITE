@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <meta name="description" content="ENIGMA Dispatch - Deep technical analysis and research transmission.">
+    <meta property="og:title" content="ENIGMA | Dispatch">
+    <meta property="og:description" content="Technical research from ENIGMA.">
+    <meta property="og:image" content="https://www.enigmavssut.in/logo.bg.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <title>ENIGMA | Dispatch Reader</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Syncopate:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://unpkg.com/@barba/core"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#000000',
+                        orbitGreen: '#2BA648',
+                        orbitDark: '#0F3918',
+                    },
+                    fontFamily: {
+                        sans: ['"Host Grotesk"', 'sans-serif'],
+                        syncopate: ['"Syncopate"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --neon-green: #2BA648;
+            --neon-glow: rgba(43, 166, 72, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: 'Host Grotesk', sans-serif;
+            position: relative;
+        }
+
+        /* Top Reading Progress Bar */
+        #reading-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, #2BA648, #0df2c9);
+            box-shadow: 0 0 10px rgba(43, 166, 72, 0.8), 0 0 20px rgba(13, 242, 201, 0.5);
+            z-index: 5000;
+            transition: width 0.1s linear;
+        }
+
+        /* Ambient scanlines & blueprint */
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 4px, 6px 100%;
+            opacity: 0.5;
+        }
+
+        .blueprint-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(43, 166, 72, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(43, 166, 72, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            padding: 1.5rem 2rem !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            z-index: 3500 !important;
+            background: rgba(0, 0, 0, 0.4) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+        }
+
+        .nav-items a {
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .nav-items a:hover {
+            color: #2BA648;
+            text-shadow: 0 0 10px rgba(43, 166, 72, 0.8);
+        }
+
+        /* Bullet Navigator Timeline (Right HUD) */
+        .bullet-nav-track {
+            position: relative;
+        }
+
+        .bullet-nav-track::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            bottom: 10px;
+            left: 7px;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.08);
+            z-index: 1;
+        }
+
+        .bullet-item {
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .bullet-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #000;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .bullet-item:hover .bullet-dot {
+            border-color: #2BA648;
+            box-shadow: 0 0 10px rgba(43, 166, 72, 0.5);
+            transform: scale(1.15);
+        }
+
+        .bullet-item.active .bullet-dot {
+            border-color: #2BA648;
+            background: #2BA648;
+            box-shadow: 0 0 15px rgba(43, 166, 72, 0.9), 0 0 25px rgba(43, 166, 72, 0.5);
+            transform: scale(1.25);
+        }
+
+        .bullet-item.active .bullet-text {
+            color: #2BA648;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(43, 166, 72, 0.3);
+            transform: translateX(4px);
+        }
+
+        /* Section Container Highlight Pulse */
+        .section-highlight {
+            animation: pulseSection 1.2s ease-out;
+        }
+
+        @keyframes pulseSection {
+            0% {
+                box-shadow: 0 0 0 0 rgba(43, 166, 72, 0.7);
+                border-color: rgba(43, 166, 72, 0.9);
+            }
+            100% {
+                box-shadow: 0 0 0 20px rgba(43, 166, 72, 0);
+                border-color: rgba(255, 255, 255, 0.08);
+            }
+        }
+
+        /* Code Block Styling */
+        pre {
+            background: #060907 !important;
+            border: 1px solid rgba(43, 166, 72, 0.25);
+            border-radius: 6px;
+            padding: 1.2rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #a7f3d0;
+            position: relative;
+        }
+
+        pre::before {
+            content: 'TERMINAL // CODE';
+            position: absolute;
+            top: 6px;
+            right: 12px;
+            font-size: 9px;
+            font-family: 'Syncopate', sans-serif;
+            letter-spacing: 1px;
+            color: rgba(43, 166, 72, 0.4);
+        }
+
+        /* Toast message */
+        #cyber-toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(10, 12, 10, 0.95);
+            border: 1px solid #2BA648;
+            box-shadow: 0 0 20px rgba(43, 166, 72, 0.4);
+            padding: 0.8rem 1.4rem;
+            border-radius: 4px;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            color: #2BA648;
+            z-index: 6000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        #cyber-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Mobile drawer */
+        @media (max-width: 1023px) {
+            .desktop-hud {
+                display: none !important;
+            }
+            .mobile-hud-btn {
+                display: flex !important;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .mobile-hud-btn {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body data-barba="wrapper">
+
+    <!-- Top Reading Progress HUD Bar -->
+    <div id="reading-progress-bar"></div>
+
+    <div class="scanlines"></div>
+    <div class="blueprint-grid"></div>
+
+    <!-- Master Nav -->
+    <nav>
+        <div class="logo">
+            <a href="/index.html" style="font-weight: 700; font-size: 1.2rem; text-decoration: none; color: #fff; letter-spacing: 2px; font-family: 'Host Grotesk', sans-serif;">ENIGMA.</a>
+        </div>
+        <div class="nav-items flex gap-8">
+            <p><a href="/events.html">Events</a></p>
+            <p><a href="/project.html">Projects</a></p>
+            <p><a href="/team.html">Team</a></p>
+            <p><a href="/blog.html" style="color: #2BA648; text-shadow: 0 0 10px rgba(43, 166, 72, 0.8);">Dispatches</a></p>
+            <p><a href="/contact.html">Contact</a></p>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <div class="hamburger-lines">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Barba Container -->
+    <main data-barba="container" data-barba-namespace="blog-post" class="relative z-10 min-h-screen pt-32 pb-24 px-4 sm:px-8 max-w-7xl mx-auto">
+
+        <!-- BACK LINK & ACTIONS ROW -->
+        <div class="mb-8 flex items-center justify-between">
+            <a href="/blog.html" class="inline-flex items-center gap-2 text-xs font-syncopate tracking-widest text-gray-400 hover:text-emerald-400 transition-colors uppercase">
+                <span class="text-emerald-400">&larr;</span>
+                <span>BACK TO DISPATCHES</span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <button id="copy-share-btn" class="px-3 py-1.5 rounded border border-white/10 bg-white/[0.04] text-xs font-syncopate tracking-wider text-gray-300 hover:border-emerald-400/50 hover:text-emerald-400 transition-all flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                    <span>SHARE</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ARTICLE HERO -->
+        <header id="article-header" class="mb-14">
+            <div class="flex flex-wrap items-center gap-3 text-xs font-syncopate uppercase mb-5">
+                <span id="article-topic" class="px-3 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold tracking-widest">
+                    AI/ML
+                </span>
+                <span class="text-gray-500">•</span>
+                <span id="article-date" class="text-gray-400">OCT 02, 2026</span>
+                <span class="text-gray-500">•</span>
+                <span id="article-read-time" class="text-gray-400">6 MIN READ</span>
+            </div>
+
+            <h1 id="article-title" class="text-3xl sm:text-5xl lg:text-6xl font-syncopate font-bold text-white tracking-tight leading-tight mb-8">
+                LOADING TRANSMISSION...
+            </h1>
+
+            <!-- Author & Metadata Badge -->
+            <div class="flex items-center gap-4 py-4 border-t border-b border-white/[0.08] mb-10">
+                <div class="w-12 h-12 rounded-full border border-emerald-500/40 bg-black flex items-center justify-center font-syncopate font-bold text-emerald-400 text-sm">
+                    E
+                </div>
+                <div>
+                    <div id="article-author" class="text-sm font-syncopate font-bold text-white tracking-wide">
+                        ENIGMA Research Lab
+                    </div>
+                    <div id="article-author-role" class="text-xs text-emerald-400/80 font-mono tracking-wider">
+                        Neural Systems Group
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cover Image Hero -->
+            <div id="article-cover-wrap" class="relative w-full h-[40vh] sm:h-[55vh] rounded-lg overflow-hidden border border-white/[0.08] shadow-2xl">
+                <img id="article-cover" src="" alt="Cover" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+            </div>
+        </header>
+
+        <!-- 2-COLUMN ARTICLE LAYOUT: MAIN CONTENT + STICKY BULLET HUD -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 relative">
+
+            <!-- MAIN COLUMN (70% - 8 Cols) -->
+            <div class="lg:col-span-8">
+                <!-- Summary / Abstract Callout -->
+                <div id="article-summary-box" class="p-6 mb-12 rounded-lg bg-emerald-950/20 border-l-4 border-emerald-500 border-t border-r border-b border-white/[0.04]">
+                    <div class="text-[10px] font-syncopate uppercase tracking-[2px] text-emerald-400 mb-2 font-bold">
+                        ABSTRACT // EXECUTIVE TRANSMISSION
+                    </div>
+                    <p id="article-summary" class="text-gray-300 text-base sm:text-lg font-light leading-relaxed italic">
+                        Loading transmission abstract...
+                    </p>
+                </div>
+
+                <!-- SECTION BODY CONTAINER -->
+                <div id="article-sections" class="space-y-16">
+                    <!-- Sections will be injected here dynamically -->
+                </div>
+
+                <!-- END OF TRANSMISSION DEBRIEF -->
+                <div class="mt-20 pt-8 border-t border-white/[0.1] flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div class="text-xs text-gray-500 font-syncopate uppercase tracking-widest">
+                        END OF TRANSMISSION // ENIGMA DEPT. OF RESEARCH
+                    </div>
+                    <a href="/blog.html" class="px-5 py-2.5 rounded bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 font-syncopate text-xs tracking-widest hover:bg-emerald-500 hover:text-black transition-all">
+                        EXPLORE MORE DISPATCHES &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: STICKY FLOATING BULLET POINT HUD (30% - 4 Cols) -->
+            <div class="lg:col-span-4 desktop-hud">
+                <aside class="sticky top-28 p-6 rounded-lg bg-black/60 border border-white/[0.08] backdrop-blur-xl">
+                    <!-- HUD Header -->
+                    <div class="flex items-center justify-between pb-4 mb-6 border-b border-white/[0.08]">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="text-[11px] font-syncopate font-bold text-white tracking-[2px]">TRANSMISSION INDEX</span>
+                        </div>
+                        <span id="active-sec-badge" class="text-[9px] font-mono text-emerald-400">01 / --</span>
+                    </div>
+
+                    <!-- Bullet Timeline Points Container -->
+                    <div id="bullet-nav" class="bullet-nav-track space-y-5">
+                        <!-- Bullets dynamically populated -->
+                    </div>
+
+                    <!-- Reading Progress Widget -->
+                    <div class="mt-8 pt-6 border-t border-white/[0.08]">
+                        <div class="flex justify-between text-[10px] font-syncopate text-gray-400 mb-2 uppercase">
+                            <span>READ DEPTH</span>
+                            <span id="read-depth-percent">0%</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                            <div id="hud-progress-fill" class="h-full bg-emerald-500 w-0 transition-all duration-150"></div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <!-- Mobile Floating HUD Button -->
+        <button id="mobile-toc-btn" class="mobile-hud-btn fixed bottom-6 right-6 z-40 p-3.5 rounded-full bg-black/90 border border-emerald-500 text-emerald-400 shadow-2xl backdrop-blur-md flex items-center gap-2 font-syncopate text-xs tracking-wider">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+            <span>INDEX</span>
+        </button>
+
+        <!-- Mobile Bottom Drawer for Index -->
+        <div id="mobile-toc-drawer" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex flex-col justify-end">
+            <div class="bg-[#0b0e0c] border-t border-emerald-500/50 p-6 rounded-t-2xl max-h-[75vh] overflow-y-auto">
+                <div class="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+                    <span class="text-xs font-syncopate font-bold text-emerald-400">TRANSMISSION INDEX</span>
+                    <button id="close-mobile-toc" class="text-gray-400 text-xl font-bold">&times;</button>
+                </div>
+                <div id="mobile-bullet-nav" class="space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- Toast notification -->
+        <div id="cyber-toast">LINK COPIED TO CLIPBOARD</div>
+
+        <!-- FOOTER TEXT -->
+        <div style="width: 100%; text-align: center; padding: 60px 0 20px 0; font-family: 'Syncopate', sans-serif; font-size: 11px; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; letter-spacing: 2px; position: relative; z-index: 2000; background: transparent; pointer-events: none;">
+            Made with love <span style="color: #2BA648; text-shadow: 0 0 8px rgba(43, 166, 72, 0.8), 0 0 12px rgba(43, 166, 72, 0.5);">ENIGMA.</span>
+        </div>
+
+    </main>
+
+    <!-- ARTICLE VIEWER JAVASCRIPT ENGINE -->
+    <script>
+        window.currentArticle = null;
+        window.scrollSpyObserver = null;
+
+        // Parse Slug from Path or Query
+        function getPostSlug() {
+            // Check query param first
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('slug')) return params.get('slug');
+
+            // Check pathname e.g. /blog/neural-lattice-architectures
+            const pathParts = window.location.pathname.split('/').filter(Boolean);
+            if (pathParts[0] === 'blog' && pathParts[1]) {
+                return pathParts[1];
+            }
+            return null;
+        }
+
+        // Fetch & Populate Article
+        async function loadArticle() {
+            const slug = getPostSlug() || 'neural-lattice-architectures'; // default to first if none specified
+
+            try {
+                const res = await fetch(`/api/blogs?slug=${encodeURIComponent(slug)}&t=${Date.now()}`);
+                if (!res.ok) {
+                    render404(slug);
+                    return;
+                }
+                const article = await res.json();
+                window.currentArticle = article;
+                renderArticleData(article);
+            } catch (err) {
+                console.error("Error loading article:", err);
+                render404(slug);
+            }
+        }
+
+        function render404(slug) {
+            const titleEl = document.getElementById('article-title');
+            if (titleEl) {
+                titleEl.textContent = "TRANSMISSION NOT FOUND (404)";
+            }
+            const secContainer = document.getElementById('article-sections');
+            if (secContainer) {
+                secContainer.innerHTML = `
+                    <div class="p-12 text-center border border-red-500/30 rounded-lg bg-red-950/10">
+                        <div class="text-red-400 font-syncopate text-sm font-bold mb-3">ERROR 0x404: CIPHER UNRESOLVED</div>
+                        <p class="text-gray-400 text-sm mb-6">No transmission matches query identifier [ ${slug || 'NULL'} ].</p>
+                        <a href="/blog.html" class="px-4 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold uppercase tracking-wider">
+                            Return to Dispatches
+                        </a>
+                    </div>
+                `;
+            }
+        }
+
+        function renderArticleData(article) {
+            document.title = `ENIGMA | ${article.title}`;
+            document.getElementById('article-title').textContent = article.title;
+            document.getElementById('article-topic').textContent = article.topic || 'RESEARCH';
+            document.getElementById('article-date').textContent = article.date || 'OCT 2026';
+            document.getElementById('article-read-time').textContent = (article.readTime || '5 min') + ' READ';
+            document.getElementById('article-author').textContent = article.author || 'ENIGMA Operative';
+            document.getElementById('article-author-role').textContent = article.authorRole || 'Research Cell';
+            
+            const coverEl = document.getElementById('article-cover');
+            if (coverEl && article.cover) {
+                coverEl.src = article.cover;
+            }
+
+            document.getElementById('article-summary').textContent = article.summary || '';
+
+            // Render Sections
+            const secContainer = document.getElementById('article-sections');
+            const bulletContainer = document.getElementById('bullet-nav');
+            const mobileBulletContainer = document.getElementById('mobile-bullet-nav');
+
+            if (!secContainer || !bulletContainer) return;
+
+            secContainer.innerHTML = '';
+            bulletContainer.innerHTML = '';
+            if (mobileBulletContainer) mobileBulletContainer.innerHTML = '';
+
+            const sections = Array.isArray(article.sections) && article.sections.length > 0
+                ? article.sections
+                : [{ id: 'sec-1', title: 'Overview', content: 'No section details specified.' }];
+
+            sections.forEach((sec, idx) => {
+                const secId = sec.id || `section-${idx + 1}`;
+                const secNumber = (idx + 1).toString().padStart(2, '0');
+
+                // 1. Article Section HTML
+                const sectionEl = document.createElement('section');
+                sectionEl.id = secId;
+                sectionEl.className = 'article-section scroll-mt-36 p-6 sm:p-8 rounded-lg bg-black/40 border border-white/[0.06] transition-all duration-300';
+                
+                // Format content (code blocks, paragraphs)
+                const formattedContent = formatSectionContent(sec.content);
+
+                sectionEl.innerHTML = `
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="text-xs font-mono text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30">
+                            PART // ${secNumber}
+                        </span>
+                        <h2 class="text-xl sm:text-2xl font-bold font-syncopate tracking-tight text-white">
+                            ${sec.title}
+                        </h2>
+                    </div>
+                    <div class="text-gray-300 leading-relaxed text-base sm:text-lg font-light space-y-5">
+                        ${formattedContent}
+                    </div>
+                `;
+                secContainer.appendChild(sectionEl);
+
+                // 2. Desktop Bullet Point HUD HTML
+                const bulletEl = document.createElement('div');
+                bulletEl.className = `bullet-item flex items-center gap-3.5 ${idx === 0 ? 'active' : ''}`;
+                bulletEl.dataset.target = secId;
+                bulletEl.dataset.index = idx;
+                bulletEl.innerHTML = `
+                    <div class="bullet-dot"></div>
+                    <span class="bullet-text text-xs text-gray-400 font-syncopate tracking-wider line-clamp-1 transition-all">
+                        ${sec.title}
+                    </span>
+                `;
+                bulletEl.addEventListener('click', () => scrollToSection(secId));
+                bulletContainer.appendChild(bulletEl);
+
+                // 3. Mobile Bullet Point Item HTML
+                if (mobileBulletContainer) {
+                    const mBullet = document.createElement('div');
+                    mBullet.className = 'p-3 rounded border border-white/10 text-xs font-syncopate text-gray-300 cursor-pointer flex items-center justify-between';
+                    mBullet.innerHTML = `
+                        <span>${secNumber}. ${sec.title}</span>
+                        <span class="text-emerald-400">&rarr;</span>
+                    `;
+                    mBullet.addEventListener('click', () => {
+                        closeMobileDrawer();
+                        scrollToSection(secId);
+                    });
+                    mobileBulletContainer.appendChild(mBullet);
+                }
+            });
+
+            // Update badge total
+            document.getElementById('active-sec-badge').textContent = `01 / ${sections.length.toString().padStart(2, '0')}`;
+
+            // Initialize ScrollSpy
+            initScrollSpy();
+        }
+
+        // Parse markdown code blocks and paragraphs cleanly
+        function formatSectionContent(rawText) {
+            if (!rawText) return '';
+            
+            // Replace code blocks ```lang ... ```
+            let content = rawText.replace(/```([a-zA-Z0-9]*)\n([\s\S]*?)```/g, (match, lang, code) => {
+                const escaped = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return `<pre><code>${escaped}</code></pre>`;
+            });
+
+            // Split into paragraphs by double newlines
+            const paragraphs = content.split(/\n\n+/);
+            return paragraphs.map(p => {
+                if (p.trim().startsWith('<pre>')) return p;
+                if (p.trim().startsWith('- ')) {
+                    const listItems = p.trim().split('\n').map(li => `<li>${li.replace(/^-\s*/, '')}</li>`).join('');
+                    return `<ul class="list-disc pl-5 space-y-2 text-gray-300 font-light">${listItems}</ul>`;
+                }
+                return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+            }).join('');
+        }
+
+        // Smooth scroll to section with highlight pulse
+        function scrollToSection(secId) {
+            const target = document.getElementById(secId);
+            if (!target) return;
+
+            const headerOffset = 130;
+            const elementPosition = target.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+
+            // Highlight pulse
+            target.classList.remove('section-highlight');
+            void target.offsetWidth; // trigger reflow
+            target.classList.add('section-highlight');
+        }
+
+        // ScrollSpy Observer
+        function initScrollSpy() {
+            if (window.scrollSpyObserver) {
+                window.scrollSpyObserver.disconnect();
+            }
+
+            const sections = document.querySelectorAll('.article-section');
+            const bulletItems = document.querySelectorAll('.bullet-item');
+            const badge = document.getElementById('active-sec-badge');
+
+            const options = {
+                root: null,
+                rootMargin: '-20% 0px -60% 0px',
+                threshold: 0
+            };
+
+            window.scrollSpyObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        bulletItems.forEach(b => {
+                            if (b.dataset.target === id) {
+                                b.classList.add('active');
+                                const idx = parseInt(b.dataset.index, 10) + 1;
+                                badge.textContent = `${idx.toString().padStart(2, '0')} / ${bulletItems.length.toString().padStart(2, '0')}`;
+                            } else {
+                                b.classList.remove('active');
+                            }
+                        });
+                    }
+                });
+            }, options);
+
+            sections.forEach(sec => window.scrollSpyObserver.observe(sec));
+        }
+
+        // Reading Progress Tracking
+        function initReadingProgress() {
+            const bar = document.getElementById('reading-progress-bar');
+            const depthText = document.getElementById('read-depth-percent');
+            const hudFill = document.getElementById('hud-progress-fill');
+
+            const onScroll = () => {
+                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                if (totalHeight <= 0) return;
+                const progress = Math.min(Math.max((window.pageYOffset / totalHeight) * 100, 0), 100);
+                
+                if (bar) bar.style.width = `${progress}%`;
+                if (depthText) depthText.textContent = `${Math.round(progress)}%`;
+                if (hudFill) hudFill.style.width = `${progress}%`;
+            };
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.cleanupReadingProgress = () => window.removeEventListener('scroll', onScroll);
+        }
+
+        // Share Link Button
+        function initShareButton() {
+            const btn = document.getElementById('copy-share-btn');
+            const toast = document.getElementById('cyber-toast');
+            if (!btn || !toast) return;
+
+            btn.onclick = () => {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 2500);
+                }).catch(() => {
+                    alert("Link copied: " + window.location.href);
+                });
+            };
+        }
+
+        // Mobile Drawer Controls
+        function initMobileTOC() {
+            const openBtn = document.getElementById('mobile-toc-btn');
+            const closeBtn = document.getElementById('close-mobile-toc');
+            const drawer = document.getElementById('mobile-toc-drawer');
+            if (!openBtn || !drawer) return;
+
+            openBtn.onclick = () => {
+                drawer.classList.remove('opacity-0', 'pointer-events-none');
+            };
+            if (closeBtn) {
+                closeBtn.onclick = closeMobileDrawer;
+            }
+            drawer.onclick = (e) => {
+                if (e.target === drawer) closeMobileDrawer();
+            };
+        }
+
+        function closeMobileDrawer() {
+            const drawer = document.getElementById('mobile-toc-drawer');
+            if (drawer) drawer.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Page Init Hook
+        window.initBlogPostPage = function() {
+            loadArticle();
+            initReadingProgress();
+            initShareButton();
+            initMobileTOC();
+        };
+
+        window.cleanupBlogPostPage = function() {
+            if (window.scrollSpyObserver) window.scrollSpyObserver.disconnect();
+            if (window.cleanupReadingProgress) window.cleanupReadingProgress();
+        };
+
+        // DOM Ready
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.querySelector('[data-barba-namespace="blog-post"]')) {
+                window.initBlogPostPage();
+            }
+        });
+    </script>
+</body>
+
+</html>
