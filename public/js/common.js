@@ -414,6 +414,8 @@ window.cleanupFooterCrystal = function () {
         cancelAnimationFrame(window.footerReqId);
         window.footerReqId = null;
     }
+    const container = document.getElementById('footer-canvas');
+    if (container) container.innerHTML = '';
 };
 
 window.initFooterCrystal = function () {
@@ -484,16 +486,28 @@ window.initFooterCrystal = function () {
     crystalGroup.add(particles);
 
     const footerMouse = { x: 0, y: 0 };
-    document.querySelector('footer').addEventListener('mousemove', (e) => {
-        footerMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-        footerMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    });
+    const footerEl = document.querySelector('footer');
+    if (footerEl) {
+        footerEl.addEventListener('mousemove', (e) => {
+            footerMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            footerMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+    }
 
     const footerContentContainer = document.querySelector('.footer-container');
+    let scrollProgress = 0;
 
-    if (typeof ScrollTrigger !== 'undefined') {
+    if (typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined' && footerContentContainer) {
+        gsap.set(footerContentContainer, { yPercent: -50 });
         ScrollTrigger.create({
-            trigger: 'footer', start: 'top bottom', end: 'bottom bottom', scrub: true
+            trigger: 'footer',
+            start: 'top bottom',
+            end: 'bottom bottom',
+            scrub: true,
+            onUpdate: (self) => {
+                scrollProgress = self.progress;
+                gsap.set(footerContentContainer, { yPercent: -50 * (1 - scrollProgress) });
+            }
         });
     }
 
@@ -523,6 +537,8 @@ window.initFooterCrystal = function () {
         const scale = 1 + Math.sin(time * 2) * 0.05;
         innerCrystal.scale.set(scale, scale, scale);
 
+        const targetZ = -5 + (scrollProgress * 5);
+        crystalGroup.position.z += (targetZ - crystalGroup.position.z) * 0.05;
         crystalGroup.rotation.x += (footerMouse.y * 0.2 - crystalGroup.rotation.x) * 0.05;
         crystalGroup.rotation.y += (footerMouse.x * 0.2 - crystalGroup.rotation.y) * 0.05;
 
@@ -1629,14 +1645,23 @@ window.initBarba = function () {
                     if (window.initBlogPage) window.initBlogPage();
                 },
                 afterEnter() {
+                    if (window.initFooterCrystal) {
+                        setTimeout(() => window.initFooterCrystal(), 120);
+                    }
                 },
                 beforeLeave() {
                     if (window.cleanupBlogFlowCanvas) window.cleanupBlogFlowCanvas();
+                    if (window.cleanupFooterCrystal) window.cleanupFooterCrystal();
                 },
                 beforeOnce(data) {
                     document.body.style.overflowY = 'auto';
                     document.body.style.touchAction = 'auto';
                     if (window.initBlogPage) window.initBlogPage();
+                },
+                afterOnce() {
+                    if (window.initFooterCrystal) {
+                        setTimeout(() => window.initFooterCrystal(), 120);
+                    }
                 }
             },
             {
@@ -1647,14 +1672,23 @@ window.initBarba = function () {
                     if (window.initBlogPostPage) window.initBlogPostPage();
                 },
                 afterEnter() {
+                    if (window.initFooterCrystal) {
+                        setTimeout(() => window.initFooterCrystal(), 120);
+                    }
                 },
                 beforeLeave() {
                     if (window.cleanupBlogPostPage) window.cleanupBlogPostPage();
+                    if (window.cleanupFooterCrystal) window.cleanupFooterCrystal();
                 },
                 beforeOnce(data) {
                     document.body.style.overflowY = 'auto';
                     document.body.style.touchAction = 'auto';
                     if (window.initBlogPostPage) window.initBlogPostPage();
+                },
+                afterOnce() {
+                    if (window.initFooterCrystal) {
+                        setTimeout(() => window.initFooterCrystal(), 120);
+                    }
                 }
             }
         ]
