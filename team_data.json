@@ -12,13 +12,13 @@
       "tag": "alumni"
     },
     {
-      "id": 10,
-      "name": "Ashish Kumar Mohapatra",
-      "role": "Web Dev",
+      "id": 2,
+      "name": "Ritesh Kumar Panda",
+      "role": "CP, AI/ML, Web Dev",
       "year": "alumni",
-      "img": "./team-assets/batch_2026/Ashish Kumar Mohapatra.jpg",
-      "linkedin": "https://www.linkedin.com/in/ashish-kumar-mohapatra-767879247?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-      "github": "https://github.com/ashish095-EE",
+      "img": "./team-assets/batch_2026/Ritesh Kumar Panda.jpg",
+      "linkedin": "https://www.linkedin.com/in/ritesh-kumar-panda-7b423b231",
+      "github": "https://github.com/ritpa2005",
       "batch": "2026",
       "tag": "alumni"
     },
@@ -100,13 +100,13 @@
       "tag": "alumni"
     },
     {
-      "id": 2,
-      "name": "Ritesh Kumar Panda",
-      "role": "CP, AI/ML, Web Dev",
+      "id": 10,
+      "name": "Ashish Kumar Mohapatra",
+      "role": "Web Dev",
       "year": "alumni",
-      "img": "./team-assets/batch_2026/Ritesh Kumar Panda.jpg",
-      "linkedin": "https://www.linkedin.com/in/ritesh-kumar-panda-7b423b231",
-      "github": "https://github.com/ritpa2005",
+      "img": "./team-assets/batch_2026/Ashish Kumar Mohapatra.jpg",
+      "linkedin": "https://www.linkedin.com/in/ashish-kumar-mohapatra-767879247?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      "github": "https://github.com/ashish095-EE",
       "batch": "2026",
       "tag": "alumni"
     },
@@ -129,17 +129,6 @@
       "img": "./team-assets/batch_2026/Swayamjeet Padhi.jpg",
       "linkedin": "http://www.linkedin.com/in/swayamjeet-padhi-380825257",
       "github": "https://github.com/Swayamjeet7",
-      "batch": "2026",
-      "tag": "alumni"
-    },
-    {
-      "id": 68,
-      "name": "Kaushik Dash",
-      "role": "AI/ML",
-      "year": "alumni",
-      "img": "./team-assets/batch_2026/Kaushik Dash.png",
-      "linkedin": "https://www.linkedin.com/in/kaushikdash",
-      "github": "https://github.com/KaushikDash04",
       "batch": "2026",
       "tag": "alumni"
     },
@@ -297,31 +286,34 @@
       "github": "https://github.com/subhankar2004"
     },
     {
-      "id": 54,
-      "name": "Aayush Kumar Prasad",
-      "role": "CP",
+      "id": 30,
+      "name": "Aryan Rajguru",
+      "role": "Web Dev",
       "year": "2028",
-      "img": "./team-assets/batch_2028/ayushprasad.png",
-      "linkedin": "https://www.linkedin.com/in/aayush-prasad-78672a329/",
-      "github": "https://github.com/AayushP06"
+      "img": "./team-assets/batch_2028/aryan.png",
+      "linkedin": "https://www.linkedin.com/in/aryan-rajguru-a1333230a",
+      "github": "https://github.com/Aryan-R-18",
+      "tag": "coordinator"
     },
     {
-      "id": 35,
-      "name": "Abhijit Sahu",
-      "role": "CP",
+      "id": 31,
+      "name": "Subhashree Sahu",
+      "role": "Web Dev, UI-UX",
       "year": "2028",
-      "img": "./team-assets/batch_2028/abhijit.png",
-      "linkedin": "https://www.linkedin.com/in/abhijitsahu276/",
-      "github": "https://github.com/abhijit-sahu-276"
+      "img": "./team-assets/batch_2028/Subhashree Sahu.jpg",
+      "linkedin": "http://www.linkedin.com/in/subhashree-sahu-95116b371",
+      "github": "https://github.com/Subhashree-794",
+      "tag": "coordinator"
     },
     {
-      "id": 59,
-      "name": "Aman Kumar",
-      "role": "Game Dev",
+      "id": 32,
+      "name": "Saswat Mohanty",
+      "role": "Web Dev and AI/ML",
       "year": "2028",
-      "img": "./team-assets/batch_2028/Aman Kumar.jpg",
-      "linkedin": "https://www.linkedin.com/in/aman-kumar-aa33b1337",
-      "github": "https://github.com/amankr-07"
+      "img": "./team-assets/batch_2028/saswatt.jpeg",
+      "linkedin": "https://www.linkedin.com/in/saswat-mohanty-0a4549331/",
+      "github": "https://github.com/SazWhatician",
+      "is_dev": true
     },
     {
       "id": 33,
@@ -342,14 +334,13 @@
       "github": "https://github.com/Anushree-Mohanty"
     },
     {
-      "id": 30,
-      "name": "Aryan Rajguru",
-      "role": "Web Dev",
+      "id": 35,
+      "name": "Abhijit Sahu",
+      "role": "CP",
       "year": "2028",
-      "img": "./team-assets/batch_2028/aryan.png",
-      "linkedin": "https://www.linkedin.com/in/aryan-rajguru-a1333230a",
-      "github": "https://github.com/Aryan-R-18",
-      "tag": "coordinator"
+      "img": "./team-assets/batch_2028/abhijit.png",
+      "linkedin": "https://www.linkedin.com/in/abhijitsahu276/",
+      "github": "https://github.com/abhijit-sahu-276"
     },
     {
       "id": 36,
@@ -514,14 +505,13 @@
       "github": "https://github.com/Saswat132004"
     },
     {
-      "id": 32,
-      "name": "Saswat Mohanty",
-      "role": "Web Dev and AI/ML",
+      "id": 54,
+      "name": "Aayush Kumar Prasad",
+      "role": "CP",
       "year": "2028",
-      "img": "./team-assets/batch_2028/saswatt.jpeg",
-      "linkedin": "https://www.linkedin.com/in/saswat-mohanty-0a4549331/",
-      "github": "https://github.com/SazWhatician",
-      "is_dev": true
+      "img": "./team-assets/batch_2028/ayushprasad.png",
+      "linkedin": "https://www.linkedin.com/in/aayush-prasad-78672a329/",
+      "github": "https://github.com/AayushP06"
     },
     {
       "id": 55,
@@ -560,14 +550,13 @@
       "github": "https://github.com/Soobin1102"
     },
     {
-      "id": 31,
-      "name": "Subhashree Sahu",
-      "role": "Web Dev, UI-UX",
+      "id": 59,
+      "name": "Aman Kumar",
+      "role": "Game Dev",
       "year": "2028",
-      "img": "./team-assets/batch_2028/Subhashree Sahu.jpg",
-      "linkedin": "http://www.linkedin.com/in/subhashree-sahu-95116b371",
-      "github": "https://github.com/Subhashree-794",
-      "tag": "coordinator"
+      "img": "./team-assets/batch_2028/Aman Kumar.jpg",
+      "linkedin": "https://www.linkedin.com/in/aman-kumar-aa33b1337",
+      "github": "https://github.com/amankr-07"
     },
     {
       "id": 60,
@@ -640,6 +629,17 @@
       "img": "./team-assets/batch_2028/Zeeshan Firoz.png",
       "linkedin": "https://www.linkedin.com/in/zeeshan-firoz-855641253",
       "github": "https://github.com/Zeeshanfiroz"
+    },
+    {
+      "id": 68,
+      "name": "Kaushik Dash",
+      "role": "AI/ML",
+      "year": "alumni",
+      "img": "./team-assets/batch_2026/Kaushik Dash.png",
+      "linkedin": "https://www.linkedin.com/in/kaushikdash",
+      "github": "https://github.com/KaushikDash04",
+      "batch": "2026",
+      "tag": "alumni"
     }
   ]
 }

@@ -208,7 +208,7 @@
 
         <!-- Navigation Tabs -->
         <div class="bg-black/40 border-b border-white/[0.08] px-6 flex gap-2">
-            <button class="tab-btn active" data-tab="tab-blogs">📝 DISPATCHES (BLOGS)</button>
+            <button class="tab-btn active" data-tab="tab-blogs">📝 BLOGS</button>
             <button class="tab-btn" data-tab="tab-team">👥 OPERATIVES (TEAM)</button>
             <button class="tab-btn" data-tab="tab-projects">🚀 INITIATIVES (PROJECTS)</button>
         </div>
@@ -217,16 +217,16 @@
         <main class="flex-1 p-6 max-w-7xl w-full mx-auto">
 
             <!-- ==================================== -->
-            <!-- TAB 1: BLOGS / DISPATCHES -->
+            <!-- TAB 1: BLOGS -->
             <!-- ==================================== -->
             <section id="tab-blogs" class="tab-content space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-xl font-bold font-syncopate tracking-tight text-white">MANAGE DISPATCHES</h2>
+                        <h2 class="text-xl font-bold font-syncopate tracking-tight text-white">MANAGE BLOGS</h2>
                         <p class="text-xs text-gray-400 font-light mt-1">Publish, edit, and organize research articles with interactive bullet navigation points.</p>
                     </div>
                     <button id="new-blog-btn" class="px-4 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all flex items-center gap-2">
-                        <span>+ NEW DISPATCH</span>
+                        <span>+ NEW BLOG</span>
                     </button>
                 </div>
 
@@ -246,7 +246,7 @@
                             </thead>
                             <tbody id="blogs-table-body" class="divide-y divide-white/[0.05]">
                                 <tr>
-                                    <td colspan="6" class="p-6 text-center text-gray-500 font-syncopate">Loading dispatches...</td>
+                                    <td colspan="6" class="p-6 text-center text-gray-500 font-syncopate">Loading blogs...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -622,7 +622,7 @@
         function renderBlogsTable() {
             const tbody = document.getElementById('blogs-table-body');
             if (cachedBlogs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-500 font-syncopate">No dispatches found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-500 font-syncopate">No blogs found.</td></tr>`;
                 return;
             }
 

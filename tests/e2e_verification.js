@@ -93,10 +93,10 @@ async function runE2E() {
         {
             const res = await req('/blog');
             assert.strictEqual(res.status, 200);
-            assert.ok(res.text.includes('id="blog-flow-canvas"'), "Expected blog-flow-canvas in /blog");
+            assert.ok(res.text.includes('blueprint-bg') || res.text.includes('blog-flow-canvas'), "Expected blueprint-bg or blog-flow-canvas in /blog");
             assert.ok(res.text.includes('data-barba-namespace="blog"'), "Expected Barba namespace blog");
             assert.ok(res.text.includes('id="topic-filters"'), "Expected topic-filters in /blog");
-            console.log("✅ Passed: /blog serves valid HTML with 3D flow canvas and topic filters");
+            console.log("✅ Passed: /blog serves valid HTML with blueprint background and topic filters");
         }
 
         // --- TEST 2: Public Blog Post Route ---

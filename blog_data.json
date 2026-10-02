@@ -5,8 +5,8 @@
       "slug": "neural-lattice-architectures",
       "title": "Neural Lattice Architectures: Beyond the Transformer Paradigm",
       "topic": "AI/ML",
-      "author": "ENIGMA Research Lab",
-      "authorRole": "Neural Systems Group",
+      "author": "ENIGMA",
+      "authorRole": "Neural Systems",
       "date": "OCT 02, 2026",
       "readTime": "6 min",
       "cover": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
@@ -114,6 +114,84 @@
           "id": "sec-5",
           "title": "Architectural Conclusions",
           "content": "The distributed systems of the next decade will be lightweight, instant, and formally verified. Embracing WebAssembly at the infrastructure core provides the performance of compiled systems code paired with the sandboxed safety of web sandboxes."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "slug": "quantum-coherent-annealing",
+      "title": "Quantum Coherent Annealing for Non-Convex Combinatorial Optimization",
+      "topic": "QUANTUM",
+      "author": "Quantum Computing Division",
+      "authorRole": "Superconducting Circuits",
+      "date": "SEP 15, 2026",
+      "readTime": "7 min",
+      "cover": "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=1200&q=80",
+      "summary": "Harnessing transverse-field Ising Hamiltonians and flux qubits to bypass rugged energy landscapes in exponential search problems.",
+      "sections": [
+        {
+          "id": "sec-1",
+          "title": "The Combinatorial Barrier",
+          "content": "NP-hard combinatorial optimization problems—from global logistics dispatch to cryptographic lattice reduction—exhibit hyper-rugged energy landscapes characterized by astronomically tall potential barriers. Classical thermal annealing depends on stochastic thermal hops over barriers, leading to exponential freezing at low temperatures."
+        },
+        {
+          "id": "sec-2",
+          "title": "Quantum Tunneling Through High-Energy Saddles",
+          "content": "Quantum annealing replaces thermal fluctuations with quantum tunneling phenomena. By gradually ramping down a transverse magnetic field while ramping up the problem Hamiltonian, wavefunctions tunnel directly through tall, narrow potential barriers rather than climbing them.\n\n```python\n# Hamiltonian interpolation during quantum annealing schedule\ndef adiabatic_hamiltonian(s, H_initial, H_problem):\n    return (1.0 - s) * H_initial + s * H_problem\n```\n\nThis yields polynomial speedups in convergence across non-convex loss surfaces."
+        },
+        {
+          "id": "sec-3",
+          "title": "Flux Qubit Stability at 15 Millikelvin",
+          "content": "Executing coherent schedules requires sub-20mK cryogenic dilution refrigerators to eliminate thermal decoherence. Our superconducting niobium loop architecture maintains phase coherence across 2,048 coupled qubits, achieving unprecedented ground-state fidelity."
+        },
+        {
+          "id": "sec-4",
+          "title": "Hybrid Quantum-Classical Co-Processing",
+          "content": "Pure quantum annealing excels at global topology exploration, while classical gradient engines excel at local refinement. We demonstrate a closed-loop hybrid architecture where the quantum annealer seeds optimal basins of attraction for classical interior-point solvers."
+        },
+        {
+          "id": "sec-5",
+          "title": "Operational Roadmap",
+          "content": "As flux noise mitigations advance, quantum annealers are transitioning from physics curiosities to mission-critical accelerators for global optimization problems."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "slug": "neuromorphic-event-vision",
+      "title": "Neuromorphic Event-Based Vision: Microsecond Latency Perception",
+      "topic": "ROBOTICS",
+      "author": "Autonomous Perception Group",
+      "authorRole": "Bio-Inspired Hardware",
+      "date": "SEP 08, 2026",
+      "readTime": "6 min",
+      "cover": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80",
+      "summary": "Transitioning from rigid frame-rate sampling to continuous asynchronous spike events for high-speed robotic autonomy under extreme dynamic ranges.",
+      "sections": [
+        {
+          "id": "sec-1",
+          "title": "The Fallacy of the Video Frame",
+          "content": "Standard video cameras capture fixed matrices of pixels at uniform intervals (e.g. 60Hz or 120Hz). This architecture generates catastrophic data redundancy in static scenes while suffering devastating motion blur during rapid kinematic maneuvers."
+        },
+        {
+          "id": "sec-2",
+          "title": "Asynchronous Silicon Retinas",
+          "content": "Neuromorphic event cameras mimic biological photoreceptors. Each pixel operates independently and asynchronously, firing an event tuple (x, y, timestamp, polarity) only when local log-intensity changes exceed a programmable threshold.\n\n```cpp\n// Asynchronous event packet dispatch\nstruct Event {\n    uint16_t x;\n    uint16_t y;\n    uint64_t timestamp_us;\n    int8_t polarity;\n};\n```\n\nThis delivers microsecond-level temporal resolution (>10,000 equivalent FPS) and over 140dB dynamic range without exposure saturation."
+        },
+        {
+          "id": "sec-3",
+          "title": "Spiking Neural Networks on the Edge",
+          "content": "Processing asynchronous event clouds requires spiking neural networks (SNNs) running on specialized neuromorphic silicon. Synaptic weights update only upon spike arrival, slashing dynamic power consumption to milliwatt thresholds."
+        },
+        {
+          "id": "sec-4",
+          "title": "High-Speed Supersonic Obstacle Avoidance",
+          "content": "In live flight tests with micro-UAVs traversing dense forested obstacle courses at 25 m/s, event vision yielded a 12x reduction in perceptual latency compared to traditional stereoscopic cameras."
+        },
+        {
+          "id": "sec-5",
+          "title": "The Biological Horizon",
+          "content": "Bio-inspired sensory computing bridges the gap between digital silicon and organic perception, enabling truly reflexive autonomous robotics."
         }
       ]
     }
