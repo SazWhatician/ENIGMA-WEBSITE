@@ -66,9 +66,13 @@ function initFirebase() {
 
     if (serviceAccount) {
         try {
-            admin.initializeApp({
+            const config = {
                 credential: admin.credential.cert(serviceAccount)
-            });
+            };
+            if (process.env.FIREBASE_STORAGE_BUCKET) {
+                config.storageBucket = process.env.FIREBASE_STORAGE_BUCKET;
+            }
+            admin.initializeApp(config);
             initialized = true;
         } catch (initErr) {
             console.error("❌ CRITICAL: firebase-admin initializeApp failed:", initErr.message);
@@ -83,4 +87,10 @@ function getDb() {
     return admin.apps.length ? admin.firestore() : null;
 }
 
-module.exports = { getDb };
+function getStorage() {
+    initFirebase();
+    return admin.apps.length ? admin.storage() : null;
+}
+
+module.exports = { getDb, getStorage };
+

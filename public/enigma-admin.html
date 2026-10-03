@@ -381,10 +381,71 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-syncopate text-gray-400 mb-1">COVER IMAGE URL</label>
-                    <input type="text" id="b-cover" class="w-full p-2.5 rounded text-sm" placeholder="https://images.unsplash.com/...">
+                <!-- COVER IMAGE DROPZONE -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-syncopate text-gray-400">COVER IMAGE</label>
+                        <span class="text-[10px] font-mono text-emerald-400/80">DROP PNG / JPG / WEBP</span>
+                    </div>
+
+                    <div id="dropzone-b-cover" class="relative group border-2 border-dashed border-emerald-500/30 hover:border-emerald-400 rounded-lg p-4 transition-all duration-300 bg-black/50 hover:bg-emerald-950/20 text-center cursor-pointer flex flex-col items-center justify-center min-h-[140px]">
+                        <input type="file" id="file-b-cover" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden">
+                        
+                        <!-- Empty / Prompt State -->
+                        <div id="prompt-b-cover" class="dropzone-prompt flex flex-col items-center gap-2 pointer-events-none">
+                            <div class="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg group-hover:scale-110 transition-transform">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="font-syncopate text-xs tracking-wider text-emerald-400 font-bold">
+                                DRAG &amp; DROP IMAGE HERE
+                            </div>
+                            <div class="text-[11px] font-mono text-gray-400">
+                                or click to browse &bull; auto-optimized
+                            </div>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="loader-b-cover" class="hidden flex flex-col items-center gap-2 pointer-events-none py-4">
+                            <div class="inline-block animate-spin w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full"></div>
+                            <div class="font-mono text-xs text-emerald-400 tracking-wider animate-pulse">PROCESSING &amp; OPTIMIZING TRANSMISSION ASSET...</div>
+                        </div>
+
+                        <!-- Preview State -->
+                        <div id="preview-b-cover" class="hidden w-full flex flex-col sm:flex-row items-center gap-4 relative z-10 text-left">
+                            <div class="relative w-32 h-20 rounded border border-emerald-500/40 overflow-hidden bg-black flex-shrink-0">
+                                <img id="img-b-cover" class="w-full h-full object-cover" src="" alt="Cover Preview">
+                                <div class="absolute bottom-0 inset-x-0 bg-black/80 text-[9px] font-mono text-emerald-400 py-0.5 text-center truncate px-1">
+                                    ASSET SET
+                                </div>
+                            </div>
+                            <div class="flex-1 space-y-1 w-full overflow-hidden">
+                                <div id="info-b-cover" class="text-xs font-mono text-white truncate">image.png</div>
+                                <div class="text-[10px] font-mono text-emerald-400/80">Transmission ready</div>
+                                <div class="flex gap-2 pt-1">
+                                    <button type="button" id="replace-b-cover" class="px-2.5 py-1 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500 hover:text-black font-syncopate text-[9px] uppercase tracking-wider transition-all">
+                                        CHANGE
+                                    </button>
+                                    <button type="button" id="remove-b-cover" class="px-2.5 py-1 rounded bg-red-500/20 border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-black font-syncopate text-[9px] uppercase tracking-wider transition-all">
+                                        REMOVE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Manual URL Input Toggle -->
+                    <details class="text-[11px] font-mono text-gray-400">
+                        <summary class="cursor-pointer hover:text-emerald-400 transition-colors select-none">
+                            &gt; Manually specify image URL / external link
+                        </summary>
+                        <div class="mt-2 pl-2 border-l border-emerald-500/30">
+                            <input type="text" id="b-cover" class="w-full p-2 rounded text-xs font-mono" placeholder="https://images.unsplash.com/... or /uploads/...">
+                        </div>
+                    </details>
                 </div>
+
 
                 <div>
                     <label class="block text-xs font-syncopate text-gray-400 mb-1">ABSTRACT / SUMMARY</label>
@@ -455,10 +516,68 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-syncopate text-gray-400 mb-1">IMAGE PATH / URL</label>
-                    <input type="text" id="m-img" class="w-full p-2.5 rounded text-sm font-mono" placeholder="./team-assets/batch_2028/photo.jpg">
+                <!-- OPERATIVE IMAGE DROPZONE -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-syncopate text-gray-400">OPERATIVE PHOTO</label>
+                        <span class="text-[10px] font-mono text-emerald-400/80">DROP PNG / JPG / WEBP</span>
+                    </div>
+
+                    <div id="dropzone-m-img" class="relative group border-2 border-dashed border-emerald-500/30 hover:border-emerald-400 rounded-lg p-4 transition-all duration-300 bg-black/50 hover:bg-emerald-950/20 text-center cursor-pointer flex flex-col items-center justify-center min-h-[140px]">
+                        <input type="file" id="file-m-img" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden">
+                        
+                        <!-- Empty / Prompt State -->
+                        <div id="prompt-m-img" class="dropzone-prompt flex flex-col items-center gap-2 pointer-events-none">
+                            <div class="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg group-hover:scale-110 transition-transform">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <div class="font-syncopate text-xs tracking-wider text-emerald-400 font-bold">
+                                DRAG &amp; DROP OPERATIVE PHOTO
+                            </div>
+                            <div class="text-[11px] font-mono text-gray-400">
+                                or click to browse &bull; auto-optimized
+                            </div>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="loader-m-img" class="hidden flex flex-col items-center gap-2 pointer-events-none py-4">
+                            <div class="inline-block animate-spin w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full"></div>
+                            <div class="font-mono text-xs text-emerald-400 tracking-wider animate-pulse">PROCESSING &amp; OPTIMIZING OPERATIVE AVATAR...</div>
+                        </div>
+
+                        <!-- Preview State -->
+                        <div id="preview-m-img" class="hidden w-full flex flex-col sm:flex-row items-center gap-4 relative z-10 text-left">
+                            <div class="relative w-20 h-20 rounded-full border border-emerald-500/40 overflow-hidden bg-black flex-shrink-0">
+                                <img id="img-m-img" class="w-full h-full object-cover" src="" alt="Operative Photo">
+                            </div>
+                            <div class="flex-1 space-y-1 w-full overflow-hidden">
+                                <div id="info-m-img" class="text-xs font-mono text-white truncate">avatar.png</div>
+                                <div class="text-[10px] font-mono text-emerald-400/80">Asset ready</div>
+                                <div class="flex gap-2 pt-1">
+                                    <button type="button" id="replace-m-img" class="px-2.5 py-1 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500 hover:text-black font-syncopate text-[9px] uppercase tracking-wider transition-all">
+                                        CHANGE
+                                    </button>
+                                    <button type="button" id="remove-m-img" class="px-2.5 py-1 rounded bg-red-500/20 border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-black font-syncopate text-[9px] uppercase tracking-wider transition-all">
+                                        REMOVE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Manual URL Input Toggle -->
+                    <details class="text-[11px] font-mono text-gray-400">
+                        <summary class="cursor-pointer hover:text-emerald-400 transition-colors select-none">
+                            &gt; Manually specify image path / external URL
+                        </summary>
+                        <div class="mt-2 pl-2 border-l border-emerald-500/30">
+                            <input type="text" id="m-img" class="w-full p-2 rounded text-xs font-mono" placeholder="./team-assets/... or https://...">
+                        </div>
+                    </details>
                 </div>
+
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
@@ -502,10 +621,71 @@
                     <textarea id="p-desc" rows="3" class="w-full p-2.5 rounded text-sm" placeholder="Detailed project overview..."></textarea>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-syncopate text-gray-400 mb-1">THUMBNAIL IMAGE</label>
-                    <input type="text" id="p-img" class="w-full p-2.5 rounded text-sm font-mono" placeholder="./project-assets/your-app.png">
+                <!-- PROJECT THUMBNAIL DROPZONE -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-syncopate text-gray-400">PROJECT THUMBNAIL</label>
+                        <span class="text-[10px] font-mono text-emerald-400/80">DROP PNG / JPG / WEBP</span>
+                    </div>
+
+                    <div id="dropzone-p-img" class="relative group border-2 border-dashed border-emerald-500/30 hover:border-emerald-400 rounded-lg p-4 transition-all duration-300 bg-black/50 hover:bg-emerald-950/20 text-center cursor-pointer flex flex-col items-center justify-center min-h-[140px]">
+                        <input type="file" id="file-p-img" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden">
+                        
+                        <!-- Empty / Prompt State -->
+                        <div id="prompt-p-img" class="dropzone-prompt flex flex-col items-center gap-2 pointer-events-none">
+                            <div class="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg group-hover:scale-110 transition-transform">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="font-syncopate text-xs tracking-wider text-emerald-400 font-bold">
+                                DRAG &amp; DROP PROJECT THUMBNAIL
+                            </div>
+                            <div class="text-[11px] font-mono text-gray-400">
+                                or click to browse &bull; auto-optimized
+                            </div>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="loader-p-img" class="hidden flex flex-col items-center gap-2 pointer-events-none py-4">
+                            <div class="inline-block animate-spin w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full"></div>
+                            <div class="font-mono text-xs text-emerald-400 tracking-wider animate-pulse">PROCESSING &amp; OPTIMIZING PROJECT ASSET...</div>
+                        </div>
+
+                        <!-- Preview State -->
+                        <div id="preview-p-img" class="hidden w-full flex flex-col sm:flex-row items-center gap-4 relative z-10 text-left">
+                            <div class="relative w-32 h-20 rounded border border-emerald-500/40 overflow-hidden bg-black flex-shrink-0">
+                                <img id="img-p-img" class="w-full h-full object-cover" src="" alt="Project Preview">
+                                <div class="absolute bottom-0 inset-x-0 bg-black/80 text-[9px] font-mono text-emerald-400 py-0.5 text-center truncate px-1">
+                                    THUMBNAIL SET
+                                </div>
+                            </div>
+                            <div class="flex-1 space-y-1 w-full overflow-hidden">
+                                <div id="info-p-img" class="text-xs font-mono text-white truncate">thumb.png</div>
+                                <div class="text-[10px] font-mono text-emerald-400/80">Asset ready</div>
+                                <div class="flex gap-2 pt-1">
+                                    <button type="button" id="replace-p-img" class="px-2.5 py-1 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500 hover:text-black font-syncopate text-[9px] uppercase tracking-wider transition-all">
+                                        CHANGE
+                                    </button>
+                                    <button type="button" id="remove-p-img" class="px-2.5 py-1 rounded bg-red-500/20 border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-black font-syncopate text-[9px] uppercase tracking-wider transition-all">
+                                        REMOVE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Manual URL Input Toggle -->
+                    <details class="text-[11px] font-mono text-gray-400">
+                        <summary class="cursor-pointer hover:text-emerald-400 transition-colors select-none">
+                            &gt; Manually specify image path / external URL
+                        </summary>
+                        <div class="mt-2 pl-2 border-l border-emerald-500/30">
+                            <input type="text" id="p-img" class="w-full p-2 rounded text-xs font-mono" placeholder="./project-assets/... or https://...">
+                        </div>
+                    </details>
                 </div>
+
 
                 <div>
                     <label class="block text-xs font-syncopate text-gray-400 mb-1">PROJECT LINK / URL</label>
@@ -527,6 +707,216 @@
         let cachedBlogs = [];
         let cachedTeam = [];
         let cachedProjects = [];
+
+        // Dropzone Instances
+        let blogDropzone = null;
+        let teamDropzone = null;
+        let projectDropzone = null;
+
+        // --- CLIENT-SIDE ASSET COMPRESSOR ---
+        function compressImageFile(file, maxDimension = 1400, quality = 0.85) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error("Unable to read local image file"));
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onerror = () => reject(new Error("File is not a valid or readable image"));
+                    img.onload = () => {
+                        let { width, height } = img;
+                        if (width > maxDimension || height > maxDimension) {
+                            if (width > height) {
+                                height = Math.round((height * maxDimension) / width);
+                                width = maxDimension;
+                            } else {
+                                width = Math.round((width * maxDimension) / height);
+                                height = maxDimension;
+                            }
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // WebP with high quality, fallback to JPEG
+                        let dataUrl = canvas.toDataURL('image/webp', quality);
+                        if (!dataUrl.startsWith('data:image/webp')) {
+                            dataUrl = canvas.toDataURL('image/jpeg', quality);
+                        }
+
+                        const base64Str = dataUrl.split(',')[1] || '';
+                        const estimatedSize = Math.round(base64Str.length * 0.75);
+
+                        resolve({
+                            dataUrl,
+                            width,
+                            height,
+                            estimatedSize
+                        });
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // --- DROPZONE CONTROLLER ---
+        function setupDropzone({ fieldId, type, maxDimension = 1400, quality = 0.85 }) {
+            const dropzone = document.getElementById(`dropzone-${fieldId}`);
+            const fileInput = document.getElementById(`file-${fieldId}`);
+            const promptEl = document.getElementById(`prompt-${fieldId}`);
+            const previewEl = document.getElementById(`preview-${fieldId}`);
+            const imgEl = document.getElementById(`img-${fieldId}`);
+            const infoEl = document.getElementById(`info-${fieldId}`);
+            const loaderEl = document.getElementById(`loader-${fieldId}`);
+            const inputEl = document.getElementById(fieldId);
+            const replaceBtn = document.getElementById(`replace-${fieldId}`);
+            const removeBtn = document.getElementById(`remove-${fieldId}`);
+
+            if (!dropzone || !fileInput || !inputEl) return null;
+
+            function setViewState(state) {
+                // state: 'prompt' | 'loading' | 'preview'
+                if (promptEl) promptEl.classList.toggle('hidden', state !== 'prompt');
+                if (loaderEl) loaderEl.classList.toggle('hidden', state !== 'loading');
+                if (previewEl) previewEl.classList.toggle('hidden', state !== 'preview');
+            }
+
+            function showPreview(url, infoText = 'Current Asset') {
+                if (!url) {
+                    setViewState('prompt');
+                    if (imgEl) imgEl.src = '';
+                    return;
+                }
+                if (imgEl) imgEl.src = url;
+                if (infoEl) infoEl.textContent = infoText;
+                setViewState('preview');
+            }
+
+            // Click on dropzone to open file browser (avoiding replace/remove buttons)
+            dropzone.addEventListener('click', (e) => {
+                if (e.target.closest(`#remove-${fieldId}`) || e.target.closest(`#replace-${fieldId}`)) return;
+                fileInput.click();
+            });
+
+            if (replaceBtn) {
+                replaceBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    fileInput.click();
+                });
+            }
+
+            if (removeBtn) {
+                removeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    inputEl.value = '';
+                    setViewState('prompt');
+                    if (imgEl) imgEl.src = '';
+                });
+            }
+
+            // Drag and drop event listeners
+            ['dragenter', 'dragover'].forEach(evt => {
+                dropzone.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropzone.classList.add('border-emerald-400', 'bg-emerald-950/40', 'scale-[1.01]', 'shadow-[0_0_20px_rgba(43,166,72,0.3)]');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(evt => {
+                dropzone.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropzone.classList.remove('border-emerald-400', 'bg-emerald-950/40', 'scale-[1.01]', 'shadow-[0_0_20px_rgba(43,166,72,0.3)]');
+                });
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                const files = e.dataTransfer ? e.dataTransfer.files : null;
+                if (files && files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files && fileInput.files.length > 0) {
+                    handleFile(fileInput.files[0]);
+                    fileInput.value = ''; // allow selecting same file again if desired
+                }
+            });
+
+            // Listen to manual URL input changes
+            inputEl.addEventListener('input', () => {
+                const val = inputEl.value.trim();
+                if (val) {
+                    showPreview(val, val.split('/').pop().split('?')[0] || 'Custom URL');
+                } else {
+                    setViewState('prompt');
+                }
+            });
+
+            async function handleFile(file) {
+                if (!file.type.startsWith('image/')) {
+                    alert('Invalid file format. Please drop a valid image file (.png, .jpg, .jpeg, .webp).');
+                    return;
+                }
+
+                try {
+                    setViewState('loading');
+
+                    // 1. Client-side Canvas optimization
+                    const optimized = await compressImageFile(file, maxDimension, quality);
+
+                    // 2. Transmit to /api/upload
+                    const res = await fetch('/api/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${adminToken}`
+                        },
+                        body: JSON.stringify({
+                            image: optimized.dataUrl,
+                            filename: file.name,
+                            type: type
+                        })
+                    });
+
+                    if (!res.ok) {
+                        const err = await res.json().catch(() => ({}));
+                        throw new Error(err.error || `Upload failed (${res.status})`);
+                    }
+
+                    const data = await res.json();
+                    const finalUrl = data.url;
+
+                    // Automatically update the form input
+                    inputEl.value = finalUrl;
+
+                    // Format human-readable size
+                    const sizeKb = Math.round(optimized.estimatedSize / 1024);
+                    const sizeStr = sizeKb > 1024 ? `${(sizeKb / 1024).toFixed(1)} MB` : `${sizeKb} KB`;
+
+                    showPreview(finalUrl, `${file.name} (${sizeStr})`);
+                } catch (err) {
+                    console.error('Image upload failed:', err);
+                    alert('Image upload failed: ' + err.message);
+                    if (inputEl.value.trim()) {
+                        showPreview(inputEl.value.trim(), 'Previous Asset');
+                    } else {
+                        setViewState('prompt');
+                    }
+                }
+            }
+
+            return {
+                showPreview,
+                reset: () => {
+                    setViewState('prompt');
+                    if (imgEl) imgEl.src = '';
+                }
+            };
+        }
 
         // Check authentication on load
         async function checkInitialAuth() {
@@ -673,6 +1063,7 @@
             document.getElementById('blog-modal-title').textContent = "NEW TRANSMISSION COMPOSER";
             sectionsContainer.innerHTML = '';
             addSectionRow("Overview", "Initial transmission findings...");
+            if (blogDropzone) blogDropzone.reset();
             document.getElementById('blog-modal').classList.remove('hidden');
         };
 
@@ -689,6 +1080,10 @@
             document.getElementById('b-readtime').value = blog.readTime || '';
             document.getElementById('b-cover').value = blog.cover || '';
             document.getElementById('b-summary').value = blog.summary || '';
+
+            if (blogDropzone) {
+                blogDropzone.showPreview(blog.cover, blog.title || 'Blog Cover');
+            }
 
             sectionsContainer.innerHTML = '';
             const sections = blog.sections || [];
@@ -800,6 +1195,7 @@
         document.getElementById('new-member-btn').onclick = () => {
             document.getElementById('team-form').reset();
             document.getElementById('team-edit-id').value = '';
+            if (teamDropzone) teamDropzone.reset();
             document.getElementById('team-modal').classList.remove('hidden');
         };
 
@@ -813,6 +1209,11 @@
             document.getElementById('m-img').value = m.img || '';
             document.getElementById('m-github').value = m.github || '';
             document.getElementById('m-linkedin').value = m.linkedin || '';
+
+            if (teamDropzone) {
+                teamDropzone.showPreview(m.img, m.name || 'Operative Photo');
+            }
+
             document.getElementById('team-modal').classList.remove('hidden');
         };
 
@@ -898,6 +1299,7 @@
         document.getElementById('new-project-btn').onclick = () => {
             document.getElementById('project-form').reset();
             document.getElementById('proj-edit-id').value = '';
+            if (projectDropzone) projectDropzone.reset();
             document.getElementById('project-modal').classList.remove('hidden');
         };
 
@@ -909,6 +1311,11 @@
             document.getElementById('p-desc').value = p.desc || '';
             document.getElementById('p-img').value = p.img || '';
             document.getElementById('p-link').value = p.link || '';
+
+            if (projectDropzone) {
+                projectDropzone.showPreview(p.img, p.title || 'Project Thumbnail');
+            }
+
             document.getElementById('project-modal').classList.remove('hidden');
         };
 
@@ -969,6 +1376,11 @@
                     .replace(/^-+|-+$/g, '');
             }
         });
+
+        // Initialize Asset Dropzones
+        blogDropzone = setupDropzone({ fieldId: 'b-cover', type: 'blog', maxDimension: 1600, quality: 0.85 });
+        teamDropzone = setupDropzone({ fieldId: 'm-img', type: 'team', maxDimension: 800, quality: 0.85 });
+        projectDropzone = setupDropzone({ fieldId: 'p-img', type: 'project', maxDimension: 1200, quality: 0.85 });
 
         // Initialize
         checkInitialAuth();

@@ -47,6 +47,8 @@ async function runE2E() {
     app.all('/api/blogs', require('../api/blogs'));
     app.all('/api/team', require('../api/team'));
     app.all('/api/projects', require('../api/projects'));
+    app.all('/api/upload', require('../api/upload'));
+
 
     app.get('/enigma-admin', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'enigma-admin.html')));
     app.get('/blog', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'blog.html')));
@@ -255,6 +257,46 @@ async function runE2E() {
             });
             assert.strictEqual(delRes.status, 200);
             console.log("✅ Passed: Projects Initiative CRUD validated");
+        }
+
+        // --- TEST 8: Admin Image Drop & Upload API ---
+        {
+            const samplePng = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+            // 1. Unauthenticated should fail
+            const unauthRes = await req('/api/upload', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: { image: samplePng, type: 'blog' }
+            });
+            assert.strictEqual(unauthRes.status, 401);
+
+            // 2. Authenticated upload
+            const uploadRes = await req('/api/upload', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${adminToken}`
+                },
+                body: {
+                    image: samplePng,
+                    filename: 'dropzone_test.png',
+                    type: 'blog'
+                }
+            });
+            assert.strictEqual(uploadRes.status, 200);
+            const uploadData = uploadRes.json();
+            assert.strictEqual(uploadData.success, true);
+            assert.ok(uploadData.url, "Expected image URL in response");
+
+            // Clean up file if saved locally
+            if (uploadData.storage === 'local') {
+                const localFile = path.join(__dirname, '..', 'public', uploadData.url.replace(/^\//, ''));
+                if (fs.existsSync(localFile)) {
+                    fs.unlinkSync(localFile);
+                }
+            }
+            console.log("✅ Passed: Image Dropzone & Upload API (/api/upload) validated successfully");
         }
 
         console.log("\n==================================================");

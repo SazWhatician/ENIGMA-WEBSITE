@@ -17,6 +17,7 @@ app.all('/api/admin', require('./api/admin'));
 app.all('/api/blogs', require('./api/blogs'));
 app.all('/api/projects', require('./api/projects'));
 app.all('/api/team', require('./api/team'));
+app.all('/api/upload', require('./api/upload'));
 
 // --- CLEAN FRONTEND ROUTES ---
 app.get('/enigma-admin', (req, res) => {
