@@ -549,6 +549,118 @@
             text-shadow: 0 0 20px rgba(43, 166, 72, 0.6), 0 0 40px rgba(43, 166, 72, 0.3);
             transform: scale(1.05);
         }
+
+        /* ============================================
+           ENIGMA CODE CARD COMPONENT
+           ============================================ */
+        .code-card {
+            margin: 2rem 0;
+            background: linear-gradient(170deg, #09120b 0%, #030805 100%);
+            border: 1px solid rgba(43, 166, 72, 0.35);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75), 0 0 20px rgba(43, 166, 72, 0.08);
+            position: relative;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .code-card:hover {
+            border-color: rgba(43, 166, 72, 0.6);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85), 0 0 30px rgba(43, 166, 72, 0.15);
+        }
+
+        .code-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.65rem 1rem;
+            background: rgba(0, 0, 0, 0.65);
+            border-bottom: 1px solid rgba(43, 166, 72, 0.18);
+            user-select: none;
+        }
+
+        .code-card-dots {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .code-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+        }
+
+        .code-dot-red { background: #ef4444; opacity: 0.85; }
+        .code-dot-yellow { background: #eab308; opacity: 0.85; }
+        .code-dot-green { background: #10b981; opacity: 0.85; }
+
+        .code-lang-badge {
+            font-family: 'Host Grotesk', monospace;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #2BA648;
+            background: rgba(43, 166, 72, 0.12);
+            border: 1px solid rgba(43, 166, 72, 0.3);
+            border-radius: 4px;
+            padding: 2px 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-left: 0.5rem;
+        }
+
+        .code-copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'Syncopate', monospace;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            letter-spacing: 1px;
+        }
+
+        .code-copy-btn:hover {
+            background: #2BA648;
+            color: #000;
+            border-color: #2BA648;
+            box-shadow: 0 0 12px rgba(43, 166, 72, 0.4);
+        }
+
+        .code-card-body {
+            padding: 1.25rem 1.25rem;
+            overflow-x: auto;
+            background: #040805;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            line-height: 1.65;
+            color: #e2e8f0;
+        }
+
+        .code-card-body pre {
+            margin: 0;
+            font-family: inherit;
+        }
+
+        .code-card-body code {
+            font-family: inherit;
+        }
+
+        .inline-code {
+            background: rgba(43, 166, 72, 0.12);
+            border: 1px solid rgba(43, 166, 72, 0.25);
+            color: #34d399;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 
@@ -616,9 +728,11 @@
         <!-- ARTICLE HERO -->
         <header id="article-header" class="mb-14">
             <div class="flex flex-wrap items-center gap-3 text-xs font-syncopate uppercase mb-5">
-                <span id="article-topic" class="px-3 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold tracking-widest">
-                    AI/ML
-                </span>
+                <div id="article-topics-container" class="flex flex-wrap items-center gap-2">
+                    <span id="article-topic" class="px-3 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold tracking-widest">
+                        AI/ML
+                    </span>
+                </div>
                 <span class="text-gray-500">•</span>
                 <span id="article-date" class="text-gray-400">OCT 02, 2026</span>
                 <span class="text-gray-500">•</span>
@@ -823,10 +937,67 @@
             }
         }
 
+        function highlightCodeSyntax(code) {
+            let out = code
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+
+            // Comments (Python, JS, C++, Rust, Bash)
+            out = out.replace(/(#.*|\/\/.*)/g, '<span style="color:#64748b; font-style:italic;">$1</span>');
+            // Strings
+            out = out.replace(/(".*?"|'.*?'|`.*?`)/g, '<span style="color:#fde047;">$1</span>');
+            // Keywords
+            const kw = /\b(def|class|function|return|const|let|var|if|else|for|while|import|export|from|async|await|try|catch|pub|fn|struct|impl|match|type|interface|null|true|false|new|typeof|void|int|float|bool|string)\b/g;
+            out = out.replace(kw, '<span style="color:#38bdf8; font-weight:bold;">$1</span>');
+            // Numbers
+            out = out.replace(/\b(\d+(\.\d+)?)\b/g, '<span style="color:#f472b6;">$1</span>');
+            // Functions
+            out = out.replace(/\b([a-zA-Z0-9_]+)(?=\()/g, '<span style="color:#34d399;">$1</span>');
+            return out;
+        }
+
+        window.copyCode = (btn, encoded) => {
+            try {
+                const text = decodeURIComponent(encoded);
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = `
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+                        <span>COPIED!</span>
+                    `;
+                    btn.style.background = '#2BA648';
+                    btn.style.color = '#000';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHtml;
+                        btn.style.background = '';
+                        btn.style.color = '';
+                    }, 2000);
+                });
+            } catch (e) {
+                console.error("Copy failed:", e);
+            }
+        };
+
         function renderArticleData(article) {
             document.title = `ENIGMA | ${article.title}`;
             document.getElementById('article-title').textContent = article.title;
-            document.getElementById('article-topic').textContent = article.topic || 'RESEARCH';
+
+            // Render tags
+            const tags = (Array.isArray(article.tags) && article.tags.length > 0)
+                ? article.tags
+                : (article.topic ? article.topic.split(',').map(s => s.trim()) : ['RESEARCH']);
+            const topicContainer = document.getElementById('article-topics-container');
+            if (topicContainer) {
+                topicContainer.innerHTML = tags.map(t => `
+                    <span class="px-3 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold tracking-widest text-xs font-syncopate uppercase">
+                        ${t}
+                    </span>
+                `).join('');
+            } else if (document.getElementById('article-topic')) {
+                document.getElementById('article-topic').textContent = article.topic || tags[0] || 'RESEARCH';
+            }
+
             document.getElementById('article-date').textContent = article.date || 'OCT 2026';
             document.getElementById('article-read-time').textContent = (article.readTime || '5 min') + ' READ';
             document.getElementById('article-author').textContent = article.author || 'ENIGMA Operative';
@@ -918,25 +1089,50 @@
             initScrollSpy();
         }
 
-        // Parse markdown code blocks and paragraphs cleanly
+        // Parse markdown code blocks and paragraphs into distinct styled cards
         function formatSectionContent(rawText) {
             if (!rawText) return '';
             
-            // Replace code blocks ```lang ... ```
-            let content = rawText.replace(/```([a-zA-Z0-9]*)\n([\s\S]*?)```/g, (match, lang, code) => {
-                const escaped = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                return `<pre><code>${escaped}</code></pre>`;
+            // Replace code blocks ```lang ... ``` with distinct Code Cards
+            const codeBlockRegex = /```([a-zA-Z0-9_\-\+]*)\s*\n?([\s\S]*?)```/g;
+            let content = rawText.replace(codeBlockRegex, (match, lang, code) => {
+                const cleanLang = (lang || 'CODE').toUpperCase();
+                const highlighted = highlightCodeSyntax(code.trim());
+                const rawEscaped = encodeURIComponent(code.trim());
+                return `
+                    <div class="code-card">
+                        <div class="code-card-header">
+                            <div class="code-card-dots">
+                                <span class="code-dot code-dot-red"></span>
+                                <span class="code-dot code-dot-yellow"></span>
+                                <span class="code-dot code-dot-green"></span>
+                                <span class="code-lang-badge">&gt;_ ${cleanLang}</span>
+                            </div>
+                            <button type="button" class="code-copy-btn" onclick="copyCode(this, '${rawEscaped}')">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                <span>COPY</span>
+                            </button>
+                        </div>
+                        <div class="code-card-body">
+                            <pre><code>${highlighted}</code></pre>
+                        </div>
+                    </div>
+                `;
             });
 
             // Split into paragraphs by double newlines
             const paragraphs = content.split(/\n\n+/);
             return paragraphs.map(p => {
-                if (p.trim().startsWith('<pre>')) return p;
-                if (p.trim().startsWith('- ')) {
-                    const listItems = p.trim().split('\n').map(li => `<li>${li.replace(/^-\s*/, '')}</li>`).join('');
+                if (p.includes('class="code-card"')) return p;
+
+                // Format inline code `code`
+                let formattedP = p.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+
+                if (formattedP.trim().startsWith('- ')) {
+                    const listItems = formattedP.trim().split('\n').map(li => `<li>${li.replace(/^-\s*/, '')}</li>`).join('');
                     return `<ul class="list-disc pl-5 space-y-2 text-gray-300 font-light">${listItems}</ul>`;
                 }
-                return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+                return `<p>${formattedP.replace(/\n/g, '<br>')}</p>`;
             }).join('');
         }
 

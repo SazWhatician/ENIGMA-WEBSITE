@@ -67,12 +67,21 @@
 
         .tab-btn {
             font-family: 'Syncopate', sans-serif;
-            font-size: 0.75rem;
-            letter-spacing: 1.5px;
-            padding: 0.75rem 1.25rem;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            padding: 0.65rem 0.85rem;
             border-bottom: 2px solid transparent;
             color: #64748b;
             transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 640px) {
+            .tab-btn {
+                font-size: 0.75rem;
+                letter-spacing: 1.5px;
+                padding: 0.75rem 1.25rem;
+            }
         }
 
         .tab-btn:hover {
@@ -84,6 +93,14 @@
             border-color: #2BA648;
             background: rgba(43, 166, 72, 0.08);
             text-shadow: 0 0 10px rgba(43, 166, 72, 0.4);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         input, textarea, select {
@@ -117,8 +134,63 @@
             background: #1b3d22;
             border-radius: 3px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #2BA648;
+        /* Sleek Modern Text Loading Animation */
+        .sleek-loading-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .sleek-loading-shimmer {
+            background: linear-gradient(
+                90deg,
+                rgba(100, 116, 139, 0.4) 0%,
+                #2BA648 45%,
+                #ffffff 50%,
+                #2BA648 55%,
+                rgba(100, 116, 139, 0.4) 100%
+            );
+            background-size: 250% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShimmerSweep 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            font-weight: 600;
+        }
+
+        .sleek-loading-pulse-dot {
+            position: relative;
+            display: inline-flex;
+            width: 0.5rem;
+            height: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .sleek-loading-pulse-dot .pulse-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            background-color: #2BA648;
+            opacity: 0.75;
+            animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        .sleek-loading-pulse-dot .pulse-core {
+            position: relative;
+            display: inline-flex;
+            border-radius: 9999px;
+            width: 0.5rem;
+            height: 0.5rem;
+            background-color: #2BA648;
+            box-shadow: 0 0 10px rgba(43, 166, 72, 0.8);
+        }
+
+        @keyframes textShimmerSweep {
+            0% { background-position: 150% 0; }
+            100% { background-position: -150% 0; }
         }
     </style>
 </head>
@@ -186,67 +258,75 @@
     <div id="admin-workspace" class="hidden min-h-screen flex flex-col relative z-10">
 
         <!-- Top Header Bar -->
-        <header class="bg-black/90 border-b border-emerald-500/20 px-6 py-4 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md">
-            <div class="flex items-center gap-4">
-                <span class="text-base font-bold font-syncopate tracking-widest text-white">
+        <header class="bg-black/90 border-b border-emerald-500/20 px-3 sm:px-6 py-3 sm:py-4 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-30 backdrop-blur-md">
+            <div class="flex items-center gap-2 sm:gap-4">
+                <span class="text-sm sm:text-base font-bold font-syncopate tracking-widest text-white">
                     ENIGMA<span class="text-emerald-400">.ADMIN</span>
                 </span>
-                <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono">
+                <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[9px] sm:text-[10px] font-mono">
                     ONLINE
                 </span>
             </div>
 
-            <div class="flex items-center gap-4">
-                <a href="/blog.html" target="_blank" class="text-xs font-syncopate text-gray-400 hover:text-emerald-400 transition-colors hidden sm:inline">
+            <div class="flex items-center gap-2 sm:gap-4">
+                <a href="/blog.html" target="_blank" class="text-xs font-syncopate text-gray-400 hover:text-emerald-400 transition-colors hidden md:inline">
                     VIEW BLOG &rarr;
                 </a>
-                <button id="logout-btn" class="px-3 py-1.5 rounded border border-red-500/40 text-red-400 font-syncopate text-[10px] uppercase tracking-wider hover:bg-red-500 hover:text-black transition-all">
+                <button id="logout-btn" class="px-2.5 sm:px-3 py-1.5 rounded border border-red-500/40 text-red-400 font-syncopate text-[9px] sm:text-[10px] uppercase tracking-wider hover:bg-red-500 hover:text-black transition-all whitespace-nowrap">
                     TERMINATE SESSION
                 </button>
             </div>
         </header>
 
         <!-- Navigation Tabs -->
-        <div class="bg-black/40 border-b border-white/[0.08] px-6 flex gap-2">
-            <button class="tab-btn active" data-tab="tab-blogs">📝 BLOGS</button>
-            <button class="tab-btn" data-tab="tab-team">👥 OPERATIVES (TEAM)</button>
-            <button class="tab-btn" data-tab="tab-projects">🚀 INITIATIVES (PROJECTS)</button>
+        <div class="bg-black/40 border-b border-white/[0.08] px-3 sm:px-6 flex gap-1 sm:gap-2 overflow-x-auto no-scrollbar scroll-smooth">
+            <button class="tab-btn active" data-tab="tab-blogs">DISPATCHES</button>
+            <button class="tab-btn" data-tab="tab-team">OPERATIVES</button>
+            <button class="tab-btn" data-tab="tab-projects">INITIATIVES</button>
         </div>
 
         <!-- Main Tab Contents -->
-        <main class="flex-1 p-6 max-w-7xl w-full mx-auto">
+        <main class="flex-1 p-3 sm:p-6 max-w-7xl w-full mx-auto">
 
             <!-- ==================================== -->
             <!-- TAB 1: BLOGS -->
             <!-- ==================================== -->
-            <section id="tab-blogs" class="tab-content space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <section id="tab-blogs" class="tab-content space-y-4 sm:space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                     <div>
-                        <h2 class="text-xl font-bold font-syncopate tracking-tight text-white">MANAGE BLOGS</h2>
+                        <h2 class="text-lg sm:text-xl font-bold font-syncopate tracking-tight text-white">MANAGE BLOGS</h2>
                         <p class="text-xs text-gray-400 font-light mt-1">Publish, edit, and organize research articles with interactive bullet navigation points.</p>
                     </div>
-                    <button id="new-blog-btn" class="px-4 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all flex items-center gap-2">
+                    <button id="new-blog-btn" class="w-full sm:w-auto px-4 py-2.5 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all flex items-center justify-center gap-2 shrink-0">
                         <span>+ NEW BLOG</span>
                     </button>
                 </div>
 
                 <!-- Blogs Table / Cards -->
                 <div class="terminal-box rounded-lg overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs font-mono">
+                    <div class="overflow-x-auto min-w-full">
+                        <table class="w-full text-left text-xs font-mono min-w-[640px]">
                             <thead class="bg-black/60 border-b border-emerald-500/20 text-gray-400 uppercase tracking-widest font-syncopate text-[10px]">
                                 <tr>
-                                    <th class="p-4">TOPIC</th>
-                                    <th class="p-4">TITLE</th>
-                                    <th class="p-4">AUTHOR</th>
-                                    <th class="p-4">SECTIONS</th>
-                                    <th class="p-4">DATE</th>
-                                    <th class="p-4 text-right">ACTIONS</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">TAGS</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">TITLE</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">AUTHOR</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">SECTIONS</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">DATE</th>
+                                    <th class="p-3 sm:p-4 text-right whitespace-nowrap">ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody id="blogs-table-body" class="divide-y divide-white/[0.05]">
                                 <tr>
-                                    <td colspan="6" class="p-6 text-center text-gray-500 font-syncopate">Loading blogs...</td>
+                                    <td colspan="6" class="p-8 text-center">
+                                        <div class="sleek-loading-text justify-center">
+                                            <span class="sleek-loading-pulse-dot">
+                                                <span class="pulse-ring"></span>
+                                                <span class="pulse-core"></span>
+                                            </span>
+                                            <span class="sleek-loading-shimmer">INITIALIZING DISPATCH REPOSITORY...</span>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -257,19 +337,19 @@
             <!-- ==================================== -->
             <!-- TAB 2: OPERATIVES (TEAM) -->
             <!-- ==================================== -->
-            <section id="tab-team" class="tab-content hidden space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <section id="tab-team" class="tab-content hidden space-y-4 sm:space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                     <div>
-                        <h2 class="text-xl font-bold font-syncopate tracking-tight text-white">OPERATIVES ROSTER</h2>
+                        <h2 class="text-lg sm:text-xl font-bold font-syncopate tracking-tight text-white">OPERATIVES ROSTER</h2>
                         <p class="text-xs text-gray-400 font-light mt-1">Add and update regular club members across batches with live cloud synchronization.</p>
                     </div>
-                    <button id="new-member-btn" class="px-4 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all flex items-center gap-2">
+                    <button id="new-member-btn" class="w-full sm:w-auto px-4 py-2.5 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all flex items-center justify-center gap-2 shrink-0">
                         <span>+ ADD OPERATIVE</span>
                     </button>
                 </div>
 
                 <!-- Info Alert about special cards -->
-                <div class="p-4 rounded-lg bg-emerald-950/20 border border-emerald-500/30 flex items-start gap-3 text-xs text-emerald-300">
+                <div class="p-3 sm:p-4 rounded-lg bg-emerald-950/20 border border-emerald-500/30 flex items-start gap-3 text-xs text-emerald-300">
                     <span class="text-emerald-400 font-bold font-mono text-sm">ⓘ</span>
                     <div>
                         <span class="font-bold font-syncopate">SPECIAL CARDS NOTICE:</span>
@@ -279,21 +359,29 @@
 
                 <!-- Team Table -->
                 <div class="terminal-box rounded-lg overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs font-mono">
+                    <div class="overflow-x-auto min-w-full">
+                        <table class="w-full text-left text-xs font-mono min-w-[640px]">
                             <thead class="bg-black/60 border-b border-emerald-500/20 text-gray-400 uppercase tracking-widest font-syncopate text-[10px]">
                                 <tr>
-                                    <th class="p-4">ID</th>
-                                    <th class="p-4">OPERATIVE</th>
-                                    <th class="p-4">ROLE</th>
-                                    <th class="p-4">BATCH</th>
-                                    <th class="p-4">IMAGE PATH</th>
-                                    <th class="p-4 text-right">ACTIONS</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">ID</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">OPERATIVE</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">ROLE</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">BATCH</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">IMAGE PATH</th>
+                                    <th class="p-3 sm:p-4 text-right whitespace-nowrap">ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody id="team-table-body" class="divide-y divide-white/[0.05]">
                                 <tr>
-                                    <td colspan="6" class="p-6 text-center text-gray-500 font-syncopate">Loading team data...</td>
+                                    <td colspan="6" class="p-8 text-center">
+                                        <div class="sleek-loading-text justify-center">
+                                            <span class="sleek-loading-pulse-dot">
+                                                <span class="pulse-ring"></span>
+                                                <span class="pulse-core"></span>
+                                            </span>
+                                            <span class="sleek-loading-shimmer">SYNCHRONIZING OPERATIVES ROSTER...</span>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -304,34 +392,42 @@
             <!-- ==================================== -->
             <!-- TAB 3: INITIATIVES (PROJECTS) -->
             <!-- ==================================== -->
-            <section id="tab-projects" class="tab-content hidden space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <section id="tab-projects" class="tab-content hidden space-y-4 sm:space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                     <div>
-                        <h2 class="text-xl font-bold font-syncopate tracking-tight text-white">PROJECT INITIATIVES</h2>
+                        <h2 class="text-lg sm:text-xl font-bold font-syncopate tracking-tight text-white">PROJECT INITIATIVES</h2>
                         <p class="text-xs text-gray-400 font-light mt-1">Configure showcased web applications, platforms, and club builds.</p>
                     </div>
-                    <button id="new-project-btn" class="px-4 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all flex items-center gap-2">
+                    <button id="new-project-btn" class="w-full sm:w-auto px-4 py-2.5 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all flex items-center justify-center gap-2 shrink-0">
                         <span>+ ADD PROJECT</span>
                     </button>
                 </div>
 
                 <!-- Projects Table -->
                 <div class="terminal-box rounded-lg overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs font-mono">
+                    <div class="overflow-x-auto min-w-full">
+                        <table class="w-full text-left text-xs font-mono min-w-[640px]">
                             <thead class="bg-black/60 border-b border-emerald-500/20 text-gray-400 uppercase tracking-widest font-syncopate text-[10px]">
                                 <tr>
-                                    <th class="p-4">ID</th>
-                                    <th class="p-4">TITLE</th>
-                                    <th class="p-4">DESCRIPTION</th>
-                                    <th class="p-4">IMAGE</th>
-                                    <th class="p-4">LINK</th>
-                                    <th class="p-4 text-right">ACTIONS</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">ID</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">TITLE</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">DESCRIPTION</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">IMAGE</th>
+                                    <th class="p-3 sm:p-4 whitespace-nowrap">LINK</th>
+                                    <th class="p-3 sm:p-4 text-right whitespace-nowrap">ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody id="projects-table-body" class="divide-y divide-white/[0.05]">
                                 <tr>
-                                    <td colspan="6" class="p-6 text-center text-gray-500 font-syncopate">Loading projects...</td>
+                                    <td colspan="6" class="p-8 text-center">
+                                        <div class="sleek-loading-text justify-center">
+                                            <span class="sleek-loading-pulse-dot">
+                                                <span class="pulse-ring"></span>
+                                                <span class="pulse-core"></span>
+                                            </span>
+                                            <span class="sleek-loading-shimmer">LOADING INITIATIVES ARCHIVE...</span>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -345,11 +441,11 @@
     <!-- ========================================== -->
     <!-- MODAL: BLOG COMPOSER (SECTION BLOCK BUILDER) -->
     <!-- ========================================== -->
-    <div id="blog-modal" class="modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="terminal-box w-full max-w-4xl p-6 sm:p-8 rounded-lg max-h-[90vh] overflow-y-auto my-8">
-            <div class="flex items-center justify-between pb-4 mb-6 border-b border-emerald-500/30">
-                <h3 id="blog-modal-title" class="text-lg font-bold font-syncopate text-white">NEW TRANSMISSION COMPOSER</h3>
-                <button id="close-blog-modal" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+    <div id="blog-modal" class="modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="terminal-box w-full max-w-4xl p-4 sm:p-8 rounded-lg max-h-[94vh] sm:max-h-[90vh] overflow-y-auto my-2 sm:my-8">
+            <div class="flex items-center justify-between pb-3 sm:pb-4 mb-4 sm:mb-6 border-b border-emerald-500/30">
+                <h3 id="blog-modal-title" class="text-sm sm:text-lg font-bold font-syncopate text-white truncate max-w-[80%]">NEW TRANSMISSION COMPOSER</h3>
+                <button id="close-blog-modal" class="text-gray-400 hover:text-white text-2xl font-bold p-1 leading-none">&times;</button>
             </div>
 
             <form id="blog-form" class="space-y-6">
@@ -366,11 +462,43 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-syncopate text-gray-400 mb-1">TOPIC CHANNEL</label>
-                        <input type="text" id="b-topic" class="w-full p-2.5 rounded text-sm uppercase" placeholder="AI/ML, SYSTEMS, etc.">
+                <!-- MULTI-TAGS SYSTEM -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-syncopate text-gray-400">TAGS</label>
+                        <span class="text-[10px] font-mono text-emerald-400/80">ASSIGN MULTIPLE TAGS (e.g. BUSINESS, AI)</span>
                     </div>
+                    
+                    <!-- Selected Tags Container -->
+                    <div id="blog-tags-container" class="flex flex-wrap items-center gap-2 p-2.5 min-h-[46px] rounded bg-black/60 border border-emerald-500/30">
+                        <span id="blog-tags-empty" class="text-xs font-mono text-gray-500 italic">No tags selected. Add from suggestions or type below.</span>
+                    </div>
+
+                    <!-- Add Tag Input Row -->
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="blog-tag-input" class="flex-1 p-2.5 rounded text-xs uppercase font-mono bg-black/50 border border-white/10 text-white placeholder-gray-500 min-w-0" placeholder="Type tag name (e.g. BUSINESS, AI, SYSTEMS)...">
+                        <button type="button" id="blog-add-tag-btn" class="w-full sm:w-auto px-4 py-2 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500 hover:text-black font-syncopate text-xs font-bold transition-all shrink-0">
+                            + ADD TAG
+                        </button>
+                    </div>
+
+                    <!-- Suggestions Quick Add -->
+                    <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                        <span class="text-[10px] font-syncopate text-gray-400 mr-1">QUICK ADD:</span>
+                        <button type="button" class="quick-tag-chip px-2.5 py-1 rounded text-[10px] font-mono bg-white/[0.04] border border-white/10 text-gray-300 hover:border-emerald-400 hover:text-emerald-300 transition-all" data-tag="BUSINESS">+ Business</button>
+                        <button type="button" class="quick-tag-chip px-2.5 py-1 rounded text-[10px] font-mono bg-white/[0.04] border border-white/10 text-gray-300 hover:border-emerald-400 hover:text-emerald-300 transition-all" data-tag="AI">+ AI</button>
+                        <button type="button" class="quick-tag-chip px-2.5 py-1 rounded text-[10px] font-mono bg-white/[0.04] border border-white/10 text-gray-300 hover:border-emerald-400 hover:text-emerald-300 transition-all" data-tag="AI/ML">+ AI/ML</button>
+                        <button type="button" class="quick-tag-chip px-2.5 py-1 rounded text-[10px] font-mono bg-white/[0.04] border border-white/10 text-gray-300 hover:border-emerald-400 hover:text-emerald-300 transition-all" data-tag="SYSTEMS">+ Systems</button>
+                        <button type="button" class="quick-tag-chip px-2.5 py-1 rounded text-[10px] font-mono bg-white/[0.04] border border-white/10 text-gray-300 hover:border-emerald-400 hover:text-emerald-300 transition-all" data-tag="CYBERSECURITY">+ Cybersecurity</button>
+                        <button type="button" class="quick-tag-chip px-2.5 py-1 rounded text-[10px] font-mono bg-white/[0.04] border border-white/10 text-gray-300 hover:border-emerald-400 hover:text-emerald-300 transition-all" data-tag="RESEARCH">+ Research</button>
+                        <button type="button" class="quick-tag-chip px-2.5 py-1 rounded text-[10px] font-mono bg-white/[0.04] border border-white/10 text-gray-300 hover:border-emerald-400 hover:text-emerald-300 transition-all" data-tag="WEB">+ Web</button>
+                        <button type="button" class="quick-tag-chip px-2.5 py-1 rounded text-[10px] font-mono bg-white/[0.04] border border-white/10 text-gray-300 hover:border-emerald-400 hover:text-emerald-300 transition-all" data-tag="AGENTS">+ Agents</button>
+                    </div>
+
+                    <input type="hidden" id="b-topic">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-syncopate text-gray-400 mb-1">AUTHOR</label>
                         <input type="text" id="b-author" class="w-full p-2.5 rounded text-sm" placeholder="ENIGMA Operative">
@@ -407,9 +535,14 @@
                         </div>
 
                         <!-- Loading State -->
-                        <div id="loader-b-cover" class="hidden flex flex-col items-center gap-2 pointer-events-none py-4">
-                            <div class="inline-block animate-spin w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full"></div>
-                            <div class="font-mono text-xs text-emerald-400 tracking-wider animate-pulse">PROCESSING &amp; OPTIMIZING TRANSMISSION ASSET...</div>
+                        <div id="loader-b-cover" class="hidden flex flex-col items-center gap-3 pointer-events-none py-6">
+                            <span class="sleek-loading-pulse-dot">
+                                <span class="pulse-ring"></span>
+                                <span class="pulse-core"></span>
+                            </span>
+                            <div class="sleek-loading-shimmer font-mono text-xs tracking-widest">
+                                OPTIMIZING &amp; UPLOADING ASSET...
+                            </div>
                         </div>
 
                         <!-- Preview State -->
@@ -448,18 +581,25 @@
 
 
                 <div>
-                    <label class="block text-xs font-syncopate text-gray-400 mb-1">ABSTRACT / SUMMARY</label>
-                    <textarea id="b-summary" rows="2" class="w-full p-2.5 rounded text-sm" placeholder="Brief high-level transmission abstract..."></textarea>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-syncopate text-gray-400">ABSTRACT / SUMMARY</label>
+                        <span id="b-summary-counter" class="text-[10px] font-mono text-gray-400">0 / 250 words</span>
+                    </div>
+                    <textarea id="b-summary" rows="3" class="w-full p-2.5 rounded text-sm transition-colors" placeholder="Brief high-level abstract summary (max 250 words)..."></textarea>
+                    <div id="b-summary-warning" class="hidden text-[11px] font-mono text-red-400 mt-1 flex items-center gap-1.5">
+                        <span class="px-1 py-0.5 rounded bg-red-500/20 text-red-400 font-bold leading-none">[!]</span>
+                        <span>Word limit exceeded! Maximum allowed is 250 words.</span>
+                    </div>
                 </div>
 
                 <!-- SECTION BLOCK BUILDER -->
                 <div class="pt-6 border-t border-white/[0.08]">
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                         <div>
                             <span class="text-xs font-bold font-syncopate text-emerald-400 tracking-wider">ARTICLE SECTIONS &amp; BULLET POINTS</span>
                             <p class="text-[11px] text-gray-400">Each Section Title automatically generates an interactive bullet in the reader's right-side navigation HUD.</p>
                         </div>
-                        <button type="button" id="add-section-btn" class="px-3 py-1.5 rounded border border-emerald-500/40 text-emerald-400 font-syncopate text-[10px] hover:bg-emerald-500 hover:text-black transition-all">
+                        <button type="button" id="add-section-btn" class="w-full sm:w-auto px-3 py-1.5 rounded border border-emerald-500/40 text-emerald-400 font-syncopate text-[10px] hover:bg-emerald-500 hover:text-black transition-all shrink-0 text-center">
                             + ADD SECTION
                         </button>
                     </div>
@@ -470,11 +610,11 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="pt-6 border-t border-emerald-500/20 flex justify-end gap-3">
-                    <button type="button" id="cancel-blog-btn" class="px-4 py-2 rounded border border-white/10 text-gray-400 font-syncopate text-xs hover:text-white">
+                <div class="pt-6 border-t border-emerald-500/20 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3">
+                    <button type="button" id="cancel-blog-btn" class="w-full sm:w-auto px-4 py-2.5 rounded border border-white/10 text-gray-400 font-syncopate text-xs hover:text-white text-center">
                         CANCEL
                     </button>
-                    <button type="submit" class="px-6 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all">
+                    <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 transition-all text-center">
                         BROADCAST TRANSMISSION
                     </button>
                 </div>
@@ -485,11 +625,11 @@
     <!-- ========================================== -->
     <!-- MODAL: TEAM MEMBER COMPOSER -->
     <!-- ========================================== -->
-    <div id="team-modal" class="modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="terminal-box w-full max-w-lg p-6 sm:p-8 rounded-lg">
-            <div class="flex items-center justify-between pb-4 mb-6 border-b border-emerald-500/30">
-                <h3 id="team-modal-title" class="text-base font-bold font-syncopate text-white">OPERATIVE PROFILE</h3>
-                <button id="close-team-modal" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+    <div id="team-modal" class="modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="terminal-box w-full max-w-lg p-4 sm:p-8 rounded-lg max-h-[94vh] sm:max-h-[90vh] overflow-y-auto my-2 sm:my-8">
+            <div class="flex items-center justify-between pb-3 sm:pb-4 mb-4 sm:mb-6 border-b border-emerald-500/30">
+                <h3 id="team-modal-title" class="text-sm sm:text-base font-bold font-syncopate text-white truncate max-w-[80%]">OPERATIVE PROFILE</h3>
+                <button id="close-team-modal" class="text-gray-400 hover:text-white text-2xl font-bold p-1 leading-none">&times;</button>
             </div>
 
             <form id="team-form" class="space-y-4">
@@ -500,20 +640,34 @@
                     <input type="text" id="m-name" required class="w-full p-2.5 rounded text-sm" placeholder="Full Name">
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-syncopate text-gray-400 mb-1">ROLE</label>
                         <input type="text" id="m-role" class="w-full p-2.5 rounded text-sm" placeholder="Core Developer">
                     </div>
                     <div>
-                        <label class="block text-xs font-syncopate text-gray-400 mb-1">BATCH YEAR</label>
+                        <label class="block text-xs font-syncopate text-gray-400 mb-1">BATCH</label>
                         <select id="m-year" class="w-full p-2.5 rounded text-sm">
-                            <option value="2028">batch_2028 (2nd Year)</option>
-                            <option value="2027">batch_2027 (3rd Year)</option>
-                            <option value="2026">batch_2026 (4th Year)</option>
-                            <option value="alumni">Alumni</option>
+                            <option value="Batch-2026">Batch-2026</option>
+                            <option value="Batch-2027">Batch-2027</option>
+                            <option value="Batch-2028">Batch-2028</option>
+                            <option value="Batch-2029">Batch-2029</option>
                         </select>
                     </div>
+                </div>
+
+                <!-- ALUMNI STATUS TOGGLE -->
+                <div class="p-3 rounded bg-black/60 border border-emerald-500/20 hover:border-emerald-500/40 transition-colors">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="m-is-alumni" class="w-4 h-4 rounded bg-black border-emerald-500/50 text-emerald-500 focus:ring-emerald-400 accent-emerald-500 cursor-pointer">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-syncopate text-emerald-400 font-bold">ALUMNI OPERATIVE</span>
+                                <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">GRADUATED</span>
+                            </div>
+                            <p class="text-[11px] font-mono text-gray-400 mt-0.5">Check this if the operative has graduated. They will appear under their Batch (e.g. Batch-2026) AND in the Alumni roster.</p>
+                        </div>
+                    </label>
                 </div>
 
                 <!-- OPERATIVE IMAGE DROPZONE -->
@@ -542,9 +696,14 @@
                         </div>
 
                         <!-- Loading State -->
-                        <div id="loader-m-img" class="hidden flex flex-col items-center gap-2 pointer-events-none py-4">
-                            <div class="inline-block animate-spin w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full"></div>
-                            <div class="font-mono text-xs text-emerald-400 tracking-wider animate-pulse">PROCESSING &amp; OPTIMIZING OPERATIVE AVATAR...</div>
+                        <div id="loader-m-img" class="hidden flex flex-col items-center gap-3 pointer-events-none py-6">
+                            <span class="sleek-loading-pulse-dot">
+                                <span class="pulse-ring"></span>
+                                <span class="pulse-core"></span>
+                            </span>
+                            <div class="sleek-loading-shimmer font-mono text-xs tracking-widest">
+                                PROCESSING &amp; OPTIMIZING OPERATIVE AVATAR...
+                            </div>
                         </div>
 
                         <!-- Preview State -->
@@ -579,7 +738,7 @@
                 </div>
 
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-syncopate text-gray-400 mb-1">GITHUB URL</label>
                         <input type="text" id="m-github" class="w-full p-2.5 rounded text-sm" placeholder="https://github.com/...">
@@ -590,9 +749,9 @@
                     </div>
                 </div>
 
-                <div class="pt-4 border-t border-emerald-500/20 flex justify-end gap-3">
-                    <button type="button" id="cancel-team-btn" class="px-4 py-2 rounded border border-white/10 text-gray-400 font-syncopate text-xs">CANCEL</button>
-                    <button type="submit" class="px-6 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400">SAVE OPERATIVE</button>
+                <div class="pt-4 border-t border-emerald-500/20 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3">
+                    <button type="button" id="cancel-team-btn" class="w-full sm:w-auto px-4 py-2.5 rounded border border-white/10 text-gray-400 font-syncopate text-xs text-center">CANCEL</button>
+                    <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 text-center">SAVE OPERATIVE</button>
                 </div>
             </form>
         </div>
@@ -601,11 +760,11 @@
     <!-- ========================================== -->
     <!-- MODAL: PROJECT COMPOSER -->
     <!-- ========================================== -->
-    <div id="project-modal" class="modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="terminal-box w-full max-w-lg p-6 sm:p-8 rounded-lg">
-            <div class="flex items-center justify-between pb-4 mb-6 border-b border-emerald-500/30">
-                <h3 id="project-modal-title" class="text-base font-bold font-syncopate text-white">PROJECT SPECIFICATION</h3>
-                <button id="close-project-modal" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+    <div id="project-modal" class="modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="terminal-box w-full max-w-lg p-4 sm:p-8 rounded-lg max-h-[94vh] sm:max-h-[90vh] overflow-y-auto my-2 sm:my-8">
+            <div class="flex items-center justify-between pb-3 sm:pb-4 mb-4 sm:mb-6 border-b border-emerald-500/30">
+                <h3 id="project-modal-title" class="text-sm sm:text-base font-bold font-syncopate text-white truncate max-w-[80%]">PROJECT SPECIFICATION</h3>
+                <button id="close-project-modal" class="text-gray-400 hover:text-white text-2xl font-bold p-1 leading-none">&times;</button>
             </div>
 
             <form id="project-form" class="space-y-4">
@@ -647,9 +806,14 @@
                         </div>
 
                         <!-- Loading State -->
-                        <div id="loader-p-img" class="hidden flex flex-col items-center gap-2 pointer-events-none py-4">
-                            <div class="inline-block animate-spin w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full"></div>
-                            <div class="font-mono text-xs text-emerald-400 tracking-wider animate-pulse">PROCESSING &amp; OPTIMIZING PROJECT ASSET...</div>
+                        <div id="loader-p-img" class="hidden flex flex-col items-center gap-3 pointer-events-none py-6">
+                            <span class="sleek-loading-pulse-dot">
+                                <span class="pulse-ring"></span>
+                                <span class="pulse-core"></span>
+                            </span>
+                            <div class="sleek-loading-shimmer font-mono text-xs tracking-widest">
+                                PROCESSING &amp; OPTIMIZING PROJECT ASSET...
+                            </div>
                         </div>
 
                         <!-- Preview State -->
@@ -692,9 +856,9 @@
                     <input type="text" id="p-link" class="w-full p-2.5 rounded text-sm" placeholder="https://yourproject.com">
                 </div>
 
-                <div class="pt-4 border-t border-emerald-500/20 flex justify-end gap-3">
-                    <button type="button" id="cancel-project-btn" class="px-4 py-2 rounded border border-white/10 text-gray-400 font-syncopate text-xs">CANCEL</button>
-                    <button type="submit" class="px-6 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400">SAVE INITIATIVE</button>
+                <div class="pt-4 border-t border-emerald-500/20 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3">
+                    <button type="button" id="cancel-project-btn" class="w-full sm:w-auto px-4 py-2.5 rounded border border-white/10 text-gray-400 font-syncopate text-xs text-center">CANCEL</button>
+                    <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold tracking-widest hover:bg-emerald-400 text-center">SAVE INITIATIVE</button>
                 </div>
             </form>
         </div>
@@ -973,11 +1137,11 @@
             }
         };
 
-        // Logout
+        // Logout & Redirect to Home
         document.getElementById('logout-btn').onclick = () => {
             sessionStorage.removeItem('enigma_admin_token');
             adminToken = null;
-            showLogin();
+            window.location.href = '/';
         };
 
         // Tab Switching
@@ -1012,23 +1176,172 @@
         function renderBlogsTable() {
             const tbody = document.getElementById('blogs-table-body');
             if (cachedBlogs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-500 font-syncopate">No blogs found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 sm:p-12 text-center text-gray-500 font-mono text-xs tracking-widest">[ NO TRANSMISSIONS FOUND IN SECURE STORAGE ]</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = cachedBlogs.map(b => `
-                <tr class="hover:bg-white/[0.02]">
-                    <td class="p-4 text-emerald-400 font-bold">${b.topic || 'RESEARCH'}</td>
-                    <td class="p-4 font-bold text-white max-w-xs truncate">${b.title}</td>
-                    <td class="p-4 text-gray-400">${b.author}</td>
-                    <td class="p-4 text-gray-400 font-mono">${(b.sections || []).length} Points</td>
-                    <td class="p-4 text-gray-400">${b.date}</td>
-                    <td class="p-4 text-right space-x-2">
-                        <button onclick="editBlog('${b.slug}')" class="px-2.5 py-1 rounded border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-black">EDIT</button>
-                        <button onclick="deleteBlog('${b.slug}')" class="px-2.5 py-1 rounded border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-black">DEL</button>
-                    </td>
-                </tr>
+            tbody.innerHTML = cachedBlogs.map(b => {
+                const tags = (Array.isArray(b.tags) && b.tags.length > 0)
+                    ? b.tags
+                    : (b.topic ? b.topic.split(',').map(s => s.trim()) : ['RESEARCH']);
+                const tagsHtml = tags.map(t => `<span class="inline-block px-2 py-0.5 mr-1 mb-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold tracking-wider">${t}</span>`).join('');
+
+                return `
+                    <tr class="hover:bg-white/[0.02]">
+                        <td class="p-3 sm:p-4">${tagsHtml}</td>
+                        <td class="p-3 sm:p-4 font-bold text-white max-w-[180px] sm:max-w-xs truncate">${b.title}</td>
+                        <td class="p-3 sm:p-4 text-gray-400 whitespace-nowrap">${b.author}</td>
+                        <td class="p-3 sm:p-4 text-gray-400 font-mono whitespace-nowrap">${(b.sections || []).length} Points</td>
+                        <td class="p-3 sm:p-4 text-gray-400 whitespace-nowrap">${b.date}</td>
+                        <td class="p-3 sm:p-4 text-right space-x-1 sm:space-x-2 whitespace-nowrap">
+                            <button onclick="editBlog('${b.slug}')" class="px-2 sm:px-2.5 py-1 rounded border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-black text-[10px] sm:text-xs">EDIT</button>
+                            <button onclick="deleteBlog('${b.slug}')" class="px-2 sm:px-2.5 py-1 rounded border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-black text-[10px] sm:text-xs">DEL</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        /* ---------------- MULTI-TAGS CONTROLLER ---------------- */
+        let currentBlogTags = [];
+
+        function renderTagChips() {
+            const container = document.getElementById('blog-tags-container');
+            if (!container) return;
+            if (currentBlogTags.length === 0) {
+                container.innerHTML = `<span id="blog-tags-empty" class="text-xs font-mono text-gray-500 italic">No tags selected. Add from suggestions or type below.</span>`;
+                return;
+            }
+            container.innerHTML = currentBlogTags.map((tag, idx) => `
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-mono text-xs font-bold tracking-wide">
+                    <span>${tag}</span>
+                    <button type="button" onclick="removeBlogTag(${idx})" class="text-emerald-400 hover:text-red-400 font-bold ml-0.5 text-sm leading-none transition-colors" title="Remove tag">&times;</button>
+                </span>
             `).join('');
+            
+            const topicHidden = document.getElementById('b-topic');
+            if (topicHidden) topicHidden.value = currentBlogTags.join(', ');
+        }
+
+        function addBlogTag(tag) {
+            if (!tag) return;
+            const cleaned = tag.trim().toUpperCase();
+            if (!cleaned) return;
+            if (!currentBlogTags.includes(cleaned)) {
+                currentBlogTags.push(cleaned);
+                renderTagChips();
+            }
+        }
+
+        window.removeBlogTag = (idx) => {
+            currentBlogTags.splice(idx, 1);
+            renderTagChips();
+        };
+
+        const tagInput = document.getElementById('blog-tag-input');
+        const addTagBtn = document.getElementById('blog-add-tag-btn');
+        if (tagInput && addTagBtn) {
+            addTagBtn.onclick = () => {
+                addBlogTag(tagInput.value);
+                tagInput.value = '';
+                tagInput.focus();
+            };
+            tagInput.onkeydown = (e) => {
+                if (e.key === 'Enter' || e.key === ',') {
+                    e.preventDefault();
+                    addBlogTag(tagInput.value);
+                    tagInput.value = '';
+                }
+            };
+        }
+
+        document.querySelectorAll('.quick-tag-chip').forEach(btn => {
+            btn.onclick = () => addBlogTag(btn.dataset.tag);
+        });
+
+        /* ---------------- ABSTRACT WORD COUNTER ---------------- */
+        const summaryEl = document.getElementById('b-summary');
+        const summaryCounter = document.getElementById('b-summary-counter');
+        const summaryWarn = document.getElementById('b-summary-warning');
+
+        function getWordCount(text) {
+            return text.trim() ? text.trim().split(/\s+/).filter(Boolean).length : 0;
+        }
+
+        function updateSummaryWordCount() {
+            if (!summaryEl || !summaryCounter) return;
+            const words = getWordCount(summaryEl.value);
+            summaryCounter.textContent = `${words} / 250 words`;
+            if (words > 250) {
+                summaryCounter.classList.add('text-red-400');
+                summaryCounter.classList.remove('text-gray-400');
+                summaryEl.classList.add('border-red-500/60');
+                if (summaryWarn) summaryWarn.classList.remove('hidden');
+            } else {
+                summaryCounter.classList.remove('text-red-400');
+                summaryCounter.classList.add('text-gray-400');
+                summaryEl.classList.remove('border-red-500/60');
+                if (summaryWarn) summaryWarn.classList.add('hidden');
+            }
+        }
+
+        if (summaryEl) {
+            summaryEl.addEventListener('input', updateSummaryWordCount);
+        }
+
+        /* ---------------- CODE FORMATTER & PREVIEW HELPER ---------------- */
+        function highlightSyntax(code) {
+            let out = code
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+
+            // Comments
+            out = out.replace(/(#.*|\/\/.*)/g, '<span style="color:#64748b; font-style:italic;">$1</span>');
+            // Strings
+            out = out.replace(/(".*?"|'.*?'|`.*?`)/g, '<span style="color:#fde047;">$1</span>');
+            // Common Keywords
+            const kw = /\b(def|class|function|return|const|let|var|if|else|for|while|import|export|from|async|await|try|catch|pub|fn|struct|impl|match|type|interface|null|true|false)\b/g;
+            out = out.replace(kw, '<span style="color:#38bdf8; font-weight:bold;">$1</span>');
+            // Numbers
+            out = out.replace(/\b(\d+)\b/g, '<span style="color:#f472b6;">$1</span>');
+            return out;
+        }
+
+        function renderAdminSectionPreview(rawText) {
+            if (!rawText) return '<div class="text-gray-500 italic">No blog content to preview.</div>';
+
+            const codeBlockRegex = /```([a-zA-Z0-9_\-\+]*)\s*\n?([\s\S]*?)```/g;
+            let html = rawText.replace(codeBlockRegex, (match, lang, code) => {
+                const cleanLang = (lang || 'CODE').toUpperCase();
+                const highlighted = highlightSyntax(code);
+                return `
+                    <div class="code-card my-3 rounded-lg overflow-hidden border border-emerald-500/40 bg-[#050a07] shadow-lg">
+                        <div class="flex items-center justify-between px-3.5 py-2 bg-black/60 border-b border-emerald-500/20">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-red-500/80"></span>
+                                <span class="w-2 h-2 rounded-full bg-yellow-500/80"></span>
+                                <span class="w-2 h-2 rounded-full bg-emerald-500/80"></span>
+                                <span class="ml-2 font-mono text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">&gt;_ ${cleanLang}</span>
+                            </div>
+                            <span class="text-[9px] font-mono text-gray-400 uppercase tracking-wider">FORMATTED CODE CARD</span>
+                        </div>
+                        <div class="p-3 overflow-x-auto font-mono text-xs text-gray-200 leading-relaxed bg-[#030704]">
+                            <pre class="m-0 font-mono"><code>${highlighted}</code></pre>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const paragraphs = html.split(/\n\n+/);
+            return paragraphs.map(p => {
+                if (p.includes('class="code-card')) return p;
+                if (p.trim().startsWith('- ')) {
+                    const listItems = p.trim().split('\n').map(li => `<li class="ml-4">${li.replace(/^-\s*/, '')}</li>`).join('');
+                    return `<ul class="list-disc pl-2 space-y-1 my-2 text-gray-300 font-light">${listItems}</ul>`;
+                }
+                return `<p class="my-2 text-gray-300 leading-relaxed">${p.replace(/\n/g, '<br>')}</p>`;
+            }).join('');
         }
 
         // Section Builder Logic
@@ -1038,22 +1351,57 @@
         function addSectionRow(title = '', content = '') {
             const count = sectionsContainer.children.length + 1;
             const div = document.createElement('div');
-            div.className = 'section-row p-4 rounded bg-black/60 border border-white/10 space-y-3';
+            div.className = 'section-row p-3 sm:p-4 rounded bg-black/60 border border-white/10 space-y-3';
             div.innerHTML = `
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between gap-2">
                     <span class="text-[10px] font-mono text-emerald-400 font-bold">SECTION // ${count}</span>
-                    <button type="button" onclick="this.closest('.section-row').remove()" class="text-red-400 hover:text-red-300 text-xs font-mono">[REMOVE]</button>
+                    <div class="flex items-center gap-2">
+                        <button type="button" class="preview-sec-btn px-2 py-0.5 rounded border border-white/20 text-gray-300 hover:border-emerald-400 hover:text-emerald-300 font-syncopate text-[9px] transition-all">PREVIEW</button>
+                        <button type="button" onclick="this.closest('.section-row').remove()" class="text-red-400 hover:text-red-300 text-xs font-mono">[REMOVE]</button>
+                    </div>
                 </div>
                 <div>
                     <label class="block text-[10px] font-syncopate text-gray-400 mb-1">SECTION HEADING (BULLET NAV TITLE) *</label>
                     <input type="text" class="sec-title w-full p-2 rounded text-xs" required value="${title.replace(/"/g, '&quot;')}" placeholder="e.g. Asynchronous Microkernel Architecture">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-syncopate text-gray-400 mb-1">SECTION CONTENT (PARAGRAPHS &amp; CODE) *</label>
-                    <textarea class="sec-content w-full p-2 rounded text-xs font-mono" rows="3" required placeholder="Detailed content... Markdown code blocks supported with \`\`\`lang...">${content}</textarea>
+                    <div class="flex flex-wrap items-center justify-between gap-1.5 mb-1">
+                        <label class="block text-[10px] font-syncopate text-gray-400">BLOG CONTENT (PARAGRAPHS &amp; CODE) *</label>
+                        <button type="button" class="insert-code-btn px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500 hover:text-black font-mono text-[10px] transition-all" title="Insert formatted code card template">
+                            + INSERT CODE BLOCK
+                        </button>
+                    </div>
+                    <textarea class="sec-content w-full p-2 rounded text-xs font-mono" rows="4" required placeholder="Write your blog content here... Markdown code blocks supported with \`\`\`lang...">${content}</textarea>
+                    <div class="sec-preview-box hidden mt-3 p-4 rounded-lg bg-[#050a07] border border-emerald-500/30 text-xs"></div>
                 </div>
             `;
             sectionsContainer.appendChild(div);
+
+            const textarea = div.querySelector('.sec-content');
+            const insertCodeBtn = div.querySelector('.insert-code-btn');
+            const previewBtn = div.querySelector('.preview-sec-btn');
+            const previewBox = div.querySelector('.sec-preview-box');
+
+            insertCodeBtn.onclick = () => {
+                const codeSnippet = "\n```python\n# Write your code snippet here\ndef calculate_metrics():\n    return 42\n```\n";
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const val = textarea.value;
+                textarea.value = val.substring(0, start) + codeSnippet + val.substring(end);
+                textarea.focus();
+                textarea.setSelectionRange(start + 11, start + 42);
+            };
+
+            previewBtn.onclick = () => {
+                if (previewBox.classList.contains('hidden')) {
+                    previewBox.innerHTML = renderAdminSectionPreview(textarea.value);
+                    previewBox.classList.remove('hidden');
+                    previewBtn.textContent = 'HIDE PREVIEW';
+                } else {
+                    previewBox.classList.add('hidden');
+                    previewBtn.textContent = 'PREVIEW';
+                }
+            };
         }
 
         // New / Edit Blog Modal Handlers
@@ -1062,7 +1410,10 @@
             document.getElementById('blog-edit-id').value = '';
             document.getElementById('blog-modal-title').textContent = "NEW TRANSMISSION COMPOSER";
             sectionsContainer.innerHTML = '';
-            addSectionRow("Overview", "Initial transmission findings...");
+            addSectionRow("Overview", "Write your blog content here...");
+            currentBlogTags = [];
+            renderTagChips();
+            updateSummaryWordCount();
             if (blogDropzone) blogDropzone.reset();
             document.getElementById('blog-modal').classList.remove('hidden');
         };
@@ -1075,11 +1426,21 @@
             document.getElementById('blog-modal-title').textContent = `EDIT DISPATCH: ${blog.title}`;
             document.getElementById('b-title').value = blog.title;
             document.getElementById('b-slug').value = blog.slug;
-            document.getElementById('b-topic').value = blog.topic || '';
             document.getElementById('b-author').value = blog.author || '';
             document.getElementById('b-readtime').value = blog.readTime || '';
             document.getElementById('b-cover').value = blog.cover || '';
             document.getElementById('b-summary').value = blog.summary || '';
+
+            // Populate tags
+            if (Array.isArray(blog.tags) && blog.tags.length > 0) {
+                currentBlogTags = [...blog.tags];
+            } else if (blog.topic) {
+                currentBlogTags = blog.topic.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+            } else {
+                currentBlogTags = ['RESEARCH'];
+            }
+            renderTagChips();
+            updateSummaryWordCount();
 
             if (blogDropzone) {
                 blogDropzone.showPreview(blog.cover, blog.title || 'Blog Cover');
@@ -1090,7 +1451,7 @@
             if (sections.length > 0) {
                 sections.forEach(s => addSectionRow(s.title, s.content));
             } else {
-                addSectionRow("Overview", "");
+                addSectionRow("Overview", "Write your blog content here...");
             }
 
             document.getElementById('blog-modal').classList.remove('hidden');
@@ -1102,6 +1463,16 @@
         // Submit Blog Form
         document.getElementById('blog-form').onsubmit = async (e) => {
             e.preventDefault();
+
+            // Word limit check on abstract (max 250 words)
+            const summaryVal = document.getElementById('b-summary').value.trim();
+            const words = getWordCount(summaryVal);
+            if (words > 250) {
+                alert(`The abstract exceeds the 250-word limit (${words} words). Please reduce it before broadcasting.`);
+                document.getElementById('b-summary').focus();
+                return;
+            }
+
             const editSlug = document.getElementById('blog-edit-id').value;
             const isEdit = !!editSlug;
 
@@ -1112,14 +1483,17 @@
                 sections.push({ id: `sec-${i + 1}`, title, content });
             });
 
+            const tags = currentBlogTags.length > 0 ? currentBlogTags : ['RESEARCH'];
+
             const blogPayload = {
                 title: document.getElementById('b-title').value.trim(),
                 slug: document.getElementById('b-slug').value.trim(),
-                topic: document.getElementById('b-topic').value.trim().toUpperCase(),
+                tags: tags,
+                topic: tags.join(', '),
                 author: document.getElementById('b-author').value.trim(),
                 readTime: document.getElementById('b-readtime').value.trim(),
                 cover: document.getElementById('b-cover').value.trim(),
-                summary: document.getElementById('b-summary').value.trim(),
+                summary: summaryVal,
                 sections
             };
 
@@ -1177,27 +1551,54 @@
 
         function renderTeamTable() {
             const tbody = document.getElementById('team-table-body');
-            tbody.innerHTML = cachedTeam.map(m => `
-                <tr class="hover:bg-white/[0.02]">
-                    <td class="p-4 text-gray-500 font-mono">#${m.id}</td>
-                    <td class="p-4 font-bold text-white">${m.name}</td>
-                    <td class="p-4 text-emerald-400">${m.role}</td>
-                    <td class="p-4 text-gray-400">batch_${m.year}</td>
-                    <td class="p-4 text-gray-400 font-mono text-[10px] truncate max-w-xs">${m.img}</td>
-                    <td class="p-4 text-right space-x-2">
-                        <button onclick="editTeam(${m.id})" class="px-2.5 py-1 rounded border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-black">EDIT</button>
-                        <button onclick="deleteTeam(${m.id})" class="px-2.5 py-1 rounded border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-black">DEL</button>
-                    </td>
-                </tr>
-            `).join('');
+            if (cachedTeam.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-12 text-center text-gray-500 font-mono text-xs tracking-widest">[ NO OPERATIVES REGISTERED IN DATABASE ]</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = cachedTeam.map(m => {
+                const isAlum = m.isAlumni === true || m.tag === 'alumni' || (m.year && m.year.toString().toLowerCase() === 'alumni');
+                let batchLabel = m.batch || m.year || 'Batch-2028';
+                if (batchLabel.toString().toLowerCase() === 'alumni') {
+                    batchLabel = m.batch ? (m.batch.toString().startsWith('Batch-') ? m.batch : 'Batch-' + m.batch) : 'Batch-2026';
+                } else if (!batchLabel.toString().startsWith('Batch-')) {
+                    batchLabel = 'Batch-' + batchLabel;
+                }
+                const alumniBadge = isAlum
+                    ? `<span class="ml-2 px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ALUMNI</span>`
+                    : '';
+                return `
+                    <tr class="hover:bg-white/[0.02]">
+                        <td class="p-3 sm:p-4 text-gray-500 font-mono whitespace-nowrap">#${m.id}</td>
+                        <td class="p-3 sm:p-4 font-bold text-white whitespace-nowrap">${m.name}</td>
+                        <td class="p-3 sm:p-4 text-emerald-400 whitespace-nowrap">${m.role}</td>
+                        <td class="p-3 sm:p-4 text-emerald-400 font-mono font-bold whitespace-nowrap">
+                            <span class="inline-flex items-center">${batchLabel}${alumniBadge}</span>
+                        </td>
+                        <td class="p-3 sm:p-4 text-gray-400 font-mono text-[10px] truncate max-w-[150px] sm:max-w-xs">${m.img}</td>
+                        <td class="p-3 sm:p-4 text-right space-x-1 sm:space-x-2 whitespace-nowrap">
+                            <button onclick="editTeam(${m.id})" class="px-2 sm:px-2.5 py-1 rounded border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-black text-[10px] sm:text-xs">EDIT</button>
+                            <button onclick="deleteTeam(${m.id})" class="px-2 sm:px-2.5 py-1 rounded border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-black text-[10px] sm:text-xs">DEL</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         document.getElementById('new-member-btn').onclick = () => {
             document.getElementById('team-form').reset();
             document.getElementById('team-edit-id').value = '';
+            document.getElementById('m-year').value = 'Batch-2028';
+            document.getElementById('m-is-alumni').checked = false;
             if (teamDropzone) teamDropzone.reset();
             document.getElementById('team-modal').classList.remove('hidden');
         };
+
+        // Auto-check alumni if Batch-2026 is selected when creating a new member
+        document.getElementById('m-year').addEventListener('change', (e) => {
+            if (e.target.value === 'Batch-2026' && !document.getElementById('team-edit-id').value) {
+                document.getElementById('m-is-alumni').checked = true;
+            }
+        });
 
         window.editTeam = (id) => {
             const m = cachedTeam.find(item => item.id === id);
@@ -1205,7 +1606,18 @@
             document.getElementById('team-edit-id').value = m.id;
             document.getElementById('m-name').value = m.name;
             document.getElementById('m-role').value = m.role;
-            document.getElementById('m-year').value = m.year;
+
+            const isAlum = m.isAlumni === true || m.tag === 'alumni' || (m.year && m.year.toString().toLowerCase() === 'alumni');
+            document.getElementById('m-is-alumni').checked = isAlum;
+
+            let yearVal = m.batch || m.year || 'Batch-2028';
+            if (yearVal.toString().toLowerCase() === 'alumni') {
+                yearVal = m.batch || 'Batch-2026';
+            }
+            if (!yearVal.toString().startsWith('Batch-')) {
+                yearVal = 'Batch-' + yearVal;
+            }
+            document.getElementById('m-year').value = yearVal;
             document.getElementById('m-img').value = m.img || '';
             document.getElementById('m-github').value = m.github || '';
             document.getElementById('m-linkedin').value = m.linkedin || '';
@@ -1224,11 +1636,16 @@
             e.preventDefault();
             const editId = document.getElementById('team-edit-id').value;
             const isEdit = !!editId;
+            const batchVal = document.getElementById('m-year').value;
+            const isAlumniChecked = document.getElementById('m-is-alumni').checked;
 
             const payload = {
                 name: document.getElementById('m-name').value.trim(),
                 role: document.getElementById('m-role').value.trim(),
-                year: document.getElementById('m-year').value,
+                year: batchVal,
+                batch: batchVal,
+                isAlumni: isAlumniChecked,
+                tag: isAlumniChecked ? 'alumni' : '',
                 img: document.getElementById('m-img').value.trim(),
                 github: document.getElementById('m-github').value.trim(),
                 linkedin: document.getElementById('m-linkedin').value.trim()
@@ -1281,16 +1698,20 @@
 
         function renderProjectsTable() {
             const tbody = document.getElementById('projects-table-body');
+            if (cachedProjects.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-12 text-center text-gray-500 font-mono text-xs tracking-widest">[ NO INITIATIVES FOUND IN DATABASE ]</td></tr>`;
+                return;
+            }
             tbody.innerHTML = cachedProjects.map(p => `
                 <tr class="hover:bg-white/[0.02]">
-                    <td class="p-4 text-gray-500 font-mono">#${p.id}</td>
-                    <td class="p-4 font-bold text-white">${p.title}</td>
-                    <td class="p-4 text-gray-400 max-w-xs truncate">${p.desc || ''}</td>
-                    <td class="p-4 text-gray-400 font-mono text-[10px] truncate max-w-xs">${p.img}</td>
-                    <td class="p-4 text-emerald-400 font-mono text-[10px] truncate max-w-xs"><a href="${p.link}" target="_blank">${p.link}</a></td>
-                    <td class="p-4 text-right space-x-2">
-                        <button onclick="editProject(${p.id})" class="px-2.5 py-1 rounded border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-black">EDIT</button>
-                        <button onclick="deleteProject(${p.id})" class="px-2.5 py-1 rounded border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-black">DEL</button>
+                    <td class="p-3 sm:p-4 text-gray-500 font-mono whitespace-nowrap">#${p.id}</td>
+                    <td class="p-3 sm:p-4 font-bold text-white whitespace-nowrap">${p.title}</td>
+                    <td class="p-3 sm:p-4 text-gray-400 max-w-[150px] sm:max-w-xs truncate">${p.desc || ''}</td>
+                    <td class="p-3 sm:p-4 text-gray-400 font-mono text-[10px] truncate max-w-[120px] sm:max-w-xs">${p.img}</td>
+                    <td class="p-3 sm:p-4 text-emerald-400 font-mono text-[10px] truncate max-w-[120px] sm:max-w-xs whitespace-nowrap"><a href="${p.link}" target="_blank">${p.link}</a></td>
+                    <td class="p-3 sm:p-4 text-right space-x-1 sm:space-x-2 whitespace-nowrap">
+                        <button onclick="editProject(${p.id})" class="px-2 sm:px-2.5 py-1 rounded border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-black text-[10px] sm:text-xs">EDIT</button>
+                        <button onclick="deleteProject(${p.id})" class="px-2 sm:px-2.5 py-1 rounded border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-black text-[10px] sm:text-xs">DEL</button>
                     </td>
                 </tr>
             `).join('');

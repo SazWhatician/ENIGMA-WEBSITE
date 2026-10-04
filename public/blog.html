@@ -1721,7 +1721,7 @@
                         Exploring state-space models and sparse topological graph diffusion to break past the O(N^2) memory bottleneck.
                     </p>
                     <div class="wheel-front-action">
-                        <a id="wheel-front-link" href="#" class="wheel-cta-btn">
+                        <a id="wheel-front-link" href="#" class="wheel-cta-btn" data-barba-prevent>
                             <span>READ ARTICLE</span>
                             <svg class="w-3.5 h-3.5" viewBox="0 0 12 12" fill="none" stroke="currentColor">
                                 <path d="M3 9 9 3M4 3h5v5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1948,58 +1948,7 @@
             if (Array.isArray(blogs) && blogs.length > 0) {
                 wheelItems = blogs.slice(0, 10);
             } else {
-                wheelItems = [
-                    {
-                        title: "Neural Lattice Architectures: Beyond Transformers",
-                        slug: "neural-lattice-architectures",
-                        topic: "AI/ML",
-                        date: "OCT 02, 2026",
-                        readTime: "6 min read",
-                        author: "ENIGMA",
-                        cover: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
-                        summary: "Exploring state-space models and sparse topological graph diffusion to break past the O(N^2) memory bottleneck."
-                    },
-                    {
-                        title: "Quantum-Resilient Cryptosystems & Zero-Knowledge Enclaves",
-                        slug: "quantum-resilient-cryptosystems",
-                        topic: "CYBERSECURITY",
-                        date: "SEP 28, 2026",
-                        readTime: "8 min read",
-                        author: "Cyber Warfare Wing",
-                        cover: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1200&q=80",
-                        summary: "Engineering cryptographic enclaves resistant to Shor's algorithm using module lattice cryptography."
-                    },
-                    {
-                        title: "Kernel-Bypass Networking & Sub-Microsecond Telemetry",
-                        slug: "kernel-bypass-networking",
-                        topic: "SYSTEMS",
-                        date: "SEP 19, 2026",
-                        readTime: "7 min read",
-                        author: "Infrastructure Core",
-                        cover: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80",
-                        summary: "Demystifying eBPF, XDP, and io_uring pipelines capable of handling 40Gbps line-rate packet filtering."
-                    },
-                    {
-                        title: "Neuromorphic Spike Networks & Asynchronous Compute",
-                        slug: "neuromorphic-spike-networks",
-                        topic: "HARDWARE",
-                        date: "AUG 30, 2026",
-                        readTime: "5 min read",
-                        author: "Hardware Architecture",
-                        cover: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
-                        summary: "Designing asynchronous event-driven silicon that computes only when informational energy changes."
-                    },
-                    {
-                        title: "Autonomous Agent Protocols & Swarm Consensus",
-                        slug: "autonomous-agent-protocols",
-                        topic: "AGENTS",
-                        date: "AUG 14, 2026",
-                        readTime: "6 min read",
-                        author: "Autonomous Systems",
-                        cover: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80",
-                        summary: "Synthesizing Raft consensus with semantic vector memory pools for distributed autonomous coordination."
-                    }
-                ];
+                wheelItems = [];
             }
 
             renderWorksWheelDOM();
@@ -2100,7 +2049,7 @@
                         <div class="wheel-card-face">
                             <img class="wheel-card-img" src="${item.cover}" alt="${item.title}" draggable="false" loading="lazy">
                             <div class="wheel-card-overlay"></div>
-                            <span class="wheel-card-tag">${item.topic || 'BLOG'}</span>
+                            <span class="wheel-card-tag">${(Array.isArray(item.tags) && item.tags.length > 0) ? item.tags[0] : (item.topic || 'BLOG')}</span>
                             <span class="wheel-card-action">
                                 <span>VIEW</span>
                                 <svg class="w-2.5 h-2.5" viewBox="0 0 12 12" fill="none" stroke="currentColor">
@@ -2174,9 +2123,6 @@
         }
 
         function updateFrontPanelUI(index) {
-            const blog = wheelItems[index];
-            if (!blog) return;
-
             const topicEl = document.getElementById('wheel-front-topic');
             const dateEl = document.getElementById('wheel-front-date');
             const timeEl = document.getElementById('wheel-front-time');
@@ -2186,12 +2132,31 @@
             const authorEl = document.getElementById('wheel-author-tag');
             const counterEl = document.getElementById('wheel-counter');
 
-            if (topicEl) topicEl.textContent = blog.topic || 'RESEARCH';
+            const blog = wheelItems[index];
+            if (!blog) {
+                if (topicEl) topicEl.textContent = 'NO DISPATCHES';
+                if (titleEl) titleEl.textContent = 'Awaiting Transmissions';
+                if (summaryEl) summaryEl.textContent = 'No published articles currently found in secure storage.';
+                if (linkEl) linkEl.style.display = 'none';
+                if (counterEl) counterEl.textContent = '[ 00 / 00 ]';
+                return;
+            }
+
+            const displayTags = (Array.isArray(blog.tags) && blog.tags.length > 0) ? blog.tags.join(' // ') : (blog.topic || 'RESEARCH');
+            if (topicEl) topicEl.textContent = displayTags;
             if (dateEl) dateEl.textContent = blog.date || 'OCT 2026';
             if (timeEl) timeEl.textContent = blog.readTime || '5 MIN READ';
             if (titleEl) titleEl.textContent = blog.title || '';
             if (summaryEl) summaryEl.textContent = blog.summary || '';
-            if (linkEl) linkEl.href = `/blog/${blog.slug}`;
+            if (linkEl) {
+                linkEl.style.display = 'inline-flex';
+                linkEl.href = `/blog/${blog.slug}`;
+                linkEl.onclick = (e) => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+                    e.preventDefault();
+                    window.location.href = `/blog/${blog.slug}`;
+                };
+            }
             if (authorEl) {
                 const author = blog.author || 'ENIGMA';
                 authorEl.textContent = author.replace(/research lab/i, '').trim().toUpperCase() || 'ENIGMA';
@@ -2354,7 +2319,12 @@
             if (!pinTrack || !stage) return;
 
             const count = wheelItems.length;
-            if (count === 0) return;
+            if (count === 0) {
+                pinTrack.style.display = 'none';
+                return;
+            } else {
+                pinTrack.style.display = 'block';
+            }
 
             wheelScrollTrigger = ScrollTrigger.create({
                 trigger: pinTrack,
@@ -2594,7 +2564,16 @@
             const container = document.getElementById('topic-filters');
             if (!container) return;
 
-            const topics = Array.from(new Set(window.enigmaBlogs.map(b => (b.topic || 'GENERAL').toUpperCase())));
+            const topicsSet = new Set();
+            (window.enigmaBlogs || []).forEach(b => {
+                const list = (Array.isArray(b.tags) && b.tags.length > 0)
+                    ? b.tags
+                    : (b.topic ? b.topic.split(',').map(s => s.trim()) : ['GENERAL']);
+                list.forEach(t => {
+                    if (t) topicsSet.add(t.toUpperCase());
+                });
+            });
+            const topics = Array.from(topicsSet);
             
             let html = `<button class="filter-btn ${window.activeTopic === 'ALL' ? 'active' : ''}" data-topic="ALL">All</button>`;
             topics.forEach(t => {
@@ -2642,8 +2621,13 @@
         // 5. VERTICALLY STACKED ARCHIVE LIST (OPTIMIZED FOR EASY FINDING)
         function createListRowHTML(blog, index) {
             const num = String(index + 1).padStart(2, '0');
+            const tags = (Array.isArray(blog.tags) && blog.tags.length > 0)
+                ? blog.tags
+                : (blog.topic ? blog.topic.split(',').map(s => s.trim()) : ['GENERAL']);
+            const tagsHtml = tags.map(t => `<span class="dispatch-topic-pill">${t}</span>`).join(' ');
+
             return `
-                <a href="/blog/${blog.slug}" class="dispatch-row group" data-slug="${blog.slug}" data-topic="${(blog.topic || 'GENERAL').toUpperCase()}">
+                <a href="/blog/${blog.slug}" class="dispatch-row group" data-barba-prevent data-slug="${blog.slug}" data-topic="${tags.join(', ')}">
                     <!-- Meta Column: Index & Date -->
                     <div class="dispatch-meta-col">
                         <span class="dispatch-num">${num}</span>
@@ -2653,7 +2637,7 @@
                     <!-- Info Column: Badges, Title, Summary, Author -->
                     <div class="dispatch-info-col">
                         <div class="dispatch-badge-row">
-                            <span class="dispatch-topic-pill">${blog.topic}</span>
+                            <div class="flex flex-wrap items-center gap-1.5">${tagsHtml}</div>
                             <span class="dispatch-read-time">${blog.readTime || '5 min read'}</span>
                         </div>
                         <h3 class="dispatch-row-title">${blog.title}</h3>
@@ -2683,29 +2667,52 @@
             let filtered = window.enigmaBlogs || [];
 
             if (filterTopic !== 'ALL') {
-                filtered = filtered.filter(b => (b.topic || 'GENERAL').toUpperCase() === filterTopic);
+                filtered = filtered.filter(b => {
+                    const blogTags = (Array.isArray(b.tags) && b.tags.length > 0)
+                        ? b.tags.map(t => t.toUpperCase())
+                        : (b.topic ? b.topic.split(',').map(s => s.trim().toUpperCase()) : ['GENERAL']);
+                    return blogTags.includes(filterTopic);
+                });
             }
 
             if (searchQuery && searchQuery.trim()) {
                 const q = searchQuery.trim().toLowerCase();
-                filtered = filtered.filter(b => 
-                    (b.title && b.title.toLowerCase().includes(q)) ||
-                    (b.summary && b.summary.toLowerCase().includes(q)) ||
-                    (b.author && b.author.toLowerCase().includes(q)) ||
-                    (b.topic && b.topic.toLowerCase().includes(q))
-                );
+                filtered = filtered.filter(b => {
+                    const blogTags = (Array.isArray(b.tags) && b.tags.length > 0)
+                        ? b.tags.join(' ').toLowerCase()
+                        : (b.topic ? b.topic.toLowerCase() : '');
+                    return (b.title && b.title.toLowerCase().includes(q)) ||
+                           (b.summary && b.summary.toLowerCase().includes(q)) ||
+                           (b.author && b.author.toLowerCase().includes(q)) ||
+                           blogTags.includes(q);
+                });
             }
 
             if (filtered.length === 0) {
+                const emptyMsg = (filterTopic === 'ALL' && !searchQuery)
+                    ? 'NO TRANSMISSIONS PUBLISHED YET'
+                    : `NO BLOGS MATCH CRITERIA [ TOPIC: ${filterTopic} ${searchQuery ? `// QUERY: "${searchQuery}"` : ''} ]`;
                 list.innerHTML = `
                     <div class="py-20 text-center text-gray-500 font-syncopate text-xs tracking-[2px]">
-                        NO BLOGS MATCH CRITERIA [ TOPIC: ${filterTopic} ${searchQuery ? `// QUERY: "${searchQuery}"` : ''} ]
+                        ${emptyMsg}
                     </div>
                 `;
                 return;
             }
 
             list.innerHTML = filtered.map((b, i) => createListRowHTML(b, i)).join('');
+
+            // Attach explicit click listener so clicking the list item opens the blog cleanly
+            list.querySelectorAll('.dispatch-row').forEach(row => {
+                row.addEventListener('click', (e) => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+                    e.preventDefault();
+                    const slug = row.dataset.slug;
+                    if (slug) {
+                        window.location.href = `/blog/${slug}`;
+                    }
+                });
+            });
 
             gsap.fromTo('.dispatch-row', 
                 { opacity: 0, y: 15 },

@@ -38,12 +38,31 @@ window.renderTeam = function (filterValue, delay = 0) {
     }
 
     grid.innerHTML = '';
-    let filteredData = filterValue === 'all'
-        ? window.teamData.filter(m => m.year !== 'alumni')
-        : window.teamData.filter(m => m.year === filterValue);
+    const cleanFilter = filterValue.replace('Batch-', '').toLowerCase();
+
+    const isMemberAlumni = (m) => {
+        return m.isAlumni === true ||
+               (m.tag || '').toString().toLowerCase() === 'alumni' ||
+               (m.year || '').toString().toLowerCase() === 'alumni';
+    };
+
+    const getMemberBatch = (m) => {
+        let b = (m.batch || m.year || '').toString().replace('Batch-', '').trim().toLowerCase();
+        if (b === 'alumni') b = (m.batch || '').toString().replace('Batch-', '').trim().toLowerCase();
+        return b;
+    };
+
+    let filteredData;
+    if (cleanFilter === 'all') {
+        filteredData = window.teamData.filter(m => !isMemberAlumni(m));
+    } else if (cleanFilter === 'alumni') {
+        filteredData = window.teamData.filter(m => isMemberAlumni(m));
+    } else {
+        filteredData = window.teamData.filter(m => getMemberBatch(m) === cleanFilter);
+    }
 
     // Keep Srinibas Das and Sonakshi Pradhan together and at the top of 2027 and ALL
-    if (filterValue === 'all' || filterValue === '2027') {
+    if (cleanFilter === 'all' || cleanFilter === '2027') {
         const leaders = [];
         const nonLeaders = [];
         filteredData.forEach(member => {
@@ -78,12 +97,12 @@ window.renderTeam = function (filterValue, delay = 0) {
         return [...top3, ...rest];
     }
 
-    if (filterValue === '2028') {
+    if (cleanFilter === '2028') {
         filteredData = orderBatch2028(filteredData);
-    } else if (filterValue === 'all') {
-        const y27 = filteredData.filter(m => m.year === '2027');
-        const y28 = filteredData.filter(m => m.year === '2028');
-        const others = filteredData.filter(m => m.year !== '2027' && m.year !== '2028');
+    } else if (cleanFilter === 'all') {
+        const y27 = filteredData.filter(m => (m.year || '').toString().replace('Batch-', '') === '2027');
+        const y28 = filteredData.filter(m => (m.year || '').toString().replace('Batch-', '') === '2028');
+        const others = filteredData.filter(m => (m.year || '').toString().replace('Batch-', '') !== '2027' && (m.year || '').toString().replace('Batch-', '') !== '2028');
         filteredData = [...y27, ...orderBatch2028(y28), ...others];
     }
 
@@ -98,7 +117,7 @@ window.renderTeam = function (filterValue, delay = 0) {
     } else {
         filteredData.forEach(member => {
             const isSaswatDev = member.name && member.name.toLowerCase().includes('saswat') && member.name.toLowerCase().includes('mohanty');
-            const isAlumni = member.year === 'alumni';
+            const isAlumni = isMemberAlumni(member);
 
             const avatarHtml = member.img
                 ? `<img src="${encodeURI(member.img)}" class="card-avatar ${isSaswatDev ? 'dev-avatar' : ''}" alt="${member.name}" loading="lazy">`
@@ -120,12 +139,17 @@ window.renderTeam = function (filterValue, delay = 0) {
                     tagHtml = `<div class="member-tag ${tagClass}">${tagLabel}</div>`;
                 } else if (member.tag === 'ex_coordinator' || member.tag === 'ex-coordinator') {
                     tagHtml = ''; // Don't give ex-coordinators any badge
-                } else if (member.tag === 'alumni') {
+                } else if (member.tag === 'alumni' || isAlumni) {
                     tagClass = 'tag-diamond';
                     tagLabel = 'Alumni';
                     tagHtml = `<div class="member-tag ${tagClass}">${tagLabel}</div>`;
                 }
+            } else if (isAlumni) {
+                tagHtml = `<div class="member-tag tag-diamond">Alumni</div>`;
             }
+
+            const rawB = getMemberBatch(member);
+            const batchDisplay = rawB ? 'Batch-' + rawB : (isAlumni ? 'Alumni' : 'Batch-2028');
 
             const card = document.createElement('div');
             card.className = `team-card-wrapper ${isSaswatDev ? 'dev-card' : ''} ${isAlumni ? 'alumni-card' : ''}`;
@@ -145,7 +169,7 @@ window.renderTeam = function (filterValue, delay = 0) {
                         <h2>${member.name}</h2>
                         ${tagHtml}
                         <div class="card-role"><div class="role-dot"></div>${member.role || 'Web Dev and AI/ML'}</div>
-                        <p style="margin-top: 0.6rem;">Class of ${member.year}</p>
+                        <p style="margin-top: 0.6rem;">${batchDisplay}</p>
                         <div class="dev-flip-hint">&lt; CLICK TO FLIP &gt;</div>
                     </div>
                     <div class="card-back">
@@ -180,7 +204,7 @@ window.renderTeam = function (filterValue, delay = 0) {
                         <h2>${member.name}</h2>
                         ${tagHtml}
                         ${member.role ? `<div class="card-role"><div class="role-dot"></div>${member.role}</div>` : ''}
-                        <p style="margin-top: 0.6rem;">${isAlumni ? (member.batch ? 'Class of ' + member.batch : 'Alumni') : 'Class of ' + member.year}</p>
+                        <p style="margin-top: 0.6rem;">${batchDisplay}</p>
                     </div>
                     <div class="card-back">
                         <div class="social-links">

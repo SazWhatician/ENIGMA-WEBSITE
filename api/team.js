@@ -73,12 +73,19 @@ module.exports = async (req, res) => {
             const localTeam = readLocalTeam();
             const nextId = (body.id && typeof body.id === 'number') ? body.id : (localTeam.reduce((max, m) => Math.max(max, m.id || 0), 0) + 1);
 
+            const isAlum = !!body.isAlumni || body.year === 'alumni' || body.tag === 'alumni';
+            const rawBatch = (body.batch || (body.year !== 'alumni' ? body.year : 'Batch-2026') || 'Batch-2028').toString().trim();
+            const cleanBatch = rawBatch.startsWith('Batch-') ? rawBatch : 'Batch-' + rawBatch;
+
             const newMember = {
                 id: nextId,
                 name: body.name.trim(),
                 role: (body.role || 'Member').trim(),
-                year: (body.year || '2028').toString().trim(),
-                img: body.img || `./team-assets/batch_${body.year || '2028'}/default.jpg`,
+                year: (body.year || cleanBatch).toString().trim(),
+                batch: cleanBatch,
+                isAlumni: isAlum,
+                tag: body.tag || (isAlum ? 'alumni' : ''),
+                img: body.img || `./team-assets/batch_${cleanBatch.replace('Batch-', '')}/default.jpg`,
                 linkedin: body.linkedin || '',
                 github: body.github || '',
                 instagram: body.instagram || ''

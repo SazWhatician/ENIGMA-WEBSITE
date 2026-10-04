@@ -68,40 +68,14 @@ async function runTests() {
     // Test 2: Blogs Handler
     const blogsHandler = require('../api/blogs');
 
-    // GET all blogs
+    // GET all blogs initially
     {
         const { req, res } = createMockReqRes({ method: 'GET' });
         await blogsHandler(req, res);
         assert.strictEqual(res.getStatusCode(), 200);
         const list = res.getData();
         assert.ok(Array.isArray(list), "Expected array of blogs");
-        assert.ok(list.length >= 3, "Expected at least 3 initial blogs");
-        console.log(`✅ Passed: GET /api/blogs returned ${list.length} posts`);
-    }
-
-    // GET single blog by slug
-    {
-        const { req, res } = createMockReqRes({
-            method: 'GET',
-            query: { slug: 'neural-lattice-architectures' }
-        });
-        await blogsHandler(req, res);
-        assert.strictEqual(res.getStatusCode(), 200);
-        const post = res.getData();
-        assert.strictEqual(post.slug, 'neural-lattice-architectures');
-        assert.ok(Array.isArray(post.sections) && post.sections.length >= 5, "Expected sections in post");
-        console.log("✅ Passed: GET /api/blogs?slug=... returned post with sections");
-    }
-
-    // GET non-existent slug
-    {
-        const { req, res } = createMockReqRes({
-            method: 'GET',
-            query: { slug: 'unknown-mystery-slug-404' }
-        });
-        await blogsHandler(req, res);
-        assert.strictEqual(res.getStatusCode(), 404, "Expected 404 for unknown slug");
-        console.log("✅ Passed: GET /api/blogs?slug=404 returned 404");
+        console.log(`✅ Passed: GET /api/blogs returned ${list.length} posts (Array verified)`);
     }
 
     // POST blog without auth (must fail)
@@ -125,6 +99,7 @@ async function runTests() {
                 title: "TDD Test Transmission",
                 slug: testSlug,
                 topic: "AI/ML",
+                tags: ["AI", "RESEARCH"],
                 author: "TDD Agent",
                 readTime: "3 min",
                 cover: "https://example.com/cover.jpg",
@@ -137,6 +112,31 @@ async function runTests() {
         await blogsHandler(req, res);
         assert.strictEqual(res.getStatusCode(), 201, "Expected 201 for post creation");
         console.log("✅ Passed: POST /api/blogs created test post with auth");
+    }
+
+    // GET single blog by slug
+    {
+        const { req, res } = createMockReqRes({
+            method: 'GET',
+            query: { slug: testSlug }
+        });
+        await blogsHandler(req, res);
+        assert.strictEqual(res.getStatusCode(), 200);
+        const post = res.getData();
+        assert.strictEqual(post.slug, testSlug);
+        assert.ok(Array.isArray(post.sections) && post.sections.length >= 1, "Expected sections in post");
+        console.log("✅ Passed: GET /api/blogs?slug=... returned post with sections");
+    }
+
+    // GET non-existent slug
+    {
+        const { req, res } = createMockReqRes({
+            method: 'GET',
+            query: { slug: 'unknown-mystery-slug-404' }
+        });
+        await blogsHandler(req, res);
+        assert.strictEqual(res.getStatusCode(), 404, "Expected 404 for unknown slug");
+        console.log("✅ Passed: GET /api/blogs?slug=404 returned 404");
     }
 
     // DELETE blog with auth

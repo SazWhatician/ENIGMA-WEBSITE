@@ -43,16 +43,12 @@ module.exports = async (req, res) => {
     if (req.method === 'GET') {
         try {
             let blogs = [];
+            const local = readLocalBlogs();
 
             if (db) {
                 const snap = await db.collection('blogs').orderBy('id', 'desc').get();
-                if (!snap.empty) {
-                    blogs = snap.docs.map(doc => doc.data());
-                }
-            }
-
-            // Fallback to local file if Firestore has no records
-            if (blogs.length === 0) {
+                blogs = snap.empty ? [] : snap.docs.map(doc => doc.data());
+            } else {
                 blogs = readLocalBlogs();
             }
 
@@ -98,11 +94,23 @@ module.exports = async (req, res) => {
             const cleanSlug = body.slug.toLowerCase().trim().replace(/[^a-z0-9-]/g, '-');
             const localBlogs = readLocalBlogs();
             
+            // Normalize tags & topic
+            let tags = [];
+            if (Array.isArray(body.tags) && body.tags.length > 0) {
+                tags = body.tags.map(t => String(t).trim().toUpperCase()).filter(Boolean);
+            } else if (body.topic) {
+                tags = String(body.topic).split(',').map(t => t.trim().toUpperCase()).filter(Boolean);
+            }
+            if (tags.length === 0) tags = ['RESEARCH'];
+
+            const topic = body.topic ? body.topic.trim().toUpperCase() : tags.join(', ');
+
             const newBlog = {
                 id: body.id || Date.now(),
                 slug: cleanSlug,
                 title: body.title.trim(),
-                topic: (body.topic || 'RESEARCH').toUpperCase().trim(),
+                topic: topic,
+                tags: tags,
                 author: body.author ? body.author.trim() : 'ENIGMA Admin',
                 authorRole: body.authorRole ? body.authorRole.trim() : 'Core Member',
                 date: body.date || new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
@@ -110,7 +118,7 @@ module.exports = async (req, res) => {
                 cover: body.cover || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
                 summary: body.summary || '',
                 sections: Array.isArray(body.sections) && body.sections.length > 0 ? body.sections : [
-                    { id: 'sec-1', title: 'Transmission Overview', content: body.content || 'Content pending transmission...' }
+                    { id: 'sec-1', title: 'Blog Overview', content: body.content || 'Blog content...' }
                 ]
             };
 
@@ -142,9 +150,17 @@ module.exports = async (req, res) => {
             const localBlogs = readLocalBlogs();
             const existingIndex = localBlogs.findIndex(b => b.slug === targetSlug);
 
+            let updatedTags = undefined;
+            if (Array.isArray(body.tags)) {
+                updatedTags = body.tags.map(t => String(t).trim().toUpperCase()).filter(Boolean);
+            } else if (body.topic && !body.tags) {
+                updatedTags = String(body.topic).split(',').map(t => t.trim().toUpperCase()).filter(Boolean);
+            }
+
             const updatedBlog = {
                 ...(existingIndex >= 0 ? localBlogs[existingIndex] : {}),
                 ...body,
+                ...(updatedTags ? { tags: updatedTags } : {}),
                 slug: targetSlug
             };
 
