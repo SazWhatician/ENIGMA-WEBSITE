@@ -1530,7 +1530,16 @@ window.initBarba = function () {
 
     barba.init({
         timeout: 5000,
-        prevent: ({ el }) => el.hasAttribute('data-barba-prevent') || el.getAttribute('href') === '#',
+        prevent: ({ el, href }) => {
+            if (!el) return false;
+            const linkHref = (el.getAttribute('href') || href || '').toLowerCase();
+            const currentPath = (window.location.pathname || '').toLowerCase();
+            return el.hasAttribute('data-barba-prevent') ||
+                   linkHref === '#' ||
+                   linkHref.startsWith('#') ||
+                   linkHref.includes('blog') ||
+                   currentPath.includes('blog');
+        },
         transitions: [{
             name: 'fast-panel-wipe',
             leave(data) {

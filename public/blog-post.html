@@ -852,7 +852,7 @@
             <p><a href="/events.html" style="text-decoration: none; color: #fff; transition: all 0.3s ease; position: relative; font-weight: 450; font-size: 0.9rem;">Events</a></p>
             <p><a href="/project.html" style="text-decoration: none; color: #fff; transition: all 0.3s ease; position: relative; font-weight: 450; font-size: 0.9rem;">Projects</a></p>
             <p><a href="/team.html" style="text-decoration: none; color: #fff; transition: all 0.3s ease; position: relative; font-weight: 450; font-size: 0.9rem;">Team</a></p>
-            <p><a href="/blog.html" style="text-decoration: none; color: #fff; transition: all 0.3s ease; position: relative; font-weight: 450; font-size: 0.9rem;">Blogs</a></p>
+            <p><a href="/blog" data-barba-prevent style="text-decoration: none; color: #fff; transition: all 0.3s ease; position: relative; font-weight: 450; font-size: 0.9rem;">Blogs</a></p>
             <p><a href="/contact.html" style="text-decoration: none; color: #fff; transition: all 0.3s ease; position: relative; font-weight: 450; font-size: 0.9rem;">Contact</a></p>
         </div>
         <div class="hamburger" id="hamburger">
@@ -872,7 +872,7 @@
         <a href="/events.html">Events</a>
         <a href="/project.html">Projects</a>
         <a href="/team.html">Team</a>
-        <a href="/blog.html">Blogs</a>
+        <a href="/blog" data-barba-prevent>Blogs</a>
         <a href="/contact.html">Contact</a>
     </div>
 
@@ -880,7 +880,7 @@
 
         <!-- BACK LINK & ACTIONS ROW -->
         <div class="mb-8 flex items-center justify-between">
-            <a href="/blog.html" class="inline-flex items-center gap-2 text-xs font-syncopate tracking-widest text-gray-400 hover:text-emerald-400 transition-colors uppercase">
+            <a href="/blog" data-barba-prevent class="inline-flex items-center gap-2 text-xs font-syncopate tracking-widest text-gray-400 hover:text-emerald-400 transition-colors uppercase">
                 <span class="text-emerald-400">&larr;</span>
                 <span>BACK TO BLOGS</span>
             </a>
@@ -958,7 +958,7 @@
                     <div class="text-xs text-gray-500 font-syncopate uppercase tracking-widest">
                         END OF TRANSMISSION // ENIGMA DEPT. OF RESEARCH
                     </div>
-                    <a href="/blog.html" class="px-5 py-2.5 rounded bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 font-syncopate text-xs tracking-widest hover:bg-emerald-500 hover:text-black transition-all">
+                    <a href="/blog" data-barba-prevent class="px-5 py-2.5 rounded bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 font-syncopate text-xs tracking-widest hover:bg-emerald-500 hover:text-black transition-all">
                         EXPLORE MORE BLOGS &rarr;
                     </a>
                 </div>
@@ -1074,14 +1074,27 @@
             try {
                 const res = await fetch(`/api/blogs?slug=${encodeURIComponent(slug)}&t=${Date.now()}`);
                 if (!res.ok) {
-                    render404(slug);
-                    return;
+                    throw new Error("API returned " + res.status);
                 }
                 const article = await res.json();
                 window.currentArticle = article;
                 renderArticleData(article);
             } catch (err) {
-                console.error("Error loading article:", err);
+                console.warn("Primary API load failed, attempting local fallback:", err);
+                try {
+                    const fallbackRes = await fetch('/blog_data.json?t=' + Date.now());
+                    if (fallbackRes.ok) {
+                        const fallbackData = await fallbackRes.json();
+                        const post = (fallbackData.blogs || []).find(b => b.slug === slug);
+                        if (post) {
+                            window.currentArticle = post;
+                            renderArticleData(post);
+                            return;
+                        }
+                    }
+                } catch (fallbackErr) {
+                    console.error("Local fallback also failed:", fallbackErr);
+                }
                 render404(slug);
             }
         }
@@ -1097,7 +1110,7 @@
                     <div class="p-12 text-center border border-red-500/30 rounded-lg bg-red-950/10">
                         <div class="text-red-400 font-syncopate text-sm font-bold mb-3">ERROR 0x404: CIPHER UNRESOLVED</div>
                         <p class="text-gray-400 text-sm mb-6">No transmission matches query identifier [ ${slug || 'NULL'} ].</p>
-                        <a href="/blog.html" class="px-4 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold uppercase tracking-wider">
+                        <a href="/blog" data-barba-prevent class="px-4 py-2 rounded bg-emerald-500 text-black font-syncopate text-xs font-bold uppercase tracking-wider">
                             Return to Blogs
                         </a>
                     </div>

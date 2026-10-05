@@ -48,8 +48,13 @@ module.exports = async (req, res) => {
             if (db) {
                 const snap = await db.collection('blogs').orderBy('id', 'desc').get();
                 blogs = snap.empty ? [] : snap.docs.map(doc => doc.data());
+                if (blogs.length > 0) {
+                    writeLocalBlogs(blogs);
+                } else if (local.length > 0) {
+                    blogs = local;
+                }
             } else {
-                blogs = readLocalBlogs();
+                blogs = local;
             }
 
             // If specific slug requested

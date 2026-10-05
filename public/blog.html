@@ -2464,7 +2464,20 @@
                 renderTopics();
                 renderBlogList('ALL');
             } catch (err) {
-                console.warn("Could not fetch from /api/blogs:", err);
+                console.warn("Could not fetch from /api/blogs, attempting fallback:", err);
+                try {
+                    const fallbackRes = await fetch('/blog_data.json?t=' + Date.now());
+                    if (fallbackRes.ok) {
+                        const fallbackData = await fallbackRes.json();
+                        window.enigmaBlogs = fallbackData.blogs || [];
+                        initWorksWheel(window.enigmaBlogs);
+                        renderTopics();
+                        renderBlogList('ALL');
+                        return;
+                    }
+                } catch (fallbackErr) {
+                    console.error("Local blog_data.json fallback failed:", fallbackErr);
+                }
                 window.enigmaBlogs = [];
                 initWorksWheel([]);
                 renderBlogList('ALL');
