@@ -18,6 +18,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.0.45/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://unpkg.com/@barba/core"></script>
 
@@ -224,6 +225,19 @@
             overflow-x: hidden;
             font-family: 'Host Grotesk', sans-serif;
             position: relative;
+        }
+
+        html.lenis, html.lenis body {
+            height: auto;
+        }
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+        .lenis.lenis-stopped {
+            overflow: hidden;
         }
 
         /* Top Reading Progress Bar */
@@ -1299,10 +1313,17 @@
             const elementPosition = target.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
+            if (window.postLenis) {
+                window.postLenis.scrollTo(offsetPosition, {
+                    duration: 1.0,
+                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+                });
+            } else {
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
 
             // Highlight pulse
             target.classList.remove('section-highlight');
@@ -1346,6 +1367,55 @@
             sections.forEach(sec => window.scrollSpyObserver.observe(sec));
         }
 
+        // Lenis Smooth Scrolling for Blog Reader
+        let postLenis = null;
+        let postLenisTicker = null;
+
+        function initPostLenis() {
+            if (typeof Lenis === 'undefined') return;
+
+            if (postLenis) {
+                if (postLenisTicker) gsap.ticker.remove(postLenisTicker);
+                postLenis.destroy();
+                postLenis = null;
+            }
+
+            postLenis = new Lenis({
+                duration: 1.15,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                direction: 'vertical',
+                gestureDirection: 'vertical',
+                smooth: true,
+                mouseMultiplier: 0.95,
+                smoothTouch: false,
+                touchMultiplier: 1.5,
+                infinite: false
+            });
+            window.postLenis = postLenis;
+
+            if (typeof ScrollTrigger !== 'undefined') {
+                postLenis.on('scroll', ScrollTrigger.update);
+            }
+
+            postLenisTicker = (time) => {
+                postLenis.raf(time * 1000);
+            };
+            gsap.ticker.add(postLenisTicker);
+            gsap.ticker.lagSmoothing(0);
+        }
+
+        window.cleanupPostLenis = function() {
+            if (postLenisTicker) {
+                gsap.ticker.remove(postLenisTicker);
+                postLenisTicker = null;
+            }
+            if (postLenis) {
+                postLenis.destroy();
+                postLenis = null;
+                window.postLenis = null;
+            }
+        };
+
         // Reading Progress Tracking
         function initReadingProgress() {
             const bar = document.getElementById('reading-progress-bar');
@@ -1355,15 +1425,24 @@
             const onScroll = () => {
                 const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
                 if (totalHeight <= 0) return;
-                const progress = Math.min(Math.max((window.pageYOffset / totalHeight) * 100, 0), 100);
+                const scrollY = window.postLenis ? window.postLenis.scroll : window.pageYOffset;
+                const progress = Math.min(Math.max((scrollY / totalHeight) * 100, 0), 100);
                 
                 if (bar) bar.style.width = `${progress}%`;
                 if (depthText) depthText.textContent = `${Math.round(progress)}%`;
                 if (hudFill) hudFill.style.width = `${progress}%`;
             };
 
-            window.addEventListener('scroll', onScroll, { passive: true });
-            window.cleanupReadingProgress = () => window.removeEventListener('scroll', onScroll);
+            if (window.postLenis) {
+                window.postLenis.on('scroll', onScroll);
+                window.cleanupReadingProgress = () => {
+                    if (window.postLenis) window.postLenis.off('scroll', onScroll);
+                    window.removeEventListener('scroll', onScroll);
+                };
+            } else {
+                window.addEventListener('scroll', onScroll, { passive: true });
+                window.cleanupReadingProgress = () => window.removeEventListener('scroll', onScroll);
+            }
         }
 
         // Share Link Button
@@ -1407,6 +1486,7 @@
 
         // Page Init Hook
         window.initBlogPostPage = function() {
+            initPostLenis();
             loadArticle();
             initReadingProgress();
             initShareButton();
@@ -1417,17 +1497,24 @@
         };
 
         window.cleanupBlogPostPage = function() {
+            window.cleanupPostLenis();
             if (window.scrollSpyObserver) window.scrollSpyObserver.disconnect();
             if (window.cleanupReadingProgress) window.cleanupReadingProgress();
             if (window.cleanupFooterCrystal) window.cleanupFooterCrystal();
         };
 
         // DOM Ready
-        document.addEventListener('DOMContentLoaded', () => {
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
             if (document.querySelector('[data-barba-namespace="blog-post"]')) {
                 window.initBlogPostPage();
             }
-        });
+        } else {
+            document.addEventListener('DOMContentLoaded', () => {
+                if (document.querySelector('[data-barba-namespace="blog-post"]')) {
+                    window.initBlogPostPage();
+                }
+            });
+        }
     </script>
 
     <script src="/js/common.js?v=4.0"></script>

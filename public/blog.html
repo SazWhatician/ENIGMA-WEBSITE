@@ -20,6 +20,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.0.45/dist/lenis.min.js"></script>
     <script src="https://unpkg.com/@barba/core"></script>
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 
@@ -247,6 +248,54 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
             scroll-behavior: auto;
+        }
+
+        /* Lenis High-Performance Smooth Scroll Setup */
+        html.lenis, html.lenis body {
+            height: auto;
+        }
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+        .lenis.lenis-scrolling iframe {
+            pointer-events: none;
+        }
+
+        /* High Frame-Rate Compositor Acceleration */
+        .works-wheel-wrap,
+        .works-wheel-stage {
+            will-change: transform, opacity;
+            contain: layout style;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+
+        .wheel-drum {
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            will-change: transform;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+
+        .wheel-card-anchor {
+            will-change: transform, opacity;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            contain: layout style;
+        }
+
+        .dispatch-row {
+            will-change: transform, opacity;
+            contain: content;
         }
 
         /* ============================================
@@ -2441,12 +2490,61 @@
         const WHEEL_UNITS = 900;
         const DRAG_UNITS = 420;
         const SETTLE = 140;
-        const EASE = 0.12;
+        const EASE = 0.22; // Snappy, fluid tracking with Lenis
 
         const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
         const lerp = (a, b, t) => a + (b - a) * t;
         const rad = (deg) => (deg * Math.PI) / 180;
         const bowAt = (drumDeg, bow) => -bow * (1 - Math.cos(rad(drumDeg)));
+
+        // Lenis Smooth Scroll Engine Instance
+        let blogLenis = null;
+        let blogLenisTicker = null;
+
+        function initBlogLenis() {
+            if (typeof Lenis === 'undefined') return;
+
+            if (blogLenis) {
+                if (blogLenisTicker) gsap.ticker.remove(blogLenisTicker);
+                blogLenis.destroy();
+                blogLenis = null;
+            }
+
+            blogLenis = new Lenis({
+                duration: 1.15,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                direction: 'vertical',
+                gestureDirection: 'vertical',
+                smooth: true,
+                mouseMultiplier: 0.95,
+                smoothTouch: false,
+                touchMultiplier: 1.5,
+                infinite: false
+            });
+            window.blogLenis = blogLenis;
+
+            if (typeof ScrollTrigger !== 'undefined') {
+                blogLenis.on('scroll', ScrollTrigger.update);
+            }
+
+            blogLenisTicker = (time) => {
+                blogLenis.raf(time * 1000);
+            };
+            gsap.ticker.add(blogLenisTicker);
+            gsap.ticker.lagSmoothing(0);
+        }
+
+        window.cleanupBlogLenis = function() {
+            if (blogLenisTicker) {
+                gsap.ticker.remove(blogLenisTicker);
+                blogLenisTicker = null;
+            }
+            if (blogLenis) {
+                blogLenis.destroy();
+                blogLenis = null;
+                window.blogLenis = null;
+            }
+        };
 
         function place(ringDeg, drumDeg, ringR, drumR, bow, m) {
             return (
@@ -2468,6 +2566,15 @@
         let wheelSettlingTimer = null;
         let wheelDragStartY = null;
         let isWheelEventsBound = false;
+
+        // High Frame-Rate Zero-Reflow Element Caches
+        let cachedDrumEl = null;
+        let cachedLabelEl = null;
+        let cachedFrontPanel = null;
+        let cachedCardEls = [];
+        let cachedFaces = [];
+        let cachedWinW = window.innerWidth;
+        let cachedWinH = window.innerHeight;
 
         function initWorksWheel(blogs) {
             if (Array.isArray(blogs) && blogs.length > 0) {
@@ -2507,6 +2614,8 @@
             if (!stage) return;
             const w = window.innerWidth || stage.clientWidth || 1200;
             const h = window.innerHeight || stage.clientHeight || 800;
+            cachedWinW = w;
+            cachedWinH = h;
             const count = wheelItems.length;
 
             const isMobile = w < 768;
@@ -2639,6 +2748,13 @@
                     }
                 });
             });
+
+            // Cache element references for high-performance rAF updates
+            cachedDrumEl = drum;
+            cachedLabelEl = document.getElementById('wheel-center-label');
+            cachedFrontPanel = document.getElementById('wheel-front-panel');
+            cachedCardEls = Array.from(drum.querySelectorAll('.wheel-card-anchor'));
+            cachedFaces = cachedCardEls.map(card => card.firstElementChild);
         }
 
         function wheelTo(nextTarget) {
@@ -2714,7 +2830,7 @@
 
             const last = Math.max(count - 1, 0);
             const gap = wheelTarget - wheelTurn;
-            if (Math.abs(gap) < 0.0005) {
+            if (Math.abs(gap) < 0.0003) {
                 wheelTurn = wheelTarget;
             } else {
                 wheelTurn += gap * EASE;
@@ -2724,15 +2840,21 @@
             const m = clamp(t, 0, 1);
             const pos = Math.max(0, t - 1);
 
-            const drumEl = document.getElementById('wheel-drum');
-            const labelEl = document.getElementById('wheel-center-label');
-            const frontPanel = document.getElementById('wheel-front-panel');
+            if (!cachedDrumEl || cachedCardEls.length !== count) {
+                cachedDrumEl = document.getElementById('wheel-drum');
+                cachedLabelEl = document.getElementById('wheel-center-label');
+                cachedFrontPanel = document.getElementById('wheel-front-panel');
+                cachedCardEls = cachedDrumEl ? Array.from(cachedDrumEl.querySelectorAll('.wheel-card-anchor')) : [];
+                cachedFaces = cachedCardEls.map(c => c.firstElementChild);
+            }
 
-            // Responsive drum positioning:
-            // Desktop: Shift right to sit side-by-side with frontPanel
-            // Mobile/Tablet: Shift upward to stack cleanly above frontPanel at bottom!
-            const w = window.innerWidth;
-            const h = window.innerHeight;
+            const drumEl = cachedDrumEl;
+            const labelEl = cachedLabelEl;
+            const frontPanel = cachedFrontPanel;
+
+            // Responsive drum positioning (zero layout query)
+            const w = cachedWinW;
+            const h = cachedWinH;
             const isDesktop = w >= 1024;
             const isMobile = w < 768;
             const isTablet = w >= 768 && w < 1024;
@@ -2747,7 +2869,7 @@
                 drumEl.style.transform = `translateX(${drumShiftX}px) translateY(${drumShiftY}px) translateZ(${-m * wheelMetrics.drumR}px)`;
             }
 
-            const cardEls = drumEl ? drumEl.querySelectorAll('.wheel-card-anchor') : [];
+            const cardEls = cachedCardEls;
             for (let i = 0; i < count; i++) {
                 const d = i - pos;
                 const drumDeg = d * STEP;
@@ -2792,7 +2914,7 @@
                         card.classList.remove('is-front');
                     }
 
-                    const face = card.firstElementChild;
+                    const face = cachedFaces[i];
                     if (face) {
                         face.style.transform = `scale(${lerp(wheelMetrics.ringScale, 1, m)})`;
                     }
@@ -2856,7 +2978,7 @@
                 start: 'top top',
                 end: 'bottom bottom',
                 pin: stage,
-                scrub: 0.4,
+                scrub: 0.1, // Ultra-fluid, responsive tracking with Lenis
                 anticipatePin: 1,
                 onUpdate: (self) => {
                     const p = self.progress; // 0.0 to 1.0
@@ -2941,7 +3063,14 @@
             });
         }
 
-        function smoothScrollTo(targetY, duration = 650) {
+        function smoothScrollTo(targetY, duration = 750) {
+            if (window.blogLenis) {
+                window.blogLenis.scrollTo(targetY, {
+                    duration: duration / 1000,
+                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+                });
+                return;
+            }
             const startY = window.scrollY;
             const diff = targetY - startY;
             if (Math.abs(diff) < 2) return;
@@ -3236,11 +3365,26 @@
 
         // GLOBAL INIT HOOK
         window.initBlogPage = function() {
+            initBlogLenis();
             animateBlogHero(0);
             fetchBlogs();
             if (window.initFooterCrystal) {
                 setTimeout(() => window.initFooterCrystal(), 150);
             }
+        };
+
+        window.cleanupBlogPage = function() {
+            cleanupBlogLenis();
+            if (wheelScrollTrigger) {
+                wheelScrollTrigger.kill();
+                wheelScrollTrigger = null;
+            }
+            if (archiveScrollTrigger) {
+                archiveScrollTrigger.kill();
+                archiveScrollTrigger = null;
+            }
+            if (window.cleanupBlogFlowCanvas) window.cleanupBlogFlowCanvas();
+            if (window.cleanupFooterCrystal) window.cleanupFooterCrystal();
         };
 
         if (document.readyState === 'complete' || document.readyState === 'interactive') {

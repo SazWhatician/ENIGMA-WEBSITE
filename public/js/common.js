@@ -583,6 +583,43 @@ window.cleanupTeamFooter = function () {
     }
 };
 
+window.initTeamLenis = function() {
+    if (typeof Lenis === 'undefined') return;
+    if (window.teamLenis) {
+        if (window.teamLenisTicker) gsap.ticker.remove(window.teamLenisTicker);
+        window.teamLenis.destroy();
+        window.teamLenis = null;
+    }
+    window.teamLenis = new Lenis({
+        duration: 1.15,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        gestureDirection: 'vertical',
+        smooth: true,
+        mouseMultiplier: 0.95,
+        smoothTouch: false,
+        touchMultiplier: 1.5,
+        infinite: false
+    });
+    if (typeof ScrollTrigger !== 'undefined') {
+        window.teamLenis.on('scroll', ScrollTrigger.update);
+    }
+    window.teamLenisTicker = (time) => { window.teamLenis.raf(time * 1000); };
+    gsap.ticker.add(window.teamLenisTicker);
+    gsap.ticker.lagSmoothing(0);
+};
+
+window.cleanupTeamLenis = function() {
+    if (window.teamLenisTicker) {
+        gsap.ticker.remove(window.teamLenisTicker);
+        window.teamLenisTicker = null;
+    }
+    if (window.teamLenis) {
+        window.teamLenis.destroy();
+        window.teamLenis = null;
+    }
+};
+
 window.initTeamFooter = function () {
     window.cleanupTeamFooter();
     const footerContainerEl = document.getElementById('footer-canvas');
@@ -1505,6 +1542,9 @@ window.initBarba = function () {
                 if (window.closeGlobalMobileMenu) window.closeGlobalMobileMenu();
                 const done = this.async();
                 window.scrollTo(0, 0);
+                if (window.blogLenis) window.blogLenis.scrollTo(0, { immediate: true });
+                if (window.postLenis) window.postLenis.scrollTo(0, { immediate: true });
+                if (window.eventsLenis) window.eventsLenis.scrollTo(0, { immediate: true });
                 document.body.style.overflow = '';
                 document.body.style.overflowY = 'auto';
                 document.body.style.touchAction = 'auto';
@@ -1557,6 +1597,7 @@ window.initBarba = function () {
                 beforeEnter(data) {
                     document.body.style.overflowY = 'auto';
                     document.body.style.touchAction = 'auto';
+                    if (window.initTeamLenis) window.initTeamLenis();
                     const delay = (data.current && data.current.namespace) ? 0.35 : 0;
                     window.animateHero(delay);
                     window.fetchTeam().then(() => {
@@ -1575,11 +1616,13 @@ window.initBarba = function () {
                 afterEnter() {
                 },
                 beforeLeave() {
+                    if (window.cleanupTeamLenis) window.cleanupTeamLenis();
                     if (window.cleanupTeamFooter) window.cleanupTeamFooter();
                 },
                 beforeOnce(data) {
                     document.body.style.overflowY = 'auto';
                     document.body.style.touchAction = 'auto';
+                    if (window.initTeamLenis) window.initTeamLenis();
                     window.animateHero(0);
                     window.fetchTeam().then(() => {
                         window.renderTeam('all', 0.6);
@@ -1674,6 +1717,8 @@ window.initBarba = function () {
                     }
                 },
                 beforeLeave() {
+                    if (window.cleanupBlogPage) window.cleanupBlogPage();
+                    if (window.cleanupBlogLenis) window.cleanupBlogLenis();
                     if (window.cleanupBlogFlowCanvas) window.cleanupBlogFlowCanvas();
                     if (window.cleanupFooterCrystal) window.cleanupFooterCrystal();
                 },
@@ -1702,6 +1747,7 @@ window.initBarba = function () {
                 },
                 beforeLeave() {
                     if (window.cleanupBlogPostPage) window.cleanupBlogPostPage();
+                    if (window.cleanupPostLenis) window.cleanupPostLenis();
                     if (window.cleanupFooterCrystal) window.cleanupFooterCrystal();
                 },
                 beforeOnce(data) {
