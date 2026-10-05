@@ -87,6 +87,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            pointer-events: none;
         }
 
         .loader-window {
@@ -94,14 +95,15 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 150px;
-            height: 150px;
+            width: 170px;
+            height: 170px;
             box-shadow: 0 0 0 150vmax #000000;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            border-radius: 4px;
+            border-radius: 50%;
+            will-change: width, height;
         }
 
         .loader-black-cover {
@@ -112,6 +114,7 @@
             height: 100%;
             background-color: #000000;
             z-index: 1;
+            border-radius: 50%;
         }
 
         /* --- NAVIGATION --- */
@@ -963,16 +966,17 @@
 
         loaderTl
             .to(".hero-logo", { opacity: 1, duration: 0.6, ease: "power2.out" }, "+=0.1")
-            .to(".loader-black-cover", { opacity: 0, duration: 0.3, ease: "power2.inOut" }, "+=0.2")
+            .to(".loader-black-cover", { opacity: 0, duration: 0.35, ease: "power2.inOut" }, "+=0.2")
             .to(".loader-window", {
-                width: "250vmax",
-                height: "250vmax",
-                duration: 0.8,
+                width: "280vmax",
+                height: "280vmax",
+                borderRadius: "50%",
+                duration: 0.85,
                 ease: "expo.inOut"
             }, "+=0.1")
             .to(".hero-logo", {
                 scale: 1,
-                duration: 0.8,
+                duration: 0.85,
                 ease: "expo.inOut"
             }, "<")
             .to(["nav", ".hero-footer"], {
