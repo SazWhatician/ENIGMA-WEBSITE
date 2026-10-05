@@ -594,18 +594,20 @@
 
                 <!-- SECTION BLOCK BUILDER -->
                 <div class="pt-6 border-t border-white/[0.08]">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                        <div>
-                            <span class="text-xs font-bold font-syncopate text-emerald-400 tracking-wider">ARTICLE SECTIONS &amp; BULLET POINTS</span>
-                            <p class="text-[11px] text-gray-400">Each Section Title automatically generates an interactive bullet in the reader's right-side navigation HUD.</p>
-                        </div>
-                        <button type="button" id="add-section-btn" class="w-full sm:w-auto px-3 py-1.5 rounded border border-emerald-500/40 text-emerald-400 font-syncopate text-[10px] hover:bg-emerald-500 hover:text-black transition-all shrink-0 text-center">
-                            + ADD SECTION
-                        </button>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold font-syncopate text-emerald-400 tracking-wider">ARTICLE SECTIONS &amp; BULLET POINTS</span>
+                        <p class="text-[11px] text-gray-400">Each Section Title automatically generates an interactive bullet in the reader's right-side navigation HUD.</p>
                     </div>
 
                     <div id="sections-builder" class="space-y-4">
                         <!-- Sections inserted dynamically -->
+                    </div>
+
+                    <!-- Add Section Button at the end of the sections form -->
+                    <div class="mt-4 pt-2">
+                        <button type="button" id="add-section-btn" class="w-full py-3 px-4 rounded border border-dashed border-emerald-500/40 text-emerald-400 hover:text-white hover:bg-emerald-500/10 hover:border-emerald-400 font-syncopate text-xs font-semibold tracking-wider transition-all flex items-center justify-center gap-2 group">
+                            <span class="text-base group-hover:scale-125 transition-transform duration-200">+</span> ADD SECTION
+                        </button>
                     </div>
                 </div>
 

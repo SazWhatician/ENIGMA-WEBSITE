@@ -41,7 +41,186 @@
         }
     </script>
 
-    <style>
+        <style>
+    /* MASTER MOBILE MENU & HAMBURGER STYLES */
+    :root {
+        --clip-origin: calc(100% - 46px) 46px;
+    }
+    nav {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        z-index: 3500 !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border-bottom: none !important;
+    }
+    @media (max-width: 768px) {
+        nav {
+            padding: 1.5rem !important;
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+        .nav-items { display: none !important; }
+        .hamburger { display: flex !important; }
+    }
+    .hamburger {
+        display: none;
+        position: relative;
+        width: 44px;
+        height: 44px;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        z-index: 3600;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
+        background: transparent;
+        border: none;
+        outline: none;
+        padding: 0;
+    }
+    .hamburger-lines {
+        width: 24px;
+        height: 14px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        pointer-events: none;
+    }
+    .hamburger-lines span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color: #ffffff;
+        border-radius: 2px;
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, background-color 0.3s ease;
+        transform-origin: center;
+        will-change: transform, opacity;
+    }
+    .hamburger.active .hamburger-lines span:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+        background-color: #2BA648;
+    }
+    .hamburger.active .hamburger-lines span:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0);
+    }
+    .hamburger.active .hamburger-lines span:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+        background-color: #2BA648;
+    }
+    .mobile-menu-close {
+        display: none !important;
+    }
+    .mobile-menu {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        width: 100% !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        background: #080808 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        display: flex !important;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2.25rem;
+        z-index: 3000 !important;
+        clip-path: circle(0% at var(--clip-origin, calc(100% - 46px) 46px));
+        -webkit-clip-path: circle(0% at var(--clip-origin, calc(100% - 46px) 46px));
+        visibility: hidden;
+        pointer-events: none;
+        overscroll-behavior: contain;
+        touch-action: none;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        transform: translate3d(0, 0, 0);
+        -webkit-transform: translate3d(0, 0, 0);
+        will-change: clip-path;
+        transition: clip-path 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                    -webkit-clip-path 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                    visibility 0s linear 0.4s;
+    }
+    .mobile-menu.active {
+        clip-path: circle(150% at var(--clip-origin, calc(100% - 46px) 46px));
+        -webkit-clip-path: circle(150% at var(--clip-origin, calc(100% - 46px) 46px));
+        visibility: visible;
+        pointer-events: auto;
+        transition: clip-path 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+                    -webkit-clip-path 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+                    visibility 0s linear 0s;
+    }
+    .mobile-menu a {
+        font-size: clamp(1.8rem, 6vw, 2.4rem);
+        font-family: 'Syncopate', sans-serif;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.2s ease, transform 0.2s ease, color 0.3s ease, text-shadow 0.3s ease;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-menu.active a {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                    color 0.3s ease, 
+                    text-shadow 0.3s ease;
+    }
+    .mobile-menu.active a:nth-of-type(1) { transition-delay: 0.08s; }
+    .mobile-menu.active a:nth-of-type(2) { transition-delay: 0.13s; }
+    .mobile-menu.active a:nth-of-type(3) { transition-delay: 0.18s; }
+    .mobile-menu.active a:nth-of-type(4) { transition-delay: 0.23s; }
+    .mobile-menu.active a:nth-of-type(5) { transition-delay: 0.28s; }
+    .mobile-menu a:hover,
+    .mobile-menu a:active {
+        color: #2BA648;
+        text-shadow: 0 0 20px rgba(43, 166, 72, 0.6), 0 0 40px rgba(43, 166, 72, 0.3);
+        transform: scale(1.05);
+    }
+</style>
+</head>
+
+<body data-barba="wrapper" class="antialiased selection:bg-orbitGreen selection:text-void bg-black text-white overflow-x-hidden">
+
+    <!-- Page Wipe Panels -->
+    <div class="page-transition">
+        <div class="transition-panel"></div>
+        <div class="transition-panel"></div>
+        <div class="transition-panel"></div>
+    </div>
+
+    <!-- BLUEPRINT BACKGROUND (ICONIC ENIGMA IDENTITY) -->
+    <div class="blueprint-bg">
+        <div class="bp-circle"></div>
+        <div class="bp-line-h"></div>
+        <div class="bp-line-v"></div>
+        <div class="bp-line-d1"></div>
+        <div class="bp-line-d2"></div>
+    </div>
+
+    <!-- BREATHING GRADIENT -->
+    <div class="breathing-gradient"></div>
+
+    <main data-barba="container" data-barba-namespace="blog" class="relative z-10 min-h-screen">
+
+        <!-- ALL STYLES INSIDE BARBA CONTAINER so they load during Barba transitions -->
+        <style>
         /* ============================================
            GLOBAL RESET & BASE (MATCHING TEAM & EVENTS)
            ============================================ */
@@ -175,19 +354,16 @@
            NAVIGATION & HAMBURGER (EXACT SYSTEM MATCH)
            ============================================ */
         nav {
-            position: fixed !important;
-            width: 100% !important;
-            top: 0 !important;
-            left: 0 !important;
-            padding: 1.5rem 2rem !important;
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            background: rgba(0, 0, 0, 0.65) !important;
-            backdrop-filter: blur(24px) !important;
-            -webkit-backdrop-filter: blur(24px) !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-            z-index: 3500 !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 3500;
+            mix-blend-mode: difference;
         }
 
         .logo a {
@@ -212,6 +388,7 @@
             transition: all 0.3s ease;
             text-decoration: none;
             color: #fff;
+            position: relative;
         }
 
         .nav-items p:hover a,
@@ -413,54 +590,229 @@
             margin: auto 0;
         }
 
+        /* ========================================================
+           CYBERNETIC HOLOGRAPHIC HERO TYPOGRAPHY
+           ======================================================== */
+        .hero-center-content {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 1000px;
+            margin: auto 0;
+            user-select: none;
+        }
+
+        /* Top Meta Beacon */
+        .hero-hud-beacon {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.35rem 0.95rem;
+            border-radius: 50px;
+            background: rgba(43, 166, 72, 0.06);
+            border: 1px solid rgba(43, 166, 72, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            box-shadow: 0 0 25px rgba(43, 166, 72, 0.12);
+        }
+
+        .beacon-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #2BA648;
+            box-shadow: 0 0 10px #2BA648, 0 0 20px #2BA648;
+            animation: beacon-ping 1.8s ease-in-out infinite;
+        }
+
+        @keyframes beacon-ping {
+            0%, 100% { opacity: 0.6; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        .beacon-label {
+            font-family: 'Syncopate', monospace;
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+        }
+
+        /* Hero Title Frame */
         .hero-title-wrap {
+            position: relative;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            position: relative;
+            padding: 0.9rem clamp(1.6rem, 3.8vw, 3.2rem);
+            perspective: 1200px;
+            transform-style: preserve-3d;
         }
 
+        /* Ambient Diffuse Core Glow behind letters (Clean, soft, no square artifacts) */
+        .hero-title-ambient-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 85%;
+            height: 70%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(ellipse at center, rgba(43, 166, 72, 0.28) 0%, rgba(43, 166, 72, 0.08) 50%, transparent 75%);
+            filter: blur(35px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+        }
+
+        /* Optical Corner Brackets (Framing HUD) */
+        .hud-bracket {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-color: rgba(43, 166, 72, 0.6);
+            pointer-events: none;
+            opacity: 0;
+            transition: border-color 0.4s ease, filter 0.4s ease, transform 0.3s ease;
+        }
+
+        .hud-bracket-tl {
+            top: 0; left: 0;
+            border-top: 1.5px solid;
+            border-left: 1.5px solid;
+        }
+        .hud-bracket-tr {
+            top: 0; right: 0;
+            border-top: 1.5px solid;
+            border-right: 1.5px solid;
+        }
+        .hud-bracket-bl {
+            bottom: 0; left: 0;
+            border-bottom: 1.5px solid;
+            border-left: 1.5px solid;
+        }
+        .hud-bracket-br {
+            bottom: 0; right: 0;
+            border-bottom: 1.5px solid;
+            border-right: 1.5px solid;
+        }
+
+        .hero-title-wrap:hover .hud-bracket {
+            border-color: #2BA648;
+            filter: drop-shadow(0 0 10px rgba(43, 166, 72, 0.9));
+        }
+
+        /* Laser Scan Beam */
+        .laser-scanner {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            top: 0;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(0);
+        }
+
+        .laser-beam {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent 0%, #2BA648 20%, #ffffff 50%, #2BA648 80%, transparent 100%);
+            height: 2px;
+            box-shadow: 0 0 10px #2BA648, 0 0 25px #2BA648, 0 0 50px rgba(43, 166, 72, 0.9);
+        }
+
+        .laser-glow {
+            position: absolute;
+            top: -12px;
+            left: 5%;
+            width: 90%;
+            height: 26px;
+            background: radial-gradient(ellipse at center, rgba(43, 166, 72, 0.45) 0%, rgba(43, 166, 72, 0.15) 50%, transparent 75%);
+            filter: blur(6px);
+        }
+
+        /* Main Typography */
         .hero-title {
             font-family: 'Syncopate', sans-serif;
-            font-size: clamp(3.2rem, 9.5vw, 8.2rem);
+            font-size: clamp(3.8rem, 12vw, 9.6rem);
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.18em;
             line-height: 1;
-            color: #fff;
-            text-shadow: 0 0 25px rgba(43, 166, 72, 0.7), 0 0 70px rgba(43, 166, 72, 0.25);
             margin: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transform-style: preserve-3d;
+            z-index: 1;
         }
 
-        .cypher-char {
+        /* Character Cell & Layers */
+        .hero-char-cell {
+            position: relative;
             display: inline-block;
-            min-width: 0.6em;
-            text-align: center;
-            transition: color 0.15s ease, text-shadow 0.15s ease;
+            margin: 0 0.04em;
+            transform-style: preserve-3d;
+            will-change: transform;
+            cursor: default;
         }
 
-        .cypher-char.decrypting {
-            color: #2BA648;
-            text-shadow: 0 0 20px #2BA648, 0 0 40px #2BA648;
+        /* Layer 1: Blueprint Wireframe Stroke */
+        .char-stroke {
+            position: relative;
+            display: inline-block;
+            color: transparent;
+            -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.25);
+            text-stroke: 1.5px rgba(255, 255, 255, 0.25);
+            transition: -webkit-text-stroke-color 0.4s ease;
+            user-select: none;
         }
 
-        .cypher-char.resolved {
+        /* Layer 2: Solid Metallic Luminous Core */
+        .char-solid {
+            position: absolute;
+            inset: 0;
+            display: inline-block;
             color: #ffffff;
-            text-shadow: 0 0 30px rgba(43, 166, 72, 0.8), 0 0 60px rgba(43, 166, 72, 0.3);
+            background: linear-gradient(175deg, #FFFFFF 0%, #FFFFFF 40%, #E2E8F0 65%, #94A3B8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); /* starts fully hidden at top */
+            user-select: none;
         }
 
-        .hero-cursor {
-            font-family: 'Syncopate', monospace;
-            font-size: clamp(3rem, 8vw, 7rem);
-            color: #2BA648;
-            margin-left: 0.1em;
-            animation: cursor-blink 0.9s infinite;
-            line-height: 1;
+        .hero-char-cell:hover .char-stroke {
+            -webkit-text-stroke-color: #2BA648;
         }
 
-        @keyframes cursor-blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+        /* Flare accent on individual letter hover */
+        .char-flare {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80px;
+            height: 80px;
+            transform: translate(-50%, -50%) scale(0);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(43, 166, 72, 0.4) 0%, transparent 70%);
+            filter: blur(12px);
+            pointer-events: none;
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+        }
+
+        .hero-char-cell:hover .char-flare {
+            transform: translate(-50%, -50%) scale(1.5);
+            opacity: 0.9;
         }
 
         .hero-subtitle {
@@ -625,6 +977,58 @@
             box-shadow: 0 0 18px rgba(43, 166, 72, 0.25);
         }
 
+        /* High-End Cyber Glowing ALL BLOGS Button */
+        .wheel-mode-btn.wheel-glowing-btn {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 0.62rem 1.35rem;
+            border-radius: 50px;
+            background: rgba(43, 166, 72, 0.12);
+            border: 1px solid rgba(43, 166, 72, 0.55);
+            color: #2BA648;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 0 18px rgba(43, 166, 72, 0.35), inset 0 0 12px rgba(43, 166, 72, 0.15);
+            position: relative;
+            overflow: hidden;
+            animation: pulseAllBlogsGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseAllBlogsGlow {
+            0% {
+                border-color: rgba(43, 166, 72, 0.4);
+                box-shadow: 0 0 16px rgba(43, 166, 72, 0.28), inset 0 0 10px rgba(43, 166, 72, 0.12);
+            }
+            100% {
+                border-color: #2BA648;
+                box-shadow: 0 0 28px rgba(43, 166, 72, 0.6), 0 0 50px rgba(43, 166, 72, 0.25), inset 0 0 16px rgba(43, 166, 72, 0.25);
+            }
+        }
+
+        .wheel-mode-btn.wheel-glowing-btn:hover {
+            background: rgba(43, 166, 72, 0.28);
+            border-color: #2BA648;
+            color: #ffffff;
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 0 35px rgba(43, 166, 72, 0.85), 0 0 65px rgba(43, 166, 72, 0.4), inset 0 0 20px rgba(43, 166, 72, 0.35);
+        }
+
+        .wheel-mode-btn.wheel-glowing-btn:hover svg {
+            transform: translateY(2px);
+        }
+
+        .wheel-mode-btn.wheel-glowing-btn svg {
+            transition: transform 0.3s ease;
+        }
+
         .wheel-nav-btn {
             width: 40px;
             height: 40px;
@@ -668,13 +1072,14 @@
                 display: none;
             }
 
-            .wheel-mode-btn .btn-lbl {
-                display: none;
+            .wheel-mode-btn.wheel-glowing-btn .btn-lbl {
+                display: inline-block !important;
+                font-size: 0.62rem !important;
+                letter-spacing: 1.5px !important;
             }
 
-            .wheel-mode-btn {
-                padding: 0.45rem 0.65rem;
-                font-size: 0.72rem;
+            .wheel-mode-btn.wheel-glowing-btn {
+                padding: 0.48rem 0.95rem !important;
             }
 
             .wheel-nav-btn {
@@ -1561,41 +1966,19 @@
             .reactor-zone h3 { font-size: 1.25rem; }
             .reactor-zone a { font-size: 1.25rem; }
         }
-    </style>
-</head>
+    
+        </style>
 
-<body data-barba="wrapper" class="antialiased selection:bg-orbitGreen selection:text-void bg-black text-white overflow-x-hidden">
-
-    <!-- Page Wipe Panels -->
-    <div class="page-transition">
-        <div class="transition-panel"></div>
-        <div class="transition-panel"></div>
-        <div class="transition-panel"></div>
-    </div>
-
-    <!-- BLUEPRINT BACKGROUND (ICONIC ENIGMA IDENTITY) -->
-    <div class="blueprint-bg">
-        <div class="bp-circle"></div>
-        <div class="bp-line-h"></div>
-        <div class="bp-line-v"></div>
-        <div class="bp-line-d1"></div>
-        <div class="bp-line-d2"></div>
-    </div>
-
-    <!-- BREATHING GRADIENT -->
-    <div class="breathing-gradient"></div>
-
-    <!-- MASTER NAVIGATION (EXACT REPLICA) -->
-    <nav>
+    <nav style="z-index: 3500; position: fixed; width: 100%; top: 0; left: 0; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
         <div class="logo">
-            <a href="index.html">ENIGMA.</a>
+            <a href="index.html" style="font-weight: 700; font-size: 1.2rem; text-decoration: none; color: #fff; letter-spacing: 2px; font-family: 'Host Grotesk', sans-serif;">ENIGMA.</a>
         </div>
-        <div class="nav-items">
-            <p><a href="events.html">Events</a></p>
-            <p><a href="project.html">Projects</a></p>
-            <p><a href="team.html">Team</a></p>
-            <p><a href="blog.html" style="color: #2BA648; text-shadow: 0 0 10px rgba(43, 166, 72, 0.8);">Blogs</a></p>
-            <p><a href="contact.html">Contact</a></p>
+        <div class="nav-items" style="display: flex; gap: 2rem;">
+            <p><a href="events.html" style="text-decoration: none; color: #fff; transition: all 0.3s ease; position: relative; font-weight: 450; font-size: 0.9rem;">Events</a></p>
+            <p><a href="project.html" style="text-decoration: none; color: #fff; transition: all 0.3s ease; position: relative; font-weight: 450; font-size: 0.9rem;">Projects</a></p>
+            <p><a href="team.html" style="text-decoration: none; color: #fff; transition: all 0.3s ease; position: relative; font-weight: 450; font-size: 0.9rem;">Team</a></p>
+            <p><a href="blog.html" style="text-decoration: none; color: #fff; transition: all 0.3s ease; position: relative; font-weight: 450; font-size: 0.9rem;">Blogs</a></p>
+            <p><a href="contact.html" style="text-decoration: none; color: #fff; transition: all 0.3s ease; position: relative; font-weight: 450; font-size: 0.9rem;">Contact</a></p>
         </div>
         <div class="hamburger" id="hamburger">
             <div class="hamburger-lines">
@@ -1606,18 +1989,18 @@
         </div>
     </nav>
 
-    <!-- MOBILE MENU -->
     <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-close" id="mobile-menu-close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+        </div>
         <a href="index.html">Home</a>
         <a href="events.html">Events</a>
         <a href="project.html">Projects</a>
         <a href="team.html">Team</a>
-        <a href="blog.html" style="color: #2BA648; text-shadow: 0 0 20px rgba(43, 166, 72, 0.6);">Blogs</a>
+        <a href="blog.html">Blogs</a>
         <a href="contact.html">Contact</a>
     </div>
 
-    <!-- MAIN BARBA CONTAINER -->
-    <main data-barba="container" data-barba-namespace="blog" class="relative z-10 min-h-screen">
 
         <!-- FULL-SCREEN HERO SECTION (100VH MINIMAL COVER) -->
         <section class="blog-hero" id="blog-hero">
@@ -1639,15 +2022,44 @@
 
             <!-- Minimal Center Content -->
             <div class="hero-center-content">
-                <div class="hero-title-wrap">
-                    <h1 class="hero-title" id="blogHeroTitle" aria-label="BLOGS">
-                        <span class="cypher-char">B</span><span class="cypher-char">L</span><span class="cypher-char">O</span><span class="cypher-char">G</span><span class="cypher-char">S</span>
+                <!-- Interactive Holographic Title Wrap -->
+                <div class="hero-title-wrap" id="heroTitleWrap">
+                    <!-- Ambient Soft Core Glow -->
+                    <div class="hero-title-ambient-glow" id="heroAmbientGlow"></div>
+
+                    <!-- Glowing Horizontal Laser Scanner Line -->
+                    <div class="laser-scanner" id="laserScanner">
+                        <div class="laser-beam"></div>
+                        <div class="laser-glow"></div>
+                    </div>
+
+                    <!-- Dual-Layered Typography Root -->
+                    <h1 class="hero-title" id="blogHeroTitle" aria-label="BLOG">
+                        <span class="hero-char-cell" data-char="B">
+                            <span class="char-stroke" aria-hidden="true">B</span>
+                            <span class="char-solid">B</span>
+                            <span class="char-flare"></span>
+                        </span>
+                        <span class="hero-char-cell" data-char="L">
+                            <span class="char-stroke" aria-hidden="true">L</span>
+                            <span class="char-solid">L</span>
+                            <span class="char-flare"></span>
+                        </span>
+                        <span class="hero-char-cell" data-char="O">
+                            <span class="char-stroke" aria-hidden="true">O</span>
+                            <span class="char-solid">O</span>
+                            <span class="char-flare"></span>
+                        </span>
+                        <span class="hero-char-cell" data-char="G">
+                            <span class="char-stroke" aria-hidden="true">G</span>
+                            <span class="char-solid">G</span>
+                            <span class="char-flare"></span>
+                        </span>
                     </h1>
-                    <span class="hero-cursor" id="heroCursor">_</span>
                 </div>
 
                 <p class="hero-subtitle" id="blogHeroSubtitle">
-                    Research, architecture & engineering notes
+                    Research, architecture &amp; engineering notes
                 </p>
             </div>
 
@@ -1676,17 +2088,7 @@
 
                     <!-- Mode & Nav Controls -->
                     <div class="wheel-controls">
-                        <button id="wheel-reset-btn" class="wheel-mode-btn" title="Reset to Ring View">
-                            <span class="ring-icon">⊙</span>
-                            <span class="btn-lbl">RING VIEW</span>
-                        </button>
-                        <button id="wheel-prev-btn" class="wheel-nav-btn" aria-label="Previous Item" title="Previous (Arrow Up)">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
-                        </button>
-                        <button id="wheel-next-btn" class="wheel-nav-btn" aria-label="Next Item" title="Next Item (Arrow Down)">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </button>
-                        <button id="wheel-skip-btn" class="wheel-mode-btn" title="Jump to All Blogs Archive">
+                        <button id="wheel-skip-btn" class="wheel-mode-btn wheel-glowing-btn" title="Jump to All Blogs Archive">
                             <span class="btn-lbl">ALL BLOGS</span>
                             <svg class="w-3.5 h-3.5" viewBox="0 0 12 12" fill="none" stroke="currentColor">
                                 <path d="M6 2v8M2 6l4 4 4-4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1818,9 +2220,12 @@
         let currentSlideIndex = 0;
         let isSliderInit = false;
 
-        // 1. CYBERNETIC DECRYPTION & HUD HERO ANIMATION
+        // 1. UNIQUE & EYE-CATCHING CYBERNETIC HOLOGRAPHIC TYPOGRAPHY ANIMATION
         function animateBlogHero(delay = 0) {
             const titleEl = document.getElementById('blogHeroTitle');
+            const titleWrap = document.getElementById('heroTitleWrap');
+            const beacon = document.getElementById('heroBeacon');
+            const laser = document.getElementById('laserScanner');
             const subtitle = document.getElementById('blogHeroSubtitle');
             const bottomCue = document.getElementById('heroBottomCue');
             const scrollBtn = document.getElementById('heroScrollBtn');
@@ -1831,51 +2236,171 @@
                 };
             }
 
-            // A. Matrix Cypher Text Decryption on Title
-            if (titleEl) {
-                const targetWord = "BLOGS";
-                const chars = "01§∆Ω¥∑ΞØ479X#%?";
-                titleEl.innerHTML = '';
-                
-                const charSpans = [];
-                for (let i = 0; i < targetWord.length; i++) {
-                    const span = document.createElement('span');
-                    span.className = 'cypher-char decrypting';
-                    span.textContent = chars[Math.floor(Math.random() * chars.length)];
-                    titleEl.appendChild(span);
-                    charSpans.push(span);
-                }
+            // Target letters: B - L - O - G
+            const charCells = document.querySelectorAll('.hero-char-cell');
+            const strokeEls = document.querySelectorAll('.char-stroke');
+            const solidEls = document.querySelectorAll('.char-solid');
+            const brackets = document.querySelectorAll('.hud-bracket');
+            const ambientGlow = document.getElementById('heroAmbientGlow');
 
-                // Rapid cycling and sequential lock-in
-                charSpans.forEach((span, i) => {
-                    const targetChar = targetWord[i];
-                    let iterations = 0;
-                    const maxIterations = 6 + i * 4;
-                    
-                    const interval = setInterval(() => {
-                        if (iterations >= maxIterations) {
-                            clearInterval(interval);
-                            span.textContent = targetChar;
-                            span.classList.remove('decrypting');
-                            span.classList.add('resolved');
-                            gsap.fromTo(span, 
-                                { scale: 1.25, color: '#2BA648' }, 
-                                { scale: 1.0, color: '#ffffff', duration: 0.3, ease: "back.out(2)" }
-                            );
+            // 1. Initial State Preparation
+            if (beacon) gsap.set(beacon, { opacity: 0, y: -12 });
+            if (brackets.length) gsap.set(brackets, { opacity: 0, scale: 0.6 });
+            gsap.set(charCells, { opacity: 0, y: 32, rotateX: 30, scale: 0.94 });
+            gsap.set(strokeEls, { opacity: 0.8 });
+            gsap.set(solidEls, { clipPath: 'polygon(0 0, 100% 0, 100% 0%, 0 0%)' });
+            gsap.set(laser, { opacity: 0, top: '0%' });
+            if (ambientGlow) gsap.set(ambientGlow, { opacity: 0, scale: 0.85 });
+            if (subtitle) gsap.set(subtitle, { opacity: 0, y: 22 });
+            if (bottomCue) gsap.set(bottomCue, { opacity: 0, y: 18 });
+
+            const tl = gsap.timeline({ delay: delay + 0.1 });
+
+            // A. Reveal HUD Meta Beacon & Expanding Corner Reticles (if present)
+            if (beacon) {
+                tl.to(beacon, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.7,
+                    ease: 'power3.out'
+                }, 0);
+            }
+            if (brackets.length) {
+                tl.to(brackets, {
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.85,
+                    stagger: 0.05,
+                    ease: 'expo.out'
+                }, 0.1);
+            }
+
+            // B. Ghost Blueprint Wireframe Emergence
+            tl.to(charCells, {
+                opacity: 1,
+                y: 0,
+                rotateX: 0,
+                scale: 1,
+                duration: 0.85,
+                stagger: 0.06,
+                ease: 'power3.out'
+            }, 0.2)
+
+            // C. Laser Horizon Scan: Intense emerald beam sweeps from top to bottom
+            .set(laser, { opacity: 1, top: '0%' }, 0.65)
+            .to(laser, {
+                top: '100%',
+                duration: 1.15,
+                ease: 'power2.inOut'
+            }, 0.65)
+
+            // Synchronized Solid Metallic Core Reveal (laser "3D prints" solid chrome over the wireframe)
+            .to(solidEls, {
+                clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+                duration: 1.15,
+                ease: 'power2.inOut'
+            }, 0.65)
+
+            // Ambient Core Glow Bloom synchronized with laser sweep
+            .to(ambientGlow, {
+                opacity: 0.9,
+                scale: 1,
+                duration: 1.15,
+                ease: 'power2.inOut'
+            }, 0.65)
+
+            // Laser fades out as scan completes
+            .to(laser, {
+                opacity: 0,
+                duration: 0.35,
+                ease: 'power2.out'
+            }, 1.65)
+
+            // D. Ambient Glow soft settling
+            .to(ambientGlow, {
+                opacity: 0.7,
+                scale: 1.05,
+                duration: 1.2,
+                ease: 'power2.out'
+            }, 1.7)
+
+            // E. Elegant Subtitle & Scroll Button Reveal
+            .to(subtitle, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power3.out'
+            }, 1.35)
+            .to(bottomCue, {
+                opacity: 1,
+                y: 0,
+                duration: 0.7,
+                ease: 'power3.out'
+            }, 1.55);
+
+            // 2. Interactive Magnetic 3D Spring Physics
+            // Each letter floats and shifts dynamically based on cursor distance!
+            if (titleWrap && !titleWrap.dataset.magneticInit) {
+                titleWrap.dataset.magneticInit = 'true';
+
+                titleWrap.addEventListener('mousemove', (e) => {
+                    const mouseX = e.clientX;
+                    const mouseY = e.clientY;
+
+                    charCells.forEach((cell) => {
+                        const rect = cell.getBoundingClientRect();
+                        const cellCenterX = rect.left + rect.width / 2;
+                        const cellCenterY = rect.top + rect.height / 2;
+
+                        const distX = mouseX - cellCenterX;
+                        const distY = mouseY - cellCenterY;
+                        const dist = Math.sqrt(distX * distX + distY * distY);
+                        const maxDist = 320;
+
+                        if (dist < maxDist) {
+                            const power = (1 - dist / maxDist);
+                            const pullX = (distX / dist) * power * 16;
+                            const pullY = (distY / dist) * power * 14;
+                            const rotX = -distY * 0.08 * power;
+                            const rotY = distX * 0.08 * power;
+                            const liftZ = power * 40;
+
+                            gsap.to(cell, {
+                                x: pullX,
+                                y: pullY,
+                                z: liftZ,
+                                rotateX: rotX,
+                                rotateY: rotY,
+                                duration: 0.35,
+                                ease: 'power2.out'
+                            });
                         } else {
-                            span.textContent = chars[Math.floor(Math.random() * chars.length)];
-                            iterations++;
+                            gsap.to(cell, {
+                                x: 0,
+                                y: 0,
+                                z: 0,
+                                rotateX: 0,
+                                rotateY: 0,
+                                duration: 0.65,
+                                ease: 'elastic.out(1, 0.4)'
+                            });
                         }
-                    }, 35);
+                    });
                 });
-            }
 
-            // B. Reveal minimal subtitle & scroll cue
-            if (subtitle) {
-                gsap.to(subtitle, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", delay: delay + 0.45 });
-            }
-            if (bottomCue) {
-                gsap.to(bottomCue, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", delay: delay + 0.65 });
+                titleWrap.addEventListener('mouseleave', () => {
+                    charCells.forEach((cell) => {
+                        gsap.to(cell, {
+                            x: 0,
+                            y: 0,
+                            z: 0,
+                            rotateX: 0,
+                            rotateY: 0,
+                            duration: 0.85,
+                            ease: 'elastic.out(1, 0.35)'
+                        });
+                    });
+                });
             }
         }
 
@@ -2458,7 +2983,8 @@
         function scrollToArchive() {
             const archiveSec = document.getElementById('all-blogs-section');
             if (archiveSec) {
-                smoothScrollTo(archiveSec.offsetTop - 50, 750);
+                const targetY = window.scrollY + archiveSec.getBoundingClientRect().top - 70;
+                smoothScrollTo(targetY, 700);
             }
         }
 
@@ -2478,26 +3004,14 @@
         }
 
         function setupWorksWheelEvents() {
-            if (isWheelEventsBound) return;
-            isWheelEventsBound = true;
-
             const stage = document.getElementById('wheel-stage');
-            const prevBtn = document.getElementById('wheel-prev-btn');
-            const nextBtn = document.getElementById('wheel-next-btn');
-            const resetBtn = document.getElementById('wheel-reset-btn');
             const skipBtn = document.getElementById('wheel-skip-btn');
 
-            if (prevBtn) {
-                prevBtn.addEventListener('click', () => jumpStep(-1));
-            }
-            if (nextBtn) {
-                nextBtn.addEventListener('click', () => jumpStep(1));
-            }
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => jumpToRing());
-            }
             if (skipBtn) {
-                skipBtn.addEventListener('click', () => scrollToArchive());
+                skipBtn.onclick = (e) => {
+                    e.preventDefault();
+                    scrollToArchive();
+                };
             }
 
             if (stage) {
@@ -2729,11 +3243,17 @@
             }
         };
 
-        document.addEventListener('DOMContentLoaded', () => {
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
             if (document.querySelector('[data-barba-namespace="blog"]')) {
                 window.initBlogPage();
             }
-        });
+        } else {
+            document.addEventListener('DOMContentLoaded', () => {
+                if (document.querySelector('[data-barba-namespace="blog"]')) {
+                    window.initBlogPage();
+                }
+            });
+        }
     </script>
 
     <script src="./js/common.js?v=4.0"></script>
