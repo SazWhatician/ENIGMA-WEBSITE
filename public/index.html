@@ -1,7 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="is-loading">
 
 <head>
+    <script>
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -75,12 +81,18 @@
             scrollbar-width: none;
         }
 
+        html.is-loading,
+        html.is-loading body {
+            overflow: hidden !important;
+            height: 100% !important;
+        }
+
         /* --- LOADER SECTION --- */
         #loader-wrapper {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
+            width: 100%;
             height: 100vh;
             height: 100dvh;
             z-index: 9999;
@@ -200,7 +212,7 @@
             position: relative;
             width: 100%;
             height: 100vh;
-            height: 100svh;
+            height: 100dvh;
             overflow: hidden;
         }
 
@@ -242,6 +254,7 @@
             width: 100%;
             height: auto;
             object-fit: contain;
+            display: block;
         }
 
         .hero-footer {
@@ -776,7 +789,7 @@
         <div class="gradient-canvas"></div>
         <div class="hero-fade-bottom"></div>
         <div class="hero-logo">
-            <div><img src="/image-assets/white-no bg.png" alt="Logo" / loading="lazy" title="ENIGMA Image"></div>
+            <div><img src="/image-assets/white-no bg.png" alt="Logo" loading="eager" fetchpriority="high" decoding="sync" title="ENIGMA Image"></div>
         </div>
         <div class="hero-footer">
             <p>The Official Coding Club</p>
@@ -946,10 +959,15 @@
 
         // --- FAST SEAMLESS TRANSFORM LOADER ANIMATION ---
         window.scrollTo(0, 0);
+        lenis.scrollTo(0, { immediate: true });
         document.body.style.overflow = 'hidden';
         lenis.stop();
         gsap.set(["nav", ".hero-footer"], { opacity: 0, y: 15 });
         gsap.set(".hero-logo", {
+            xPercent: -50,
+            yPercent: -50,
+            x: 0,
+            y: 0,
             opacity: 0,
             scale: 0.25,
             zIndex: 10000
@@ -957,8 +975,10 @@
 
         const loaderTl = gsap.timeline({
             onComplete: () => {
-                document.getElementById('loader-wrapper').remove();
+                const loaderWrapper = document.getElementById('loader-wrapper');
+                if (loaderWrapper) loaderWrapper.remove();
                 gsap.set(".hero-logo", { clearProps: "zIndex" });
+                document.documentElement.classList.remove('is-loading');
                 document.body.style.overflow = '';
                 lenis.start();
             }

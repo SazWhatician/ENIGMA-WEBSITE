@@ -413,6 +413,13 @@
             align-items: center;
             z-index: 3500;
             mix-blend-mode: difference;
+            pointer-events: none;
+        }
+
+        nav .logo,
+        nav .nav-items,
+        nav .hamburger {
+            pointer-events: auto;
         }
 
         .logo a {
@@ -1017,6 +1024,10 @@
             gap: 0.5rem;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             backdrop-filter: blur(8px);
+        }
+
+        .wheel-mode-btn * {
+            pointer-events: none;
         }
 
         .wheel-mode-btn:hover {
@@ -3125,8 +3136,16 @@
         function scrollToArchive() {
             const archiveSec = document.getElementById('all-blogs-section');
             if (archiveSec) {
-                const targetY = window.scrollY + archiveSec.getBoundingClientRect().top - 70;
-                smoothScrollTo(targetY, 700);
+                if (window.blogLenis) {
+                    window.blogLenis.scrollTo(archiveSec, {
+                        offset: -70,
+                        duration: 0.85,
+                        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+                    });
+                } else {
+                    const targetY = window.scrollY + archiveSec.getBoundingClientRect().top - 70;
+                    smoothScrollTo(targetY, 700);
+                }
             }
         }
 
@@ -3150,15 +3169,20 @@
             const skipBtn = document.getElementById('wheel-skip-btn');
 
             if (skipBtn) {
-                skipBtn.onclick = (e) => {
+                skipBtn.addEventListener('pointerdown', (e) => {
+                    e.stopPropagation();
+                });
+                skipBtn.addEventListener('click', (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     scrollToArchive();
-                };
+                });
             }
 
             if (stage) {
                 // Pointer Drag on stage scrolls page smoothly
                 stage.addEventListener('pointerdown', (e) => {
+                    if (e.target.closest('button, a, .wheel-controls, .wheel-nav-btn, .wheel-card')) return;
                     wheelDragStartY = e.clientY;
                     stage.setPointerCapture(e.pointerId);
                 });
