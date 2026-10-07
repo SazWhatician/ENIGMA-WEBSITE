@@ -1697,6 +1697,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.85rem;
+            min-height: 220px;
         }
 
         .dispatch-row {
@@ -3340,6 +3341,35 @@
             `;
         }
 
+        function syncBlogLayoutAndFooter() {
+            if (window.blogLenis) {
+                window.blogLenis.resize();
+                const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+                if (window.blogLenis.scroll > maxScroll) {
+                    window.blogLenis.scrollTo(maxScroll, { immediate: true });
+                }
+            } else {
+                const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+                if (window.scrollY > maxScroll) {
+                    window.scrollTo(0, maxScroll);
+                }
+            }
+
+            if (typeof ScrollTrigger !== 'undefined') {
+                ScrollTrigger.refresh();
+                ScrollTrigger.update();
+            }
+
+            if (window.footerScrollTrigger) {
+                window.footerScrollTrigger.update();
+                const p = (window.footerScrollTrigger.progress !== undefined) ? window.footerScrollTrigger.progress : 0;
+                const footerContainer = document.querySelector('.footer-container');
+                if (footerContainer && typeof gsap !== 'undefined') {
+                    gsap.set(footerContainer, { yPercent: -50 * (1 - p) });
+                }
+            }
+        }
+
         function renderBlogList(filterTopic = window.activeTopic || 'ALL', searchQuery = currentSearchQuery) {
             const list = document.getElementById('blog-list');
             if (!list) return;
@@ -3377,6 +3407,9 @@
                         ${emptyMsg}
                     </div>
                 `;
+                syncBlogLayoutAndFooter();
+                setTimeout(syncBlogLayoutAndFooter, 60);
+                setTimeout(syncBlogLayoutAndFooter, 250);
                 return;
             }
 
@@ -3394,10 +3427,24 @@
                 });
             });
 
+            syncBlogLayoutAndFooter();
+
             gsap.fromTo('.dispatch-row', 
                 { opacity: 0, y: 15 },
-                { opacity: 1, y: 0, duration: 0.35, stagger: 0.04, ease: 'power2.out' }
+                { 
+                    opacity: 1, 
+                    y: 0, 
+                    duration: 0.35, 
+                    stagger: 0.04, 
+                    ease: 'power2.out',
+                    onComplete: () => {
+                        syncBlogLayoutAndFooter();
+                    }
+                }
             );
+
+            setTimeout(syncBlogLayoutAndFooter, 60);
+            setTimeout(syncBlogLayoutAndFooter, 350);
         }
 
         // GLOBAL INIT HOOK

@@ -7,6 +7,8 @@ window.boundWheel = null;
 window.boundTouchStart = null;
 window.boundTouchMove = null;
 window.footerReqId = null;
+window.footerScrollTrigger = null;
+window.footerResizeHandler = null;
 
 // --- TEAM LOGIC ---
 window.fetchTeam = async function () {
@@ -28,10 +30,10 @@ window.renderTeam = function (filterValue, delay = 0) {
     const grid = document.getElementById('team-grid');
     if (!grid) return;
 
-    // Only kill card-specific triggers, never the team footer trigger
+    // Only kill card-specific triggers, never the team footer trigger or crystal footer trigger
     if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.getAll().forEach(st => {
-            if (st !== window.teamFooterScrollTrigger) {
+            if (st !== window.teamFooterScrollTrigger && st !== window.footerScrollTrigger) {
                 st.kill();
             }
         });
@@ -438,6 +440,14 @@ window.cleanupFooterCrystal = function () {
         cancelAnimationFrame(window.footerReqId);
         window.footerReqId = null;
     }
+    if (window.footerScrollTrigger) {
+        window.footerScrollTrigger.kill();
+        window.footerScrollTrigger = null;
+    }
+    if (window.footerResizeHandler) {
+        window.removeEventListener('resize', window.footerResizeHandler);
+        window.footerResizeHandler = null;
+    }
     const container = document.getElementById('footer-canvas');
     if (container) container.innerHTML = '';
 };
@@ -446,6 +456,12 @@ window.initFooterCrystal = function () {
     window.cleanupFooterCrystal();
     const footerContainerEl = document.getElementById('footer-canvas');
     if (!footerContainerEl || typeof THREE === 'undefined') return;
+
+    // Safety: if container is not laid out yet (0 size), retry in 100ms
+    if (footerContainerEl.offsetWidth === 0 || footerContainerEl.offsetHeight === 0) {
+        setTimeout(window.initFooterCrystal, 100);
+        return;
+    }
 
     if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.refresh();
@@ -523,16 +539,25 @@ window.initFooterCrystal = function () {
 
     if (typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined' && footerContentContainer) {
         gsap.set(footerContentContainer, { yPercent: -50 });
-        ScrollTrigger.create({
-            trigger: 'footer',
+        const trigger = ScrollTrigger.create({
+            trigger: footerEl || 'footer',
             start: 'top bottom',
             end: 'bottom bottom',
             scrub: true,
             onUpdate: (self) => {
                 scrollProgress = self.progress;
                 gsap.set(footerContentContainer, { yPercent: -50 * (1 - scrollProgress) });
+            },
+            onRefresh: (self) => {
+                scrollProgress = self.progress;
+                gsap.set(footerContentContainer, { yPercent: -50 * (1 - scrollProgress) });
             }
         });
+        window.footerScrollTrigger = trigger;
+        if (trigger.progress !== undefined) {
+            scrollProgress = trigger.progress;
+            gsap.set(footerContentContainer, { yPercent: -50 * (1 - scrollProgress) });
+        }
     }
 
     const resizeHandler = () => {
@@ -541,12 +566,12 @@ window.initFooterCrystal = function () {
         footerCamera.updateProjectionMatrix();
         footerRenderer.setSize(footerContainerEl.offsetWidth, footerContainerEl.offsetHeight);
     };
+    window.footerResizeHandler = resizeHandler;
     window.addEventListener('resize', resizeHandler);
 
     function animateFooter() {
         if (!document.getElementById('footer-canvas')) {
             window.cleanupFooterCrystal();
-            window.removeEventListener('resize', resizeHandler);
             return;
         }
         window.footerReqId = requestAnimationFrame(animateFooter);
@@ -729,9 +754,21 @@ window.initTeamFooter = function () {
                 const yValue = -50 * (1 - progress);
                 gsap.set(footerContainer, { yPercent: yValue });
                 modelBaseZ = -5 + (progress * 5);
+            },
+            onRefresh: (self) => {
+                const progress = self.progress;
+                const yValue = -50 * (1 - progress);
+                gsap.set(footerContainer, { yPercent: yValue });
+                modelBaseZ = -5 + (progress * 5);
             }
         });
         window.teamFooterScrollTrigger = trigger;
+        if (trigger.progress !== undefined) {
+            const progress = trigger.progress;
+            const yValue = -50 * (1 - progress);
+            gsap.set(footerContainer, { yPercent: yValue });
+            modelBaseZ = -5 + (progress * 5);
+        }
     }
 
     const resizeHandler = () => {
