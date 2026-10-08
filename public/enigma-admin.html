@@ -1335,9 +1335,24 @@
                 `;
             });
 
+            // Parse Markdown Images: ![alt](url)
+            const imageRegex = /!\[(.*?)\]\((.*?)\)/g;
+            html = html.replace(imageRegex, (match, alt, url) => {
+                const cleanAlt = (alt || '').trim();
+                const cleanUrl = (url || '').trim();
+                return `
+                    <figure class="my-3 rounded border border-emerald-500/40 bg-[#050a07] overflow-hidden text-center">
+                        <div class="bg-black/90 p-2 flex items-center justify-center">
+                            <img src="${cleanUrl}" alt="${cleanAlt}" class="max-h-60 mx-auto object-contain rounded">
+                        </div>
+                        ${cleanAlt ? `<figcaption class="py-1 px-2 text-[10px] font-mono text-emerald-400 bg-black/90 border-t border-emerald-500/20 italic">${cleanAlt}</figcaption>` : ''}
+                    </figure>
+                `;
+            });
+
             const paragraphs = html.split(/\n\n+/);
             return paragraphs.map(p => {
-                if (p.includes('class="code-card')) return p;
+                if (p.includes('class="code-card') || p.includes('<figure')) return p;
                 if (p.trim().startsWith('- ')) {
                     const listItems = p.trim().split('\n').map(li => `<li class="ml-4">${li.replace(/^-\s*/, '')}</li>`).join('');
                     return `<ul class="list-disc pl-2 space-y-1 my-2 text-gray-300 font-light">${listItems}</ul>`;
@@ -1363,17 +1378,70 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-syncopate text-gray-400 mb-1">SECTION HEADING (BULLET NAV TITLE) *</label>
+                    <label class="block text-[10px] font-syncopate text-gray-400 mb-1">SECTION HEADING (TOPIC TITLE) *</label>
                     <input type="text" class="sec-title w-full p-2 rounded text-xs" required value="${title.replace(/"/g, '&quot;')}" placeholder="e.g. Asynchronous Microkernel Architecture">
                 </div>
                 <div>
                     <div class="flex flex-wrap items-center justify-between gap-1.5 mb-1">
-                        <label class="block text-[10px] font-syncopate text-gray-400">BLOG CONTENT (PARAGRAPHS &amp; CODE) *</label>
-                        <button type="button" class="insert-code-btn px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500 hover:text-black font-mono text-[10px] transition-all" title="Insert formatted code card template">
-                            + INSERT CODE BLOCK
-                        </button>
+                        <label class="block text-[10px] font-syncopate text-gray-400">BLOG CONTENT (PARAGRAPHS, CODE &amp; IMAGES) *</label>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" class="insert-img-btn px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500 hover:text-black font-mono text-[10px] transition-all flex items-center gap-1" title="Upload or insert an image into this section">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                + ADD IMAGE
+                            </button>
+                            <button type="button" class="insert-code-btn px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500 hover:text-black font-mono text-[10px] transition-all" title="Insert formatted code card template">
+                                + INSERT CODE BLOCK
+                            </button>
+                        </div>
                     </div>
-                    <textarea class="sec-content w-full p-2 rounded text-xs font-mono" rows="4" required placeholder="Write your blog content here... Markdown code blocks supported with \`\`\`lang...">${content}</textarea>
+
+                    <!-- Expandable Image Inserter Tool -->
+                    <div class="img-inserter-panel hidden p-3 rounded bg-black/90 border border-emerald-500/40 space-y-3 mb-2">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
+                            <span class="text-[10px] font-syncopate font-bold text-emerald-400 tracking-wider flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                IMAGE ASSET TRANSMITTER
+                            </span>
+                            <button type="button" class="close-img-panel text-gray-400 hover:text-white text-xs font-mono">&times;</button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Direct File Upload Dropzone -->
+                            <div class="img-drop-area border border-dashed border-emerald-500/40 rounded p-3 text-center cursor-pointer hover:bg-emerald-500/5 transition-all flex flex-col items-center justify-center min-h-[90px]">
+                                <input type="file" accept="image/*" class="img-file-input hidden">
+                                <div class="img-upload-prompt flex flex-col items-center gap-1">
+                                    <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                                    <span class="text-[10px] font-syncopate text-emerald-400 font-bold">DRAG &amp; DROP OR BROWSE</span>
+                                    <span class="text-[9px] font-mono text-gray-400">Auto-compressed &amp; uploaded</span>
+                                </div>
+                                <div class="img-upload-loading hidden flex flex-col items-center gap-1.5 py-1">
+                                    <span class="w-4 h-4 rounded-full border-2 border-emerald-400 border-t-transparent animate-spin"></span>
+                                    <span class="text-[9px] font-mono text-emerald-400">OPTIMIZING &amp; UPLOADING...</span>
+                                </div>
+                                <div class="img-upload-success hidden flex items-center gap-1 text-[10px] font-mono text-emerald-400">
+                                    <span>&check; ASSET UPLOADED</span>
+                                </div>
+                            </div>
+                            <!-- URL & Caption Fields -->
+                            <div class="space-y-2">
+                                <div>
+                                    <label class="block text-[9px] font-mono text-gray-400 mb-0.5">IMAGE ASSET URL</label>
+                                    <input type="text" class="img-url-input w-full p-1.5 rounded text-xs font-mono bg-black/60 border border-white/10" placeholder="https://... or auto-filled on upload">
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-mono text-gray-400 mb-0.5">IMAGE CAPTION / ALT (OPTIONAL)</label>
+                                    <input type="text" class="img-caption-input w-full p-1.5 rounded text-xs bg-black/60 border border-white/10" placeholder="e.g. System Architecture Diagram">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-2 pt-1 border-t border-white/10">
+                            <button type="button" class="cancel-img-btn px-2.5 py-1 rounded border border-white/20 text-gray-400 hover:text-white text-[10px] font-syncopate">CANCEL</button>
+                            <button type="button" class="confirm-insert-img-btn px-3 py-1 rounded bg-emerald-500 text-black font-syncopate text-[10px] font-bold hover:bg-emerald-400 transition-all flex items-center gap-1">
+                                <span>&plus;</span> INSERT IMAGE INTO CONTENT
+                            </button>
+                        </div>
+                    </div>
+
+                    <textarea class="sec-content w-full p-2 rounded text-xs font-mono transition-colors" rows="5" required placeholder="Write your blog content here... Markdown images ![Caption](url) and code blocks supported! Tip: You can also drag &amp; drop an image file directly onto this box!">${content}</textarea>
                     <div class="sec-preview-box hidden mt-3 p-4 rounded-lg bg-[#050a07] border border-emerald-500/30 text-xs"></div>
                 </div>
             `;
@@ -1381,6 +1449,18 @@
 
             const textarea = div.querySelector('.sec-content');
             const insertCodeBtn = div.querySelector('.insert-code-btn');
+            const insertImgBtn = div.querySelector('.insert-img-btn');
+            const imgPanel = div.querySelector('.img-inserter-panel');
+            const closeImgBtn = div.querySelector('.close-img-panel');
+            const cancelImgBtn = div.querySelector('.cancel-img-btn');
+            const dropArea = div.querySelector('.img-drop-area');
+            const fileInput = div.querySelector('.img-file-input');
+            const promptEl = div.querySelector('.img-upload-prompt');
+            const loadingEl = div.querySelector('.img-upload-loading');
+            const successEl = div.querySelector('.img-upload-success');
+            const urlInput = div.querySelector('.img-url-input');
+            const captionInput = div.querySelector('.img-caption-input');
+            const confirmBtn = div.querySelector('.confirm-insert-img-btn');
             const previewBtn = div.querySelector('.preview-sec-btn');
             const previewBox = div.querySelector('.sec-preview-box');
 
@@ -1392,6 +1472,164 @@
                 textarea.value = val.substring(0, start) + codeSnippet + val.substring(end);
                 textarea.focus();
                 textarea.setSelectionRange(start + 11, start + 42);
+            };
+
+            // Toggle Image Inserter Panel
+            insertImgBtn.onclick = () => {
+                imgPanel.classList.toggle('hidden');
+                if (!imgPanel.classList.contains('hidden')) {
+                    urlInput.focus();
+                }
+            };
+            const closeImgPanel = () => {
+                imgPanel.classList.add('hidden');
+                promptEl.classList.remove('hidden');
+                loadingEl.classList.add('hidden');
+                successEl.classList.add('hidden');
+            };
+            closeImgBtn.onclick = closeImgPanel;
+            cancelImgBtn.onclick = closeImgPanel;
+
+            // Upload section image helper
+            async function uploadSectionImage(file) {
+                if (!file || !file.type.startsWith('image/')) {
+                    alert('Invalid file format. Please drop a valid image file (.png, .jpg, .jpeg, .webp, .svg).');
+                    return;
+                }
+                try {
+                    promptEl.classList.add('hidden');
+                    loadingEl.classList.remove('hidden');
+                    successEl.classList.add('hidden');
+
+                    const optimized = await compressImageFile(file, 1600, 0.85);
+                    const res = await fetch('/api/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${adminToken}`
+                        },
+                        body: JSON.stringify({
+                            image: optimized.dataUrl,
+                            filename: file.name,
+                            type: 'blog_inline'
+                        })
+                    });
+
+                    if (!res.ok) {
+                        const err = await res.json().catch(() => ({}));
+                        throw new Error(err.error || `Upload failed (${res.status})`);
+                    }
+
+                    const data = await res.json();
+                    urlInput.value = data.url;
+                    if (!captionInput.value.trim()) {
+                        captionInput.value = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+                    }
+                    loadingEl.classList.add('hidden');
+                    successEl.classList.remove('hidden');
+                } catch (err) {
+                    console.error('Section image upload failed:', err);
+                    alert('Upload failed: ' + err.message);
+                    loadingEl.classList.add('hidden');
+                    promptEl.classList.remove('hidden');
+                }
+            }
+
+            // Click or Drop on Section Dropzone
+            dropArea.onclick = (e) => {
+                if (e.target !== fileInput) fileInput.click();
+            };
+            fileInput.onchange = () => {
+                if (fileInput.files && fileInput.files.length > 0) {
+                    uploadSectionImage(fileInput.files[0]);
+                    fileInput.value = '';
+                }
+            };
+
+            ['dragenter', 'dragover'].forEach(evt => {
+                dropArea.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropArea.classList.add('border-emerald-400', 'bg-emerald-950/40');
+                });
+            });
+            ['dragleave', 'drop'].forEach(evt => {
+                dropArea.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropArea.classList.remove('border-emerald-400', 'bg-emerald-950/40');
+                });
+            });
+            dropArea.addEventListener('drop', (e) => {
+                const files = e.dataTransfer ? e.dataTransfer.files : null;
+                if (files && files.length > 0) {
+                    uploadSectionImage(files[0]);
+                }
+            });
+
+            // Direct drag & drop onto the textarea
+            textarea.addEventListener('dragover', (e) => {
+                if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+                    e.preventDefault();
+                    textarea.classList.add('border-emerald-400', 'bg-emerald-950/20');
+                }
+            });
+            textarea.addEventListener('dragleave', () => {
+                textarea.classList.remove('border-emerald-400', 'bg-emerald-950/20');
+            });
+            textarea.addEventListener('drop', async (e) => {
+                textarea.classList.remove('border-emerald-400', 'bg-emerald-950/20');
+                const files = e.dataTransfer ? e.dataTransfer.files : null;
+                if (files && files.length > 0 && files[0].type.startsWith('image/')) {
+                    e.preventDefault();
+                    try {
+                        const file = files[0];
+                        const optimized = await compressImageFile(file, 1600, 0.85);
+                        const res = await fetch('/api/upload', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${adminToken}`
+                            },
+                            body: JSON.stringify({
+                                image: optimized.dataUrl,
+                                filename: file.name,
+                                type: 'blog_inline'
+                            })
+                        });
+                        if (res.ok) {
+                            const data = await res.json();
+                            const caption = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+                            const mdImg = `\n\n![${caption}](${data.url})\n\n`;
+                            const start = textarea.selectionStart || textarea.value.length;
+                            textarea.value = textarea.value.substring(0, start) + mdImg + textarea.value.substring(start);
+                            textarea.focus();
+                        }
+                    } catch (err) {
+                        console.error('Direct textarea drop failed:', err);
+                    }
+                }
+            });
+
+            // Confirm Insert Image Button
+            confirmBtn.onclick = () => {
+                const url = urlInput.value.trim();
+                if (!url) {
+                    alert('Please upload an image or enter an Image URL.');
+                    urlInput.focus();
+                    return;
+                }
+                const caption = captionInput.value.trim() || 'Blog Image';
+                const mdImg = `\n\n![${caption}](${url})\n\n`;
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const val = textarea.value;
+                textarea.value = val.substring(0, start) + mdImg + val.substring(end);
+                closeImgPanel();
+                urlInput.value = '';
+                captionInput.value = '';
+                textarea.focus();
+                textarea.setSelectionRange(start + mdImg.length, start + mdImg.length);
             };
 
             previewBtn.onclick = () => {

@@ -372,19 +372,10 @@
         }
 
         /* Section Container Highlight Pulse */
-        .section-highlight {
-            animation: pulseSection 1.2s ease-out;
-        }
-
-        @keyframes pulseSection {
-            0% {
-                box-shadow: 0 0 0 0 rgba(43, 166, 72, 0.7);
-                border-color: rgba(43, 166, 72, 0.9);
-            }
-            100% {
-                box-shadow: 0 0 0 20px rgba(43, 166, 72, 0);
-                border-color: rgba(255, 255, 255, 0.08);
-            }
+        .section-highlight h2 {
+            color: #34d399 !important;
+            text-shadow: 0 0 20px rgba(52, 211, 153, 0.7);
+            transition: color 0.4s ease, text-shadow 0.4s ease;
         }
 
         /* Code Block Styling */
@@ -937,7 +928,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 relative">
 
             <!-- MAIN COLUMN (70% - 8 Cols) -->
-            <div class="lg:col-span-8">
+            <div id="article-content-col" class="lg:col-span-8">
                 <!-- Summary / Abstract Callout -->
                 <div id="article-summary-box" class="p-6 mb-12 rounded-lg bg-emerald-950/20 border-l-4 border-emerald-500 border-t border-r border-b border-white/[0.04]">
                     <div class="text-[10px] font-syncopate uppercase tracking-[2px] text-emerald-400 mb-2 font-bold">
@@ -949,12 +940,12 @@
                 </div>
 
                 <!-- SECTION BODY CONTAINER -->
-                <div id="article-sections" class="space-y-16">
+                <div id="article-sections" class="space-y-16 sm:space-y-20">
                     <!-- Sections will be injected here dynamically -->
                 </div>
 
                 <!-- END OF TRANSMISSION DEBRIEF -->
-                <div class="mt-20 pt-8 border-t border-white/[0.1] flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div id="article-end-debrief" class="mt-20 pt-8 border-t border-white/[0.1] flex flex-col sm:flex-row items-center justify-between gap-6">
                     <div class="text-xs text-gray-500 font-syncopate uppercase tracking-widest">
                         END OF TRANSMISSION // ENIGMA DEPT. OF RESEARCH
                     </div>
@@ -1208,26 +1199,24 @@
 
             sections.forEach((sec, idx) => {
                 const secId = sec.id || `section-${idx + 1}`;
-                const secNumber = (idx + 1).toString().padStart(2, '0');
 
-                // 1. Article Section HTML
+                // 1. Article Section HTML (Continuous flow without dividing box cards)
                 const sectionEl = document.createElement('section');
                 sectionEl.id = secId;
-                sectionEl.className = 'article-section scroll-mt-36 p-6 sm:p-8 rounded-lg bg-black/40 border border-white/[0.06] transition-all duration-300';
+                sectionEl.className = 'article-section scroll-mt-32 transition-all duration-300';
                 
-                // Format content (code blocks, paragraphs)
-                const formattedContent = formatSectionContent(sec.content);
+                // Format content (code blocks, images, paragraphs)
+                let rawSecContent = sec.content || '';
+                if (sec.image && !rawSecContent.includes(sec.image)) {
+                    rawSecContent = `![${sec.title}](${sec.image})\n\n` + rawSecContent;
+                }
+                const formattedContent = formatSectionContent(rawSecContent);
 
                 sectionEl.innerHTML = `
-                    <div class="flex items-center gap-3 mb-6">
-                        <span class="text-xs font-mono text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30">
-                            PART // ${secNumber}
-                        </span>
-                        <h2 class="text-xl sm:text-2xl font-bold font-syncopate tracking-tight text-white">
-                            ${sec.title}
-                        </h2>
-                    </div>
-                    <div class="text-gray-300 leading-relaxed text-base sm:text-lg font-light space-y-5">
+                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-syncopate tracking-tight text-white mb-6">
+                        ${sec.title}
+                    </h2>
+                    <div class="text-gray-300 leading-relaxed text-base sm:text-lg font-light space-y-6">
                         ${formattedContent}
                     </div>
                 `;
@@ -1250,9 +1239,9 @@
                 // 3. Mobile Bullet Point Item HTML
                 if (mobileBulletContainer) {
                     const mBullet = document.createElement('div');
-                    mBullet.className = 'p-3 rounded border border-white/10 text-xs font-syncopate text-gray-300 cursor-pointer flex items-center justify-between';
+                    mBullet.className = 'p-3 rounded border border-white/10 text-xs font-syncopate text-gray-300 cursor-pointer flex items-center justify-between hover:border-emerald-500/50 transition-all';
                     mBullet.innerHTML = `
-                        <span>${secNumber}. ${sec.title}</span>
+                        <span class="font-bold text-white">${sec.title}</span>
                         <span class="text-emerald-400">&rarr;</span>
                     `;
                     mBullet.addEventListener('click', () => {
@@ -1268,20 +1257,25 @@
 
             // Initialize ScrollSpy
             initScrollSpy();
+
+            // Refresh reading progress with rendered content dimensions
+            if (window.updateReadingProgress) {
+                window.updateReadingProgress();
+            }
         }
 
-        // Parse markdown code blocks and paragraphs into distinct styled cards
+        // Parse markdown code blocks, images, and paragraphs into continuous styled elements
         function formatSectionContent(rawText) {
             if (!rawText) return '';
             
-            // Replace code blocks ```lang ... ``` with distinct Code Cards
+            // 1. Replace code blocks ```lang ... ``` with distinct Code Cards
             const codeBlockRegex = /```([a-zA-Z0-9_\-\+]*)\s*\n?([\s\S]*?)```/g;
             let content = rawText.replace(codeBlockRegex, (match, lang, code) => {
                 const cleanLang = (lang || 'CODE').toUpperCase();
                 const highlighted = highlightCodeSyntax(code.trim());
                 const rawEscaped = encodeURIComponent(code.trim());
                 return `
-                    <div class="code-card">
+                    <div class="code-card my-6">
                         <div class="code-card-header">
                             <div class="code-card-dots">
                                 <span class="code-dot code-dot-red"></span>
@@ -1301,19 +1295,39 @@
                 `;
             });
 
-            // Split into paragraphs by double newlines
+            // 2. Replace markdown images ![alt](url) with responsive figure elements
+            const imageRegex = /!\[(.*?)\]\((.*?)\)/g;
+            content = content.replace(imageRegex, (match, alt, url) => {
+                const cleanAlt = (alt || '').trim();
+                const cleanUrl = (url || '').trim();
+                return `
+                    <figure class="blog-figure my-8 rounded-lg overflow-hidden border border-white/[0.08] bg-black/60 shadow-2xl transition-all duration-300 hover:border-emerald-500/40 group">
+                        <div class="relative w-full overflow-hidden bg-black/90 flex items-center justify-center">
+                            <img src="${cleanUrl}" alt="${cleanAlt}" class="blog-section-img w-full max-h-[550px] object-contain rounded-t-lg transition-transform duration-500 group-hover:scale-[1.01]" loading="lazy">
+                        </div>
+                        ${cleanAlt ? `
+                            <figcaption class="py-2.5 px-4 text-center text-xs font-mono text-gray-400 bg-[#0a0f0c] border-t border-white/[0.06] flex items-center justify-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>${cleanAlt}</span>
+                            </figcaption>
+                        ` : ''}
+                    </figure>
+                `;
+            });
+
+            // 3. Split into paragraphs by double newlines
             const paragraphs = content.split(/\n\n+/);
             return paragraphs.map(p => {
-                if (p.includes('class="code-card"')) return p;
+                if (p.includes('class="code-card"') || p.includes('class="blog-figure"')) return p;
 
                 // Format inline code `code`
                 let formattedP = p.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
 
                 if (formattedP.trim().startsWith('- ')) {
                     const listItems = formattedP.trim().split('\n').map(li => `<li>${li.replace(/^-\s*/, '')}</li>`).join('');
-                    return `<ul class="list-disc pl-5 space-y-2 text-gray-300 font-light">${listItems}</ul>`;
+                    return `<ul class="list-disc pl-5 space-y-2 text-gray-300 font-light my-4">${listItems}</ul>`;
                 }
-                return `<p>${formattedP.replace(/\n/g, '<br>')}</p>`;
+                return `<p class="my-4">${formattedP.replace(/\n/g, '<br>')}</p>`;
             }).join('');
         }
 
@@ -1436,26 +1450,49 @@
             const hudFill = document.getElementById('hud-progress-fill');
 
             const onScroll = () => {
-                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-                if (totalHeight <= 0) return;
-                const scrollY = window.postLenis ? window.postLenis.scroll : window.pageYOffset;
-                const progress = Math.min(Math.max((scrollY / totalHeight) * 100, 0), 100);
-                
+                const scrollY = window.postLenis ? window.postLenis.scroll : (window.pageYOffset || document.documentElement.scrollTop || 0);
+
+                // Identify the end of the actual blog article
+                const debrief = document.getElementById('article-end-debrief');
+                const sections = document.getElementById('article-sections');
+                const contentCol = document.getElementById('article-content-col') || document.querySelector('.lg\\:col-span-8');
+                const endTarget = debrief || sections || contentCol;
+
+                let maxScroll = 0;
+                if (endTarget) {
+                    const rect = endTarget.getBoundingClientRect();
+                    const targetBottom = rect.bottom + scrollY;
+                    maxScroll = targetBottom - window.innerHeight;
+                } else {
+                    maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                }
+
+                const progress = maxScroll > 0
+                    ? Math.min(Math.max((scrollY / maxScroll) * 100, 0), 100)
+                    : (scrollY > 0 ? 100 : 0);
+
                 if (bar) bar.style.width = `${progress}%`;
                 if (depthText) depthText.textContent = `${Math.round(progress)}%`;
                 if (hudFill) hudFill.style.width = `${progress}%`;
             };
 
+            window.updateReadingProgress = onScroll;
+
             if (window.postLenis) {
                 window.postLenis.on('scroll', onScroll);
-                window.cleanupReadingProgress = () => {
-                    if (window.postLenis) window.postLenis.off('scroll', onScroll);
-                    window.removeEventListener('scroll', onScroll);
-                };
-            } else {
-                window.addEventListener('scroll', onScroll, { passive: true });
-                window.cleanupReadingProgress = () => window.removeEventListener('scroll', onScroll);
             }
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll, { passive: true });
+
+            window.cleanupReadingProgress = () => {
+                if (window.postLenis) window.postLenis.off('scroll', onScroll);
+                window.removeEventListener('scroll', onScroll);
+                window.removeEventListener('resize', onScroll);
+                window.updateReadingProgress = null;
+            };
+
+            // Calculate initial state immediately
+            onScroll();
         }
 
         // Share Link Button
